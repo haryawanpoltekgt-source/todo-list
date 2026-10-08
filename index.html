@@ -10,41 +10,45 @@
       background-color: #f3f2f1;
       display: flex;
       justify-content: center;
-      padding-top: 40px;
-      margin: 0;
+      padding: 30px 15px;
     }
     .container {
       width: 100%;
       max-width: 650px;
       background: white;
       padding: 24px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
     }
     h2 { color: #2564cf; margin-top: 0; margin-bottom: 20px; }
     
-    .input-box {
+    /* Input Form Area */
+    .input-form {
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+      flex-direction: column;
+      gap: 10px;
       margin-bottom: 20px;
       background: #fafafa;
-      padding: 12px;
+      padding: 15px;
       border-radius: 6px;
-      border: 1px solid #e0e0e0;
+      border: 1px solid #eaeaea;
     }
-    .input-box input, .input-box select {
-      padding: 8px 10px;
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+    input[type="text"], select {
+      padding: 9px 12px;
       border: 1px solid #ccc;
       border-radius: 4px;
       outline: none;
       font-size: 14px;
     }
-    .input-task { flex: 2; min-width: 160px; }
-    .input-pic { flex: 1; min-width: 100px; }
+    .input-row input[type="text"] { flex: 2; }
+    .input-row select, .input-row .pic-input { flex: 1; }
     
-    button {
-      padding: 8px 16px;
+    button.btn-add {
+      padding: 10px 18px;
       background-color: #2564cf;
       color: white;
       border: none;
@@ -52,84 +56,129 @@
       cursor: pointer;
       font-weight: 600;
     }
-    button:hover { background-color: #1151b5; }
-    
+    button.btn-add:hover { background-color: #1151b5; }
+
+    /* Filter Combobox Area */
+    .filter-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+    .filter-box label {
+      font-size: 12px;
+      font-weight: bold;
+      color: #605e5c;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+
+    /* Task List Items */
     ul { list-style: none; padding: 0; margin: 0; }
-    
-    li.task-item {
-      background: #ffffff;
-      padding: 12px;
-      border: 1px solid #e0e0e0;
+    li {
+      background: #fff;
+      padding: 12px 14px;
+      border: 1px solid #e1dfdd;
       border-radius: 6px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
-    
     .task-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    
     .task-title {
       font-weight: 600;
-      color: #333;
+      color: #323130;
       font-size: 15px;
+      border: 1px transparent solid;
+      padding: 2px 4px;
+      border-radius: 3px;
     }
-    
-    .task-id {
+    .task-title:hover {
+      border-color: #ccc;
+      background: #f9f9f9;
+    }
+    .task-details {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-size: 13px;
+    }
+    .badge-id {
       font-size: 11px;
-      color: #888;
-      background: #f0f0f0;
+      color: #8a8886;
+      background: #f3f2f1;
       padding: 2px 6px;
       border-radius: 4px;
     }
-
-    .task-details {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      font-size: 13px;
+    .btn-delete {
+      background: transparent;
+      color: #a80000;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
     }
+    .btn-delete:hover { text-decoration: underline; }
 
-    .task-details label {
-      color: #666;
-      display: flex;
-      align-items: center;
-      gap: 4px;
+    /* Status Badge Colors */
+    select.status-select {
+      font-weight: 600;
+      border-radius: 12px;
+      padding: 3px 8px;
     }
-
-    .editable-input, .editable-select {
-      padding: 4px 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 13px;
-      background: white;
-    }
-
-    .status-Open { border-left: 4px solid #d9381e; }
-    .status-Progress { border-left: 4px solid #f2994a; }
-    .status-Closed { border-left: 4px solid #27ae60; }
+    select.status-Open { background-color: #eff6fc; color: #0078d4; border-color: #c7e0f4; }
+    select.status-Progress { background-color: #fff4ce; color: #797775; border-color: #fed9cc; }
+    select.status-Closed { background-color: #dff6dd; color: #107c41; border-color: #92c353; }
   </style>
 </head>
 <body>
 
 <div class="container">
   <h2>Tugasku (To Do)</h2>
-  
-  <div class="input-box">
-    <input type="text" id="taskInput" class="input-task" placeholder="Nama tugas..." onkeypress="handleKeyPress(event)">
-    <input type="text" id="picInput" class="input-pic" placeholder="PIC...">
-    <select id="statusInput">
-      <option value="Open">Open</option>
-      <option value="Progress">Progress</option>
-      <option value="Closed">Closed</option>
-    </select>
-    <button onclick="addTask()">Tambah</button>
+
+  <!-- Input Form -->
+  <div class="input-form">
+    <div class="input-row">
+      <input type="text" id="taskInput" placeholder="Nama tugas..." onkeypress="handleKeyPress(event)">
+      <input type="text" id="picInput" class="pic-input" placeholder="PIC (Penanggung Jawab)">
+    </div>
+    <div class="input-row">
+      <select id="statusInput">
+        <option value="Open">Open</option>
+        <option value="Progress">Progress</option>
+        <option value="Closed">Closed</option>
+      </select>
+      <button class="btn-add" onclick="addTask()">Tambah Tugas</button>
+    </div>
   </div>
 
+  <!-- Combobox Filter -->
+  <div class="filter-box">
+    <label>
+      Filter PIC:
+      <select id="filterPic" onchange="renderTasks()">
+        <option value="ALL">Semua PIC</option>
+      </select>
+    </label>
+    <label>
+      Filter Status:
+      <select id="filterStatus" onchange="renderTasks()">
+        <option value="ALL">Semua Status</option>
+        <option value="Open">Open</option>
+        <option value="Progress">Progress</option>
+        <option value="Closed">Closed</option>
+      </select>
+    </label>
+  </div>
+
+  <!-- Daftar Tugas -->
   <ul id="taskList">
     <li>Memuat data...</li>
   </ul>
@@ -137,99 +186,162 @@
 
 <script>
   // GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
-  const API_URL = "https://script.google.com/macros/s/AKfycbxfexDAqeeWEz7dSWlldDAD8jzZg6HZ_A7T5W5YYsz_jBZn8OkGKb5E7R2MAMK3Ylzi/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwpkOahF1KiHgSDTxefXokUOqSEsFbuK7TokjWtKyj7CUXIlqU-l3fOZsQdc82lgkXO/exec";
 
-  // Fungsi untuk memuat tugas
+  let allTasks = [];
+
+  // Memuat data dari Apps Script
   async function loadTasks() {
     try {
       const response = await fetch(API_URL);
-      const tasks = await response.json();
-      const list = document.getElementById("taskList");
-      list.innerHTML = "";
-
-      if (!tasks || tasks.length === 0) {
-        list.innerHTML = "<li style='padding:10px;'>Belum ada tugas.</li>";
-        return;
-      }
-
-      tasks.forEach(t => {
-        const li = document.createElement("li");
-        li.className = `task-item status-${t.status}`;
-        
-        li.innerHTML = `
-          <div class="task-header">
-            <span class="task-title">${t.task}</span>
-            <span class="task-id">${t.id}</span>
-          </div>
-          <div class="task-details">
-            <label>PIC:
-              <input type="text" class="editable-input" value="${t.pic}" onchange="updateTask('${t.id}', 'pic', this.value)">
-            </label>
-            <label>Status:
-              <select class="editable-select" onchange="updateTask('${t.id}', 'status', this.value)">
-                <option value="Open" ${t.status === 'Open' ? 'selected' : ''}>Open</option>
-                <option value="Progress" ${t.status === 'Progress' ? 'selected' : ''}>Progress</option>
-                <option value="Closed" ${t.status === 'Closed' ? 'selected' : ''}>Closed</option>
-              </select>
-            </label>
-          </div>
-        `;
-        list.appendChild(li);
-      });
+      allTasks = await response.json();
+      updatePicFilterOptions();
+      renderTasks();
     } catch (err) {
-      document.getElementById("taskList").innerHTML = "<li style='padding:10px;'>Gagal memuat tugas.</li>";
+      document.getElementById("taskList").innerHTML = "<li>Gagal memuat tugas.</li>";
     }
   }
 
-  // Fungsi untuk menambah tugas baru
+  // Mengisi opsi filter PIC secara dinamis berdasarkan data
+  function updatePicFilterOptions() {
+    const filterPicSelect = document.getElementById("filterPic");
+    const currentValue = filterPicSelect.value;
+    
+    // Ambil daftar PIC unik
+    const pics = [...new Set(allTasks.map(t => t.pic).filter(p => p))];
+
+    filterPicSelect.innerHTML = `<option value="ALL">Semua PIC</option>`;
+    pics.forEach(pic => {
+      const opt = document.createElement("option");
+      opt.value = pic;
+      opt.textContent = pic;
+      filterPicSelect.appendChild(opt);
+    });
+
+    filterPicSelect.value = currentValue;
+  }
+
+  // Menampilkan data sesuai filter
+  function renderTasks() {
+    const list = document.getElementById("taskList");
+    const selectedPic = document.getElementById("filterPic").value;
+    const selectedStatus = document.getElementById("filterStatus").value;
+
+    list.innerHTML = "";
+
+    // Filter data
+    const filtered = allTasks.filter(t => {
+      const matchPic = (selectedPic === "ALL") || (t.pic === selectedPic);
+      const matchStatus = (selectedStatus === "ALL") || (t.status === selectedStatus);
+      return matchPic && matchStatus;
+    });
+
+    if (filtered.length === 0) {
+      list.innerHTML = "<li style='text-align:center; color:#8a8886;'>Tidak ada tugas yang sesuai.</li>";
+      return;
+    }
+
+    filtered.forEach(t => {
+      const li = document.createElement("li");
+
+      li.innerHTML = `
+        <div class="task-header">
+          <span class="badge-id">${t.id}</span>
+          <button class="btn-delete" onclick="deleteTask('${t.id}')">Hapus</button>
+        </div>
+        <div class="task-header">
+          <!-- Editable Task Title -->
+          <span class="task-title" contenteditable="true" onblur="updateTaskText('${t.id}', this)">${t.task}</span>
+        </div>
+        <div class="task-details">
+          <!-- Editable PIC -->
+          <label>PIC: <input type="text" value="${t.pic}" style="width:100px; padding:2px 5px;" onchange="updatePic('${t.id}', this.value)"></label>
+          
+          <!-- Editable Status -->
+          <label>Status: 
+            <select class="status-select status-${t.status}" onchange="updateStatus('${t.id}', this.value)">
+              <option value="Open" ${t.status === 'Open' ? 'selected' : ''}>Open</option>
+              <option value="Progress" ${t.status === 'Progress' ? 'selected' : ''}>Progress</option>
+              <option value="Closed" ${t.status === 'Closed' ? 'selected' : ''}>Closed</option>
+            </select>
+          </label>
+        </div>
+      `;
+      list.appendChild(li);
+    });
+  }
+
+  // Tambah Tugas
   async function addTask() {
     const taskInput = document.getElementById("taskInput");
     const picInput = document.getElementById("picInput");
     const statusInput = document.getElementById("statusInput");
 
     const taskText = taskInput.value.trim();
-    if (!taskText) return;
-
-    const picText = picInput.value.trim() || "-";
+    const picText = picInput.value.trim() || "Unassigned";
     const statusText = statusInput.value;
+
+    if (!taskText) return;
 
     taskInput.value = "";
     picInput.value = "";
 
-    try {
-      await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          action: "add",
-          task: taskText,
-          pic: picText,
-          status: statusText
-        })
-      });
-      loadTasks();
-    } catch (err) {
-      alert("Gagal menambahkan tugas");
-    }
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        action: "add",
+        task: taskText,
+        pic: picText,
+        status: statusText
+      })
+    });
+
+    loadTasks();
   }
 
-  // Fungsi untuk mengedit PIC atau Status secara langsung
-  async function updateTask(id, field, value) {
-    try {
-      const payload = { action: "update", id: id };
-      payload[field] = value;
+  // Update Teks Tugas (saat selesai diedit/blur)
+  async function updateTaskText(id, element) {
+    const newText = element.innerText.trim();
+    if (!newText) return;
 
-      await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(payload)
-      });
-      
-      // Reload untuk memperbarui tampilan/warna status
-      loadTasks();
-    } catch (err) {
-      alert("Gagal mengoperasikan pembaruan data.");
-    }
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ action: "update", id: id, task: newText })
+    });
+  }
+
+  // Update PIC
+  async function updatePic(id, newPic) {
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ action: "update", id: id, pic: newPic })
+    });
+    loadTasks();
+  }
+
+  // Update Status
+  async function updateStatus(id, newStatus) {
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ action: "update", id: id, status: newStatus })
+    });
+    loadTasks();
+  }
+
+  // Hapus Tugas
+  async function deleteTask(id) {
+    if (!confirm("Yakin ingin menghapus tugas ini?")) return;
+
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ action: "delete", id: id })
+    });
+    loadTasks();
   }
 
   function handleKeyPress(e) {
