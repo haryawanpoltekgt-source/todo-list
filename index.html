@@ -10,47 +10,108 @@
       background-color: #f3f2f1;
       display: flex;
       justify-content: center;
-      padding-top: 50px;
+      padding-top: 40px;
+      margin: 0;
     }
     .container {
       width: 100%;
-      max-width: 450px;
+      max-width: 650px;
       background: white;
-      padding: 20px;
+      padding: 24px;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    h2 { color: #2564cf; margin-bottom: 20px; }
+    h2 { color: #2564cf; margin-top: 0; margin-bottom: 20px; }
+    
     .input-box {
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
       margin-bottom: 20px;
+      background: #fafafa;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #e0e0e0;
     }
-    input[type="text"] {
-      flex: 1;
-      padding: 10px;
+    .input-box input, .input-box select {
+      padding: 8px 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
       outline: none;
+      font-size: 14px;
     }
+    .input-task { flex: 2; min-width: 160px; }
+    .input-pic { flex: 1; min-width: 100px; }
+    
     button {
-      padding: 10px 15px;
+      padding: 8px 16px;
       background-color: #2564cf;
       color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      font-weight: 600;
     }
     button:hover { background-color: #1151b5; }
-    ul { list-style: none; padding: 0; }
-    li {
-      background: #f9f9f9;
+    
+    ul { list-style: none; padding: 0; margin: 0; }
+    
+    li.task-item {
+      background: #ffffff;
       padding: 12px;
-      border-bottom: 1px solid #eee;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .task-title {
+      font-weight: 600;
+      color: #333;
+      font-size: 15px;
+    }
+    
+    .task-id {
+      font-size: 11px;
+      color: #888;
+      background: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .task-details {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .task-details label {
+      color: #666;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 4px;
     }
+
+    .editable-input, .editable-select {
+      padding: 4px 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 13px;
+      background: white;
+    }
+
+    .status-Open { border-left: 4px solid #d9381e; }
+    .status-Progress { border-left: 4px solid #f2994a; }
+    .status-Closed { border-left: 4px solid #27ae60; }
   </style>
 </head>
 <body>
@@ -59,7 +120,13 @@
   <h2>Tugasku (To Do)</h2>
   
   <div class="input-box">
-    <input type="text" id="taskInput" placeholder="Tambahkan tugas..." onkeypress="handleKeyPress(event)">
+    <input type="text" id="taskInput" class="input-task" placeholder="Nama tugas..." onkeypress="handleKeyPress(event)">
+    <input type="text" id="picInput" class="input-pic" placeholder="PIC...">
+    <select id="statusInput">
+      <option value="Open">Open</option>
+      <option value="Progress">Progress</option>
+      <option value="Closed">Closed</option>
+    </select>
     <button onclick="addTask()">Tambah</button>
   </div>
 
@@ -70,9 +137,9 @@
 
 <script>
   // GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
-  const API_URL = "https://script.google.com/macros/s/AKfycbyr1M6o0yzX_vdZEbPG-qR3E91bIrttF0Txy9dXpUpMhlv48k4CR5hHkjJqzQFyJKEX/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbxfexDAqeeWEz7dSWlldDAD8jzZg6HZ_A7T5W5YYsz_jBZn8OkGKb5E7R2MAMK3Ylzi/exec";
 
-  // Fungsi untuk mengambil data tugas dari Google Sheets
+  // Fungsi untuk memuat tugas
   async function loadTasks() {
     try {
       const response = await fetch(API_URL);
@@ -81,52 +148,94 @@
       list.innerHTML = "";
 
       if (!tasks || tasks.length === 0) {
-        list.innerHTML = "<li>Belum ada tugas.</li>";
+        list.innerHTML = "<li style='padding:10px;'>Belum ada tugas.</li>";
         return;
       }
 
       tasks.forEach(t => {
         const li = document.createElement("li");
-        li.textContent = t.task;
+        li.className = `task-item status-${t.status}`;
+        
+        li.innerHTML = `
+          <div class="task-header">
+            <span class="task-title">${t.task}</span>
+            <span class="task-id">${t.id}</span>
+          </div>
+          <div class="task-details">
+            <label>PIC:
+              <input type="text" class="editable-input" value="${t.pic}" onchange="updateTask('${t.id}', 'pic', this.value)">
+            </label>
+            <label>Status:
+              <select class="editable-select" onchange="updateTask('${t.id}', 'status', this.value)">
+                <option value="Open" ${t.status === 'Open' ? 'selected' : ''}>Open</option>
+                <option value="Progress" ${t.status === 'Progress' ? 'selected' : ''}>Progress</option>
+                <option value="Closed" ${t.status === 'Closed' ? 'selected' : ''}>Closed</option>
+              </select>
+            </label>
+          </div>
+        `;
         list.appendChild(li);
       });
     } catch (err) {
-      document.getElementById("taskList").innerHTML = "<li>Gagal memuat tugas.</li>";
+      document.getElementById("taskList").innerHTML = "<li style='padding:10px;'>Gagal memuat tugas.</li>";
     }
   }
 
   // Fungsi untuk menambah tugas baru
   async function addTask() {
-    const input = document.getElementById("taskInput");
-    const taskText = input.value.trim();
+    const taskInput = document.getElementById("taskInput");
+    const picInput = document.getElementById("picInput");
+    const statusInput = document.getElementById("statusInput");
+
+    const taskText = taskInput.value.trim();
     if (!taskText) return;
 
-    input.value = "";
+    const picText = picInput.value.trim() || "-";
+    const statusText = statusInput.value;
+
+    taskInput.value = "";
+    picInput.value = "";
 
     try {
       await fetch(API_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({ task: taskText })
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          action: "add",
+          task: taskText,
+          pic: picText,
+          status: statusText
+        })
       });
-      
-      // Refresh list
       loadTasks();
     } catch (err) {
       alert("Gagal menambahkan tugas");
     }
   }
 
-  // Menambahkan tugas dengan menekan tombol Enter
-  function handleKeyPress(e) {
-    if (e.key === "Enter") {
-      addTask();
+  // Fungsi untuk mengedit PIC atau Status secara langsung
+  async function updateTask(id, field, value) {
+    try {
+      const payload = { action: "update", id: id };
+      payload[field] = value;
+
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(payload)
+      });
+      
+      // Reload untuk memperbarui tampilan/warna status
+      loadTasks();
+    } catch (err) {
+      alert("Gagal mengoperasikan pembaruan data.");
     }
   }
 
-  // Muat data saat halaman dibuka
+  function handleKeyPress(e) {
+    if (e.key === "Enter") addTask();
+  }
+
   loadTasks();
 </script>
 
