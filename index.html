@@ -297,6 +297,7 @@
     <label>
       Filter Status:
       <select id="filterStatus" onchange="renderTasks()">
+        <option value="ACTIVE" selected>Tugas Aktif</option>
         <option value="ALL">Semua Status</option>
         <option value="Open">Open</option>
         <option value="Progress">Progress</option>
@@ -439,7 +440,6 @@
 
   let allTasks = [];
 
-  // Helper Function: Format Tanggal ke "dd mmm yyyy HH:MM"
   function formatDateCustom(dateString) {
     if (!dateString) return "-";
     const d = new Date(dateString);
@@ -511,7 +511,16 @@
 
     const filtered = allTasks.filter(t => {
       const matchPic = (selectedPic === "ALL") || (t.pic === selectedPic);
-      const matchStatus = (selectedStatus === "ALL") || (t.status === selectedStatus);
+      
+      let matchStatus = false;
+      if (selectedStatus === "ACTIVE") {
+        matchStatus = (t.status === "Open" || t.status === "Progress");
+      } else if (selectedStatus === "ALL") {
+        matchStatus = true;
+      } else {
+        matchStatus = (t.status === selectedStatus);
+      }
+
       return matchPic && matchStatus;
     });
 
@@ -544,7 +553,6 @@
     });
   }
 
-  // Logika 1: Jika % Status diubah, otomatis menyesuaikan Status (Check)
   function handlePercentChange(mode) {
     let percentVal, statusSelect;
     if (mode === 'add') {
@@ -566,7 +574,6 @@
     }
   }
 
-  // Logika 2: Jika Status (Check) diubah, otomatis menyesuaikan % Status
   function handleStatusChange(mode) {
     let statusVal, percentSelect;
     if (mode === 'add') {
@@ -582,7 +589,6 @@
     } else if (statusVal === "Open") {
       percentSelect.value = "0%";
     } else if (statusVal === "Progress") {
-      // Jika dipilih Progress dan sebelumnya 0% atau 100%, otomatis set ke 50%
       if (percentSelect.value === "0%" || percentSelect.value === "100%") {
         percentSelect.value = "50%";
       }
