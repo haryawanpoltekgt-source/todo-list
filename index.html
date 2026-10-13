@@ -593,4 +593,32 @@
     updateActionInput.value = "";
     statusInput.value = "Open";
     statusInput.className = "status-Open";
-    percentInput.value = "0%
+    percentInput.value = "0%";
+
+    closeAddModal();
+    loadTasks();
+  }
+
+  async function deleteTaskFromModal() {
+    const id = document.getElementById("modalTaskId").value;
+    if (!confirm("Yakin ingin menghapus tugas ini?")) return;
+
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ action: "delete", id: id })
+    });
+
+    closeModal();
+    loadTasks();
+  }
+
+  function handleAddKeyPress(e) {
+    if (e.key === "Enter") addTask();
+  }
+
+  loadTasks();
+</script>
+
+</body>
+</html>
