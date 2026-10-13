@@ -439,28 +439,11 @@
 
   let allTasks = [];
 
-  // Helper Function yang aman dari error untuk format Tanggal "dd mmm yyyy HH:MM"
+  // Helper Function: Format Tanggal ke "dd mmm yyyy HH:MM"
   function formatDateCustom(dateString) {
     if (!dateString) return "-";
-    
-    // Coba parsing aman
     const d = new Date(dateString);
-    if (isNaN(d.getTime())) {
-      // Jika format string dari GAS berupa "yyyy-MM-dd HH:mm:ss"
-      const parts = dateString.split(/[- :]/);
-      if (parts.length >= 5) {
-        const year = parts[0];
-        const monthIdx = parseInt(parts[1], 10) - 1;
-        const day = parts[2];
-        const hour = parts[3];
-        const minute = parts[4];
-        const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
-        if (months[monthIdx]) {
-          return `${day} ${months[monthIdx]} ${year} ${hour}:${minute}`;
-        }
-      }
-      return dateString;
-    }
+    if (isNaN(d.getTime())) return dateString;
 
     const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
     const day = String(d.getDate()).padStart(2, '0');
@@ -475,12 +458,24 @@
   async function loadTasks() {
     try {
       document.getElementById("taskList").innerHTML = "<li style='padding:15px; text-align:center; color:#8a8886;'>Memuat data terbaru...</li>";
-      const response = await fetch(API_URL);
-      allTasks = await response.json();
+      
+      // Tambahkan timeout pengaman agar tidak stuck selamanya jika jaringan lambat
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 detik timeout
+
+      const response = await fetch(API_URL, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) throw new Error("Network response was not ok");
+      
+      const result = await response.json();
+      allTasks = Array.isArray(result) ? result : [];
+      
       updatePicOptions();
       renderTasks();
     } catch (err) {
-      document.getElementById("taskList").innerHTML = "<li style='padding:15px; text-align:center; color:#a80000;'>Gagal memuat tugas.</li>";
+      console.error(err);
+      document.getElementById("taskList").innerHTML = "<li style='padding:15px; text-align:center; color:#a80000;'>Gagal memuat tugas. Silakan klik tombol Refresh.</li>";
     }
   }
 
@@ -609,23 +604,26 @@
       return;
     }
 
-    await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        action: "update",
-        id: id,
-        task: task,
-        pic: pic,
-        updateDo: updateDo,
-        status: status,
-        percentStatus: percentStatus,
-        updateAction: updateAction
-      })
-    });
-
-    closeModal();
-    loadTasks();
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          action: "update",
+          id: id,
+          task: task,
+          pic: pic,
+          updateDo: updateDo,
+          status: status,
+          percentStatus: percentStatus,
+          updateAction: updateAction
+        })
+      });
+      closeModal();
+      loadTasks();
+    } catch (err) {
+      alert("Gagal menyimpan perubahan. Silakan coba lagi.");
+    }
   }
 
   async function addTask() {
@@ -642,29 +640,58 @@
       return;
     }
 
-    await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        action: "add",
-        task: taskText,
-        pic: picInput.value.trim() || "-",
-        updateDo: updateDoInput.value.trim(),
-        status: statusInput.value,
-        percentStatus: percentInput.value,
-        updateAction: updateActionInput.value.trim()
-      })
-    });
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          action: "add",
+          task: taskText,
+          pic: picInput.value.trim() || "-",
+          updateDo: updateDoInput.value.trim(),
+          status: statusInput.value,
+          percentStatus: percentInput.value,
+          updateAction: updateActionInput.value.trim()
+        })
+      });
 
-    taskInput.value = "";
-    picInput.value = "";
-    updateDoInput.value = "";
-    updateActionInput.value = "";
-    statusInput.value = "Open";
-    percentInput.value = "0%";
+      taskInput.value = "";
+      picInput.value = "";
+      updateDoInput.value = "";
+      updateActionInput.value = "";
+      statusInput.value = "Open";
+      percentInput.value = "0%";
 
-    closeAddModal();
-    loadTasks();
+      closeAddModal();
+      loadTasks();
+    } catch (err) {
+      alert("Gagal menambahkan tugas. Silakan coba lagi.");
+    }
   }
 
-  async fun
+  async function deleteTaskFromModal() {
+    const id = document.getElementById("modalTaskId").value;
+    if (!confirm("Yakin ingin menghapus tugas ini?")) return;
+
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ action: "delete", id: id })
+      });
+      closeModal();
+      loadTasks();
+    } catch (err) {
+      alert("Gagal menghapus tugas.");
+    }
+  }
+
+  function handleAddKeyPress(e) {
+    if (e.key === "Enter") addTask();
+  }
+
+  loadTasks();
+</script>
+
+</body>
+</html>
