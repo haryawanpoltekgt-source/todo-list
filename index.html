@@ -12,7 +12,7 @@
       height: 100%;
       margin: 0;
       padding: 0;
-      overflow: hidden; /* Mengunci halaman agar tidak bisa di-scroll secara keseluruhan */
+      overflow: hidden;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f3f2f1;
     }
@@ -104,7 +104,7 @@
       background: #fff;
     }
 
-    /* Area List Tugas dengan Scroll Khusus (Pas ±8 list di Smartphone) */
+    /* Area List Tugas dengan Scroll Khusus */
     .task-scroll-area {
       flex: 1;
       overflow-y: auto;
@@ -254,7 +254,6 @@
     }
     .btn-save:hover { background-color: #0b5a2f; }
 
-    /* Penyesuaian khusus untuk Smartphone */
     @media (max-width: 480px) {
       .container {
         padding: 10px;
@@ -280,7 +279,6 @@
 <body>
 
 <div class="container">
-  <!-- Header & Tombol Aksi (Tambah & Refresh) -->
   <div class="header-action-area">
     <h2>Daftar Tugas</h2>
     <div class="button-group">
@@ -289,7 +287,6 @@
     </div>
   </div>
 
-  <!-- Combobox Filter -->
   <div class="filter-box">
     <label>
       Filter PIC:
@@ -308,7 +305,6 @@
     </label>
   </div>
 
-  <!-- Area List Tugas dengan Scroll Atas-Bawah (Terkunci Pas di Layar) -->
   <div class="task-scroll-area">
     <ul id="taskList">
       <li>Memuat data...</li>
@@ -316,7 +312,6 @@
   </div>
 </div>
 
-<!-- Datalist Global untuk Referensi Nama PIC -->
 <datalist id="picListOptions"></datalist>
 
 <!-- Pop-up Modal: Tambah Tugas Baru -->
@@ -341,7 +336,7 @@
       </label>
       <label>
         Status (Check):
-        <select id="statusInput" class="status-Open" onchange="this.className='status-'+this.value">
+        <select id="statusInput">
           <option value="Open">Open</option>
           <option value="Progress">Progress</option>
           <option value="Closed">Closed</option>
@@ -349,7 +344,7 @@
       </label>
       <label>
         % Status:
-        <select id="percentInput">
+        <select id="percentInput" onchange="handlePercentChange('add')">
           <option value="0%">0%</option>
           <option value="10%">10%</option>
           <option value="20%">20%</option>
@@ -410,7 +405,7 @@
       </label>
       <label>
         % Status:
-        <select id="modalPercentSelect">
+        <select id="modalPercentSelect" onchange="handlePercentChange('edit')">
           <option value="0%">0%</option>
           <option value="10%">10%</option>
           <option value="20%">20%</option>
@@ -440,7 +435,6 @@
 </div>
 
 <script>
-  // GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
   const API_URL = "https://script.google.com/macros/s/AKfycbwLRzs3VwEXW3QwPSBeHd70l7uys8Y-SlZ_Hfj36ikhriFniRlSKtnQU9aJDdPcpb0W/exec";
 
   let allTasks = [];
@@ -523,7 +517,29 @@
     });
   }
 
-  // Kontrol Modal Tambah Tugas
+  // Logika Otomatis Status berdasarkan % Status
+  function handlePercentChange(mode) {
+    let percentVal, statusSelect;
+    if (mode === 'add') {
+      percentVal = document.getElementById("percentInput").value;
+      statusSelect = document.getElementById("statusInput");
+    } else {
+      percentVal = document.getElementById("modalPercentSelect").value;
+      statusSelect = document.getElementById("modalStatusSelect");
+    }
+
+    // Ubah angka persen string "20%" menjadi integer 20
+    const num = parseInt(percentVal);
+
+    if (num >= 10 && num <= 90) {
+      statusSelect.value = "Progress";
+    } else if (num === 100) {
+      statusSelect.value = "Closed";
+    } else if (num === 0) {
+      statusSelect.value = "Open";
+    }
+  }
+
   function openAddModal() {
     document.getElementById("addModal").style.display = "flex";
   }
@@ -531,7 +547,6 @@
     document.getElementById("addModal").style.display = "none";
   }
 
-  // Kontrol Modal Detail/Edit Tugas
   function openModal(task) {
     document.getElementById("modalTaskId").value = task.id;
     document.getElementById("modalTitleID").textContent = `Detail Tugas (${task.id})`;
@@ -610,13 +625,11 @@
       })
     });
 
-    // Reset Form Input
     taskInput.value = "";
     picInput.value = "";
     updateDoInput.value = "";
     updateActionInput.value = "";
     statusInput.value = "Open";
-    statusInput.className = "status-Open";
     percentInput.value = "0%";
 
     closeAddModal();
