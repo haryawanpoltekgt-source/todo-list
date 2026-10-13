@@ -227,7 +227,7 @@
       <input type="text" id="picInput" placeholder="PIC">
     </div>
     <div class="input-row">
-      <input type="text" id="updateDoInput" placeholder="Update (DO)...">
+      <input type="text" id="updateDoInput" placeholder="Update Rencana Awalan (Do)...">
       <select id="statusInput" class="status-Open" onchange="this.className='status-'+this.value">
         <option value="Open">Open</option>
         <option value="Progress">Progress</option>
@@ -248,7 +248,7 @@
       </select>
     </div>
     <div class="input-row">
-      <input type="text" id="updateActionInput" placeholder="Update (Action)...">
+      <input type="text" id="updateActionInput" placeholder="Update Tindakan Terakhir (Action)...">
       <button class="btn-add" onclick="addTask()">Tambah Tugas</button>
     </div>
   </div>
@@ -300,7 +300,7 @@
         <input type="text" id="modalPicText">
       </label>
       <label>
-        Update (DO):
+        Update Rencana Awalan (Do):
         <input type="text" id="modalUpdateDoText">
       </label>
       <label>
@@ -328,7 +328,7 @@
         </select>
       </label>
       <label>
-        Update (Action):
+        Update Tindakan Terakhir (Action):
         <textarea id="modalUpdateActionText" rows="3"></textarea>
       </label>
     </div>
@@ -344,7 +344,7 @@
 
 <script>
   // GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
-  const API_URL = "https://script.google.com/macros/s/AKfycbymtmoegFnXLtsyZAQMN8kI9TJvOW3GUkI8ekvCetyQKVpp5Ul4AtR7gPZElZuPEFPq/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwLRzs3VwEXW3QwPSBeHd70l7uys8Y-SlZ_Hfj36ikhriFniRlSKtnQU9aJDdPcpb0W/exec";
 
   let allTasks = [];
 
@@ -394,7 +394,7 @@
       return;
     }
 
-    // Membalik urutan data (.slice().reverse()) agar tugas terbaru muncul di paling atas
+    // Tugas terbaru otomatis muncul di paling atas
     const reversedFiltered = filtered.slice().reverse();
 
     reversedFiltered.forEach(t => {
@@ -419,7 +419,7 @@
     });
   }
 
-  // Fungsi Membuka Pop-up Detail
+  // Membuka Pop-up Detail
   function openModal(task) {
     document.getElementById("modalTaskId").value = task.id;
     document.getElementById("modalTitleID").textContent = `Detail Tugas (${task.id})`;
@@ -434,7 +434,7 @@
     document.getElementById("taskModal").style.display = "flex";
   }
 
-  // Fungsi Menutup Pop-up Detail
+  // Menutup Pop-up Detail
   function closeModal() {
     document.getElementById("taskModal").style.display = "none";
   }
