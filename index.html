@@ -33,7 +33,6 @@
       overflow: hidden;
     }
     
-    /* Header & Tombol Aksi */
     .header-action-area {
       display: flex;
       justify-content: space-between;
@@ -76,7 +75,6 @@
     }
     .btn-refresh:hover { background-color: #e1dfdd; }
 
-    /* Filter Combobox Area */
     .filter-box {
       display: flex;
       gap: 8px;
@@ -104,7 +102,6 @@
       background: #fff;
     }
 
-    /* Area List Tugas dengan Scroll Khusus */
     .task-scroll-area {
       flex: 1;
       overflow-y: auto;
@@ -163,7 +160,6 @@
     .status-Progress { background-color: #fff4ce; color: #8a6d00; }
     .status-Closed { background-color: #dff6dd; color: #107c41; }
 
-    /* Modal / Pop-up Umum */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -225,6 +221,11 @@
       border-radius: 4px;
       outline: none;
       width: 100%;
+    }
+    .modal-body input:disabled, .modal-body select:disabled, .modal-body textarea:disabled {
+      background-color: #f3f2f1;
+      color: #605e5c;
+      cursor: not-allowed;
     }
     .modal-footer {
       display: flex;
@@ -381,8 +382,12 @@
     <div class="modal-body">
       <input type="hidden" id="modalTaskId">
       <label>
-        Tgl Dibuat (Locked):
-        <input type="text" id="modalCreatedAt" readonly style="background-color: #f3f2f1; color: #605e5c;">
+        Tgl Dibuat:
+        <input type="text" id="modalCreatedAt" readonly>
+      </label>
+      <label id="closedAtWrapper" style="display: none;">
+        Tgl Ditutup (Closed):
+        <input type="text" id="modalClosedAt" readonly style="background-color: #e6f4ea; color: #107c41;">
       </label>
       <label>
         Tugas Saya (Plan):
@@ -426,17 +431,17 @@
       </label>
     </div>
     <div class="modal-footer">
-      <button class="btn-delete" onclick="deleteTaskFromModal()">Hapus Tugas</button>
+      <button class="btn-delete" id="modalDeleteBtn" onclick="deleteTaskFromModal()">Hapus Tugas</button>
       <div style="display: flex; gap: 8px;">
-        <button onclick="closeModal()" style="font-size: 13px; padding: 7px 10px; background: #f3f2f1; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Batal</button>
-        <button class="btn-save" onclick="saveTaskDetails()">Simpan Perubahan</button>
+        <button onclick="closeModal()" style="font-size: 13px; padding: 7px 10px; background: #f3f2f1; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Tutup</button>
+        <button class="btn-save" id="modalSaveBtn" onclick="saveTaskDetails()">Simpan Perubahan</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwLRzs3VwEXW3QwPSBeHd70l7uys8Y-SlZ_Hfj36ikhriFniRlSKtnQU9aJDdPcpb0W/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwYDDzqcb7-l_J_mLpvYBThkX_F4L4p2GbqGtRadnMySJwaeKK4QTAPJG-ubx6eOUv4/exec";
 
   let allTasks = [];
 
@@ -606,6 +611,18 @@
     document.getElementById("modalTaskId").value = task.id;
     document.getElementById("modalTitleID").textContent = `Detail Tugas (${task.id})`;
     document.getElementById("modalCreatedAt").value = formatDateCustom(task.createdAt);
+    
+    const isClosed = (task.status === "Closed");
+    
+    // Tampilkan Tgl Ditutup jika status Closed
+    const closedAtWrapper = document.getElementById("closedAtWrapper");
+    if (isClosed && task.closedAt) {
+      closedAtWrapper.style.display = "flex";
+      document.getElementById("modalClosedAt").value = formatDateCustom(task.closedAt);
+    } else {
+      closedAtWrapper.style.display = "none";
+    }
+
     document.getElementById("modalTaskText").value = task.task || "";
     document.getElementById("modalPicText").value = task.pic || "";
     document.getElementById("modalUpdateDoText").value = task.updateDo || "";
@@ -613,8 +630,25 @@
     document.getElementById("modalPercentSelect").value = task.percentStatus || "0%";
     document.getElementById("modalUpdateActionText").value = task.updateAction || "";
 
+    // Kunci / disable form jika status sudah Closed untuk mencegah sabotase/edit
+    const inputs = [
+      document.getElementById("modalTaskText"),
+      document.getElementById("modalPicText"),
+      document.getElementById("modalUpdateDoText"),
+      document.getElementById("modalStatusSelect"),
+      document.getElementById("modalPercentSelect"),
+      document.getElementById("modalUpdateActionText")
+    ];
+
+    inputs.forEach(el => el.disabled = isClosed);
+
+    // Sembunyikan tombol Simpan dan Hapus jika sudah Closed
+    document.getElementById("modalSaveBtn").style.display = isClosed ? "none" : "inline-block";
+    document.getElementById("modalDeleteBtn").style.display = isClosed ? "none" : "inline-block";
+
     document.getElementById("taskModal").style.display = "flex";
   }
+
   function closeModal() {
     document.getElementById("taskModal").style.display = "none";
   }
