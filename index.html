@@ -2,31 +2,35 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>DAFTAR TUGAS - Asset & System</title>
   <style>
     * {
       box-sizing: border-box;
     }
-    body {
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* Mengunci halaman agar tidak bisa di-scroll secara keseluruhan */
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f3f2f1;
+    }
+    body {
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
-      padding: 10px;
     }
     .container {
       width: 100%;
       max-width: 700px;
+      height: 100%;
+      max-height: 100vh;
       background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      padding: 16px;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
     
     /* Header & Tombol Utama */
@@ -34,20 +38,20 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       flex-shrink: 0;
       gap: 10px;
     }
     h2 { 
       color: #2564cf; 
       margin: 0; 
-      font-size: 20px;
+      font-size: 19px;
     }
     .btn-open-add {
       background-color: #2564cf;
       color: white;
       border: none;
-      padding: 10px 14px;
+      padding: 8px 12px;
       border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
@@ -62,41 +66,43 @@
     /* Filter Combobox Area */
     .filter-box {
       display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
-      padding-bottom: 12px;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
       border-bottom: 1px solid #eee;
       flex-shrink: 0;
     }
     .filter-box label {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       color: #605e5c;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
       flex: 1;
     }
     .filter-box select {
       width: 100%;
-      padding: 8px;
+      padding: 7px;
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 13px;
       outline: none;
+      background: #fff;
     }
 
-    /* Area List Tugas dengan batasan tinggi ±8 list */
+    /* Area List Tugas dengan Scroll Khusus (Pas ±8 list di Smartphone) */
     .task-scroll-area {
-      max-height: 480px; /* Dibatasi agar pas menampilkan sekitar 8 list */
+      flex: 1;
       overflow-y: auto;
-      padding-right: 4px;
+      padding-right: 2px;
+      -webkit-overflow-scrolling: touch;
     }
     ul { list-style: none; padding: 0; margin: 0; }
     
     li.task-item {
       background: #fff;
-      padding: 12px 16px;
+      padding: 10px 14px;
       border: 1px solid #e1dfdd;
       border-radius: 6px;
       margin-bottom: 8px;
@@ -113,7 +119,7 @@
     .task-preview-info {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
       overflow: hidden;
       flex: 1;
       padding-right: 10px;
@@ -121,16 +127,16 @@
     .task-plan-text {
       font-weight: 600;
       color: #323130;
-      font-size: 15px;
+      font-size: 14px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .task-meta-preview {
-      font-size: 12px;
+      font-size: 11px;
       color: #605e5c;
       display: flex;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
     }
     .badge-status {
@@ -153,19 +159,19 @@
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      padding: 15px;
+      padding: 12px;
       box-sizing: border-box;
     }
     .modal-content {
       background: white;
       width: 100%;
       max-width: 550px;
-      padding: 20px;
+      padding: 18px;
       border-radius: 8px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.15);
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       max-height: 90vh;
       overflow-y: auto;
     }
@@ -174,13 +180,13 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid #eee;
-      padding-bottom: 8px;
+      padding-bottom: 6px;
     }
-    .modal-header h3 { margin: 0; color: #2564cf; font-size: 18px; }
+    .modal-header h3 { margin: 0; color: #2564cf; font-size: 17px; }
     .btn-close-modal {
       background: transparent;
       border: none;
-      font-size: 22px;
+      font-size: 20px;
       cursor: pointer;
       color: #605e5c;
       line-height: 1;
@@ -188,19 +194,19 @@
     .modal-body {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
     .modal-body label {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      font-size: 13px;
+      gap: 3px;
+      font-size: 12px;
       font-weight: 600;
       color: #605e5c;
     }
     .modal-body input, .modal-body select, .modal-body textarea {
-      padding: 8px 10px;
-      font-size: 14px;
+      padding: 7px 9px;
+      font-size: 13px;
       font-family: inherit;
       border: 1px solid #ccc;
       border-radius: 4px;
@@ -212,14 +218,14 @@
       justify-content: space-between;
       align-items: center;
       border-top: 1px solid #eee;
-      padding-top: 12px;
+      padding-top: 10px;
     }
     .btn-delete {
       background: transparent;
       color: #a80000;
       border: none;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
     }
     .btn-delete:hover { text-decoration: underline; }
@@ -227,29 +233,26 @@
       background-color: #107c41;
       color: white;
       border: none;
-      padding: 8px 16px;
+      padding: 7px 14px;
       border-radius: 4px;
       cursor: pointer;
       font-weight: 600;
+      font-size: 13px;
     }
     .btn-save:hover { background-color: #0b5a2f; }
 
-    /* Penyesuaian khusus untuk Smartphone (Media Query) */
+    /* Penyesuaian khusus untuk Smartphone */
     @media (max-width: 480px) {
       .container {
-        padding: 12px;
+        padding: 10px;
+        border-radius: 0;
       }
       h2 {
         font-size: 17px;
       }
-      .task-scroll-area {
-        max-height: 420px; /* Disesuaikan agar pas menampilkan sekitar 8 list di layar HP */
-      }
       .filter-box {
         flex-direction: column;
-        gap: 8px;
-        margin-bottom: 10px;
-        padding-bottom: 10px;
+        gap: 6px;
       }
     }
   </style>
@@ -282,7 +285,7 @@
     </label>
   </div>
 
-  <!-- Area List Tugas dengan Scroll Atas-Bawah -->
+  <!-- Area List Tugas dengan Scroll Atas-Bawah (Terkunci Pas di Layar) -->
   <div class="task-scroll-area">
     <ul id="taskList">
       <li>Memuat data...</li>
@@ -343,7 +346,7 @@
       </label>
     </div>
     <div class="modal-footer">
-      <button onclick="closeAddModal()" style="font-size: 14px; padding: 8px 12px; background: #f3f2f1; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Batal</button>
+      <button onclick="closeAddModal()" style="font-size: 13px; padding: 7px 10px; background: #f3f2f1; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Batal</button>
       <button class="btn-save" onclick="addTask()">Simpan Tugas Baru</button>
     </div>
   </div>
@@ -405,8 +408,8 @@
     </div>
     <div class="modal-footer">
       <button class="btn-delete" onclick="deleteTaskFromModal()">Hapus Tugas</button>
-      <div style="display: flex; gap: 10px;">
-        <button onclick="closeModal()" style="font-size: 14px; padding: 8px 12px; background: #f3f2f1; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Batal</button>
+      <div style="display: flex; gap: 8px;">
+        <button onclick="closeModal()" style="font-size: 13px; padding: 7px 10px; background: #f3f2f1; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Batal</button>
         <button class="btn-save" onclick="saveTaskDetails()">Simpan Perubahan</button>
       </div>
     </div>
@@ -590,32 +593,4 @@
     updateActionInput.value = "";
     statusInput.value = "Open";
     statusInput.className = "status-Open";
-    percentInput.value = "0%";
-
-    closeAddModal();
-    loadTasks();
-  }
-
-  async function deleteTaskFromModal() {
-    const id = document.getElementById("modalTaskId").value;
-    if (!confirm("Yakin ingin menghapus tugas ini?")) return;
-
-    await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ action: "delete", id: id })
-    });
-
-    closeModal();
-    loadTasks();
-  }
-
-  function handleAddKeyPress(e) {
-    if (e.key === "Enter") addTask();
-  }
-
-  loadTasks();
-</script>
-
-</body>
-</html>
+    percentInput.value = "0%
