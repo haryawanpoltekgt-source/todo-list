@@ -439,15 +439,30 @@
 
   let allTasks = [];
 
-  // Helper Function: Format Tanggal ke "dd mmm yyyy HH:MM" (Contoh: 01 Sep 2026 15:30)
+  // Helper Function yang aman dari error untuk format Tanggal "dd mmm yyyy HH:MM"
   function formatDateCustom(dateString) {
     if (!dateString) return "-";
     
+    // Coba parsing aman
     const d = new Date(dateString);
-    if (isNaN(d.getTime())) return dateString; // Jika bukan format tanggal valid, kembalikan teks aslinya
+    if (isNaN(d.getTime())) {
+      // Jika format string dari GAS berupa "yyyy-MM-dd HH:mm:ss"
+      const parts = dateString.split(/[- :]/);
+      if (parts.length >= 5) {
+        const year = parts[0];
+        const monthIdx = parseInt(parts[1], 10) - 1;
+        const day = parts[2];
+        const hour = parts[3];
+        const minute = parts[4];
+        const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+        if (months[monthIdx]) {
+          return `${day} ${months[monthIdx]} ${year} ${hour}:${minute}`;
+        }
+      }
+      return dateString;
+    }
 
     const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
-    
     const day = String(d.getDate()).padStart(2, '0');
     const month = months[d.getMonth()];
     const year = d.getFullYear();
@@ -566,10 +581,7 @@
   function openModal(task) {
     document.getElementById("modalTaskId").value = task.id;
     document.getElementById("modalTitleID").textContent = `Detail Tugas (${task.id})`;
-    
-    // Format tanggal saat pop-up dibuka
     document.getElementById("modalCreatedAt").value = formatDateCustom(task.createdAt);
-    
     document.getElementById("modalTaskText").value = task.task || "";
     document.getElementById("modalPicText").value = task.pic || "";
     document.getElementById("modalUpdateDoText").value = task.updateDo || "";
@@ -655,22 +667,4 @@
     loadTasks();
   }
 
-  async function deleteTaskFromModal() {
-    const id = document.getElementById("modalTaskId").value;
-    if (!confirm("Yakin ingin menghapus tugas ini?")) return;
-
-    await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ action: "delete", id: id })
-    });
-
-    closeModal();
-    loadTasks();
-  }
-
-  function handleAddKeyPress(e) {
-    if (e.key === "Enter") addTask();
-  }
-
-  loadTas
+  async fun
