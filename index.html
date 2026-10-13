@@ -13,7 +13,6 @@
       --text-secondary: #9099a2;
       --border-color: #2a3447;
       --accent-blue: #3b82f6;
-      --accent-pink: #ec4899;
       --accent-purple: #8b5cf6;
     }
 
@@ -40,7 +39,7 @@
       height: 100%;
       max-height: 100vh;
       background: var(--bg-app);
-      padding: 18px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -50,45 +49,43 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       flex-shrink: 0;
-      gap: 8px;
+      gap: 6px;
     }
     h2 { 
       color: #ffffff; 
       margin: 0; 
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 700;
       letter-spacing: -0.3px;
       white-space: nowrap;
     }
     
-    /* Search Bar Dark Modern */
+    /* Search Bar */
     .search-input {
       flex: 1;
-      padding: 9px 12px;
+      padding: 8px 10px;
       border: 1px solid var(--border-color);
-      border-radius: 10px;
-      font-size: 13px;
+      border-radius: 8px;
+      font-size: 12px;
       outline: none;
       background: var(--card-bg);
       color: var(--text-main);
-      transition: all 0.2s ease;
+      min-width: 0;
     }
     .search-input::placeholder { color: #6b7280; }
-    .search-input:focus {
-      border-color: var(--accent-blue);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-    }
+    .search-input:focus { border-color: var(--accent-blue); }
 
     .button-group {
       display: flex;
-      gap: 6px;
+      gap: 5px;
+      flex-shrink: 0;
     }
     .btn-action-base {
       border: none;
-      padding: 9px 14px;
-      border-radius: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
       font-size: 12px;
@@ -96,12 +93,11 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      transition: opacity 0.2s;
     }
     .btn-open-add {
       background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
       color: white;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+      box-shadow: 0 3px 10px rgba(59, 130, 246, 0.25);
     }
     .btn-open-add:hover { opacity: 0.9; }
 
@@ -112,41 +108,38 @@
     }
     .btn-refresh:hover { background-color: var(--card-hover); color: var(--text-main); }
 
-    /* Filter Box Dark Theme */
+    /* Filter Box */
     .filter-box {
       display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
+      gap: 8px;
+      margin-bottom: 10px;
       flex-shrink: 0;
       background: var(--card-bg);
-      padding: 12px;
-      border-radius: 12px;
+      padding: 10px;
+      border-radius: 10px;
       border: 1px solid var(--border-color);
     }
     .filter-box label {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       color: var(--text-secondary);
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
       flex: 1;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     .filter-box select {
       width: 100%;
-      padding: 8px 10px;
+      padding: 7px;
       border: 1px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 13px;
+      border-radius: 6px;
+      font-size: 12px;
       outline: none;
       background: #161b26;
       color: var(--text-main);
       font-weight: 500;
-    }
-    .filter-box select:focus {
-      border-color: var(--accent-blue);
     }
 
     /* Summary Counting Area */
@@ -156,34 +149,34 @@
       align-items: center;
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 10px 14px;
-      margin-bottom: 14px;
+      border-radius: 10px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
       flex-shrink: 0;
     }
     .summary-title {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       color: var(--text-secondary);
     }
     .summary-badges {
       display: flex;
-      gap: 8px;
+      gap: 6px;
     }
     .count-chip {
       font-size: 11px;
       font-weight: 600;
-      padding: 4px 10px;
+      padding: 3px 8px;
       border-radius: 20px;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
     }
     .count-open { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
     .count-progress { background-color: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
     .count-closed { background-color: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
 
-    /* Daftar List Tugas (Tetap Putih Bersih sesuai permintaan) */
+    /* Daftar List Tugas - Gradien Aesthetic & Profesional Sesuai Status */
     .task-scroll-area {
       flex: 1;
       overflow-y: auto;
@@ -193,63 +186,76 @@
     ul { list-style: none; padding: 0; margin: 0; }
     
     li.task-item {
-      background: #ffffff;
-      padding: 12px 16px;
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
-      margin-bottom: 10px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
     li.task-item:hover {
-      border-color: var(--accent-blue);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
+      opacity: 0.95;
     }
+
+    /* Kartu Gradien Sesuai Status */
+    li.task-item.status-Open {
+      background: linear-gradient(135deg, #1e293b 0%, #1e3a8a 100%);
+      border-left: 4px solid #60a5fa;
+    }
+    li.task-item.status-Progress {
+      background: linear-gradient(135deg, #1e293b 0%, #78350f 100%);
+      border-left: 4px solid #facc15;
+    }
+    li.task-item.status-Closed {
+      background: linear-gradient(135deg, #1e293b 0%, #064e3b 100%);
+      border-left: 4px solid #4ade80;
+    }
+
     .task-preview-info {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
       overflow: hidden;
       flex: 1;
-      padding-right: 12px;
+      padding-right: 10px;
     }
     .task-plan-text {
       font-weight: 600;
-      color: #161616;
-      font-size: 14px;
+      color: #ffffff;
+      font-size: 13.5px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .task-meta-preview {
-      font-size: 11.5px;
-      color: #525252;
+      font-size: 11px;
+      color: #cbd5e1;
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
     }
     .badge-status {
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-size: 11.5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
       font-weight: 600;
       white-space: nowrap;
     }
-    .status-Open { background-color: #e7f5ff; color: #1864ab; }
-    .status-Progress { background-color: #fff9db; color: #f59f00; }
-    .status-Closed { background-color: #ebfbee; color: #2b8a3e; }
+    .status-Open .badge-status { background-color: rgba(96, 165, 250, 0.2); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.4); }
+    .status-Progress .badge-status { background-color: rgba(250, 204, 21, 0.2); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.4); }
+    .status-Closed .badge-status { background-color: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.4); }
 
     /* Modal Styling Dark */
     .modal-overlay {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.75);
       backdrop-filter: blur(4px);
       justify-content: center;
       align-items: center;
@@ -262,13 +268,13 @@
       color: var(--text-main);
       width: 100%;
       max-width: 550px;
-      padding: 20px;
-      border-radius: 14px;
+      padding: 18px;
+      border-radius: 12px;
       border: 1px solid var(--border-color);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       max-height: 90vh;
       overflow-y: auto;
     }
@@ -277,13 +283,13 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 10px;
+      padding-bottom: 8px;
     }
-    .modal-header h3 { margin: 0; color: #ffffff; font-size: 17px; }
+    .modal-header h3 { margin: 0; color: #ffffff; font-size: 16px; }
     .btn-close-modal {
       background: transparent;
       border: none;
-      font-size: 22px;
+      font-size: 20px;
       cursor: pointer;
       color: var(--text-secondary);
       line-height: 1;
@@ -291,22 +297,22 @@
     .modal-body {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
     .modal-body label {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      font-size: 12px;
+      gap: 3px;
+      font-size: 11.5px;
       font-weight: 600;
       color: var(--text-secondary);
     }
     .modal-body input, .modal-body select, .modal-body textarea {
-      padding: 9px 12px;
-      font-size: 13px;
+      padding: 8px 10px;
+      font-size: 12.5px;
       font-family: inherit;
       border: 1px solid var(--border-color);
-      border-radius: 8px;
+      border-radius: 6px;
       outline: none;
       width: 100%;
       background: #161b26;
@@ -325,14 +331,14 @@
       justify-content: space-between;
       align-items: center;
       border-top: 1px solid var(--border-color);
-      padding-top: 12px;
+      padding-top: 10px;
     }
     .btn-delete {
       background: transparent;
       color: #f87171;
       border: none;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
     }
     .btn-delete:hover { text-decoration: underline; }
@@ -340,38 +346,28 @@
       background: linear-gradient(135deg, #22c55e, #16a34a);
       color: white;
       border: none;
-      padding: 9px 16px;
-      border-radius: 8px;
+      padding: 8px 14px;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
-      font-size: 13px;
-      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
+      font-size: 12.5px;
     }
     .btn-save:hover { opacity: 0.9; }
-
-    @media (max-width: 480px) {
-      .container { padding: 12px; border-radius: 0; }
-      h2 { font-size: 17px; }
-      .filter-box { padding: 10px; gap: 8px; }
-      .summary-area { flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 12px; }
-      .summary-badges { width: 100%; justify-content: space-between; }
-    }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- Header dengan Search Bar Dark Dashboard -->
+  <!-- Header dengan Search & Tombol Tambah yang Proporsional -->
   <div class="header-action-area">
     <h2>Daftar Tugas</h2>
-    <input type="text" id="searchInput" class="search-input" placeholder="Cari tugas..." oninput="renderTasks()">
+    <input type="text" id="searchInput" class="search-input" placeholder="Cari..." oninput="renderTasks()">
     <div class="button-group">
-      <button class="btn-action-base btn-refresh" onclick="loadTasks()" title="Muat Ulang Data">🔄</button>
+      <button class="btn-action-base btn-refresh" onclick="loadTasks()" title="Muat Ulang">🔄</button>
       <button class="btn-action-base btn-open-add" onclick="openAddModal()">+ Tambah</button>
     </div>
   </div>
 
-  <!-- Filter Box Dashboard -->
   <div class="filter-box">
     <label>
       Filter PIC:
@@ -401,7 +397,7 @@
     </div>
   </div>
 
-  <!-- Daftar List Tugas (Tetap Putih Bersih) -->
+  <!-- Daftar List Tugas -->
   <div class="task-scroll-area">
     <ul id="taskList">
       <li style='text-align:center; color:#9099a2; padding:20px;'>Memuat data...</li>
@@ -461,8 +457,8 @@
       </label>
     </div>
     <div class="modal-footer">
-      <button onclick="closeAddModal()" style="font-size: 13px; padding: 9px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; font-weight: 500;">Batal</button>
-      <button class="btn-save" onclick="addTask()">Simpan Tugas Baru</button>
+      <button onclick="closeAddModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Batal</button>
+      <button class="btn-save" onclick="addTask()">Simpan Tugas</button>
     </div>
   </div>
 </div>
@@ -526,10 +522,10 @@
       </label>
     </div>
     <div class="modal-footer">
-      <button class="btn-delete" id="modalDeleteBtn" onclick="deleteTaskFromModal()">Hapus Tugas</button>
-      <div style="display: flex; gap: 8px;">
-        <button onclick="closeModal()" style="font-size: 13px; padding: 9px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; font-weight: 500;">Tutup</button>
-        <button class="btn-save" id="modalSaveBtn" onclick="saveTaskDetails()">Simpan Perubahan</button>
+      <button class="btn-delete" id="modalDeleteBtn" onclick="deleteTaskFromModal()">Hapus</button>
+      <div style="display: flex; gap: 6px;">
+        <button onclick="closeModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Tutup</button>
+        <button class="btn-save" id="modalSaveBtn" onclick="saveTaskDetails()">Simpan</button>
       </div>
     </div>
   </div>
@@ -657,7 +653,7 @@
 
     reversedFiltered.forEach(t => {
       const li = document.createElement("li");
-      li.className = "task-item";
+      li.className = `task-item status-${t.status}`;
       li.onclick = () => openModal(t);
 
       li.innerHTML = `
@@ -670,7 +666,7 @@
           </div>
         </div>
         <div>
-          <span class="badge-status status-${t.status}">${t.status}</span>
+          <span class="badge-status">${t.status}</span>
         </div>
       `;
       list.appendChild(li);
