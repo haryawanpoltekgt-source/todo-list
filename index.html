@@ -39,28 +39,45 @@
       align-items: center;
       margin-bottom: 10px;
       flex-shrink: 0;
-      gap: 8px;
+      gap: 6px;
     }
     h2 { 
       color: #2564cf; 
       margin: 0; 
-      font-size: 19px;
+      font-size: 18px;
+      white-space: nowrap;
     }
+    
+    /* Input Search Bar di Tengah */
+    .search-input {
+      flex: 1;
+      padding: 7px 10px;
+      border: 1px solid #c8c6c4;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+      background: #faf9f8;
+    }
+    .search-input:focus {
+      background: #fff;
+      border-color: #2564cf;
+    }
+
     .button-group {
       display: flex;
-      gap: 6px;
+      gap: 5px;
     }
     .btn-action-base {
       border: none;
-      padding: 8px 12px;
+      padding: 7px 10px;
       border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
-      font-size: 13px;
+      font-size: 12px;
       white-space: nowrap;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
     }
     .btn-open-add {
       background-color: #2564cf;
@@ -261,18 +278,15 @@
         border-radius: 0;
       }
       h2 {
-        font-size: 17px;
-      }
-      .filter-box {
-        flex-direction: column;
-        gap: 6px;
-      }
-      .button-group {
-        gap: 4px;
+        font-size: 16px;
       }
       .btn-action-base {
-        padding: 7px 10px;
+        padding: 6px 8px;
+        font-size: 11px;
+      }
+      .search-input {
         font-size: 12px;
+        padding: 6px 8px;
       }
     }
   </style>
@@ -280,10 +294,12 @@
 <body>
 
 <div class="container">
+  <!-- Header dengan Search Bar di Tengah -->
   <div class="header-action-area">
     <h2>Daftar Tugas</h2>
+    <input type="text" id="searchInput" class="search-input" placeholder="Cari..." oninput="renderTasks()">
     <div class="button-group">
-      <button class="btn-action-base btn-refresh" onclick="loadTasks()" title="Muat Ulang Data">🔄 Refresh</button>
+      <button class="btn-action-base btn-refresh" onclick="loadTasks()" title="Muat Ulang Data">🔄</button>
       <button class="btn-action-base btn-open-add" onclick="openAddModal()">+ Tambah</button>
     </div>
   </div>
@@ -511,6 +527,7 @@
     const list = document.getElementById("taskList");
     const selectedPic = document.getElementById("filterPic").value;
     const selectedStatus = document.getElementById("filterStatus").value;
+    const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
 
     list.innerHTML = "";
 
@@ -526,7 +543,14 @@
         matchStatus = (t.status === selectedStatus);
       }
 
-      return matchPic && matchStatus;
+      // Pencarian Keyword fleksibel (Task, PIC, Do, Action)
+      const matchSearch = !keyword || 
+        (t.task && t.task.toLowerCase().includes(keyword)) ||
+        (t.pic && t.pic.toLowerCase().includes(keyword)) ||
+        (t.updateDo && t.updateDo.toLowerCase().includes(keyword)) ||
+        (t.updateAction && t.updateAction.toLowerCase().includes(keyword));
+
+      return matchPic && matchStatus && matchSearch;
     });
 
     if (filtered.length === 0) {
@@ -614,7 +638,6 @@
     
     const isClosed = (task.status === "Closed");
     
-    // Tampilkan Tgl Ditutup jika status Closed
     const closedAtWrapper = document.getElementById("closedAtWrapper");
     if (isClosed && task.closedAt) {
       closedAtWrapper.style.display = "flex";
@@ -630,7 +653,6 @@
     document.getElementById("modalPercentSelect").value = task.percentStatus || "0%";
     document.getElementById("modalUpdateActionText").value = task.updateAction || "";
 
-    // Kunci / disable form jika status sudah Closed untuk mencegah sabotase/edit
     const inputs = [
       document.getElementById("modalTaskText"),
       document.getElementById("modalPicText"),
@@ -642,7 +664,6 @@
 
     inputs.forEach(el => el.disabled = isClosed);
 
-    // Sembunyikan tombol Simpan dan Hapus jika sudah Closed
     document.getElementById("modalSaveBtn").style.display = isClosed ? "none" : "inline-block";
     document.getElementById("modalDeleteBtn").style.display = isClosed ? "none" : "inline-block";
 
