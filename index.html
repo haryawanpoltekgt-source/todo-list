@@ -14,21 +14,19 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
       padding: 10px;
     }
     .container {
       width: 100%;
       max-width: 700px;
-      height: 95vh;
       background: white;
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.1);
       display: flex;
       flex-direction: column;
-      overflow: hidden;
     }
     
     /* Header & Tombol Utama */
@@ -61,7 +59,7 @@
     }
     .btn-open-add:hover { background-color: #1151b5; }
 
-    /* Filter Combobox Area (Freeze / Tetap di Atas) */
+    /* Filter Combobox Area */
     .filter-box {
       display: flex;
       gap: 10px;
@@ -88,9 +86,9 @@
       outline: none;
     }
 
-    /* Area List Tugas dengan Scroll Atas-Bawah */
+    /* Area List Tugas dengan Scroll Terbatas (~8 list di HP) */
     .task-scroll-area {
-      flex: 1;
+      max-height: 520px; /* Batas tinggi agar pas sekitar 8 item */
       overflow-y: auto;
       padding-right: 4px;
     }
@@ -238,14 +236,7 @@
 
     /* Penyesuaian khusus untuk Smartphone (Media Query) */
     @media (max-width: 480px) {
-      body {
-        padding: 0;
-        height: 100vh;
-        align-items: stretch;
-      }
       .container {
-        height: 100vh;
-        border-radius: 0;
         padding: 12px;
       }
       h2 {
@@ -256,6 +247,10 @@
         gap: 8px;
         margin-bottom: 10px;
         padding-bottom: 10px;
+      }
+      /* Mengatur tinggi area list di HP agar pas memuat sekitar 8 item */
+      .task-scroll-area {
+        max-height: 440px; 
       }
     }
   </style>
@@ -288,7 +283,7 @@
     </label>
   </div>
 
-  <!-- Area List Tugas dengan Scroll Atas-Bawah -->
+  <!-- Area List Tugas dengan Scroll Terbatas -->
   <div class="task-scroll-area">
     <ul id="taskList">
       <li>Memuat data...</li>
@@ -596,7 +591,9 @@
     updateActionInput.value = "";
     statusInput.value = "Open";
     statusInput.className = "status-Open";
-    percentInput.value = "0%";
+    percentInput.value = "0%
+
+";
 
     closeAddModal();
     loadTasks();
