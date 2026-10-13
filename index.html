@@ -336,7 +336,7 @@
       </label>
       <label>
         Status (Check):
-        <select id="statusInput">
+        <select id="statusInput" onchange="handleStatusChange('add')">
           <option value="Open">Open</option>
           <option value="Progress">Progress</option>
           <option value="Closed">Closed</option>
@@ -397,7 +397,7 @@
       </label>
       <label>
         Status (Check):
-        <select id="modalStatusSelect">
+        <select id="modalStatusSelect" onchange="handleStatusChange('edit')">
           <option value="Open">Open</option>
           <option value="Progress">Progress</option>
           <option value="Closed">Closed</option>
@@ -459,9 +459,8 @@
     try {
       document.getElementById("taskList").innerHTML = "<li style='padding:15px; text-align:center; color:#8a8886;'>Memuat data terbaru...</li>";
       
-      // Tambahkan timeout pengaman agar tidak stuck selamanya jika jaringan lambat
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 detik timeout
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
 
       const response = await fetch(API_URL, { signal: controller.signal });
       clearTimeout(timeoutId);
@@ -545,6 +544,7 @@
     });
   }
 
+  // Logika 1: Jika % Status diubah, otomatis menyesuaikan Status (Check)
   function handlePercentChange(mode) {
     let percentVal, statusSelect;
     if (mode === 'add') {
@@ -563,6 +563,29 @@
       statusSelect.value = "Closed";
     } else if (num === 0) {
       statusSelect.value = "Open";
+    }
+  }
+
+  // Logika 2: Jika Status (Check) diubah, otomatis menyesuaikan % Status
+  function handleStatusChange(mode) {
+    let statusVal, percentSelect;
+    if (mode === 'add') {
+      statusVal = document.getElementById("statusInput").value;
+      percentSelect = document.getElementById("percentInput");
+    } else {
+      statusVal = document.getElementById("modalStatusSelect").value;
+      percentSelect = document.getElementById("modalPercentSelect");
+    }
+
+    if (statusVal === "Closed") {
+      percentSelect.value = "100%";
+    } else if (statusVal === "Open") {
+      percentSelect.value = "0%";
+    } else if (statusVal === "Progress") {
+      // Jika dipilih Progress dan sebelumnya 0% atau 100%, otomatis set ke 50%
+      if (percentSelect.value === "0%" || percentSelect.value === "100%") {
+        percentSelect.value = "50%";
+      }
     }
   }
 
