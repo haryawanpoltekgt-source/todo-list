@@ -95,9 +95,7 @@
     .filter-box {
       display: flex;
       gap: 8px;
-      margin-bottom: 10px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #eee;
+      margin-bottom: 8px;
       flex-shrink: 0;
     }
     .filter-box label {
@@ -118,6 +116,40 @@
       outline: none;
       background: #fff;
     }
+
+    /* Area Summary Counting Data */
+    .summary-area {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #faf9f8;
+      border: 1px solid #e1dfdd;
+      border-radius: 6px;
+      padding: 6px 12px;
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+    .summary-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #323130;
+    }
+    .summary-badges {
+      display: flex;
+      gap: 8px;
+    }
+    .count-chip {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .count-open { background-color: #eff6fc; color: #0078d4; border: 1px solid #c7e0f4; }
+    .count-progress { background-color: #fff4ce; color: #8a6d00; border: 1px solid #fde074; }
+    .count-closed { background-color: #dff6dd; color: #107c41; border: 1px solid #92c353; }
 
     .task-scroll-area {
       flex: 1;
@@ -288,6 +320,16 @@
         font-size: 12px;
         padding: 6px 8px;
       }
+      .summary-area {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        padding: 6px 10px;
+      }
+      .summary-badges {
+        width: 100%;
+        justify-content: space-between;
+      }
     }
   </style>
 </head>
@@ -321,6 +363,16 @@
         <option value="Closed">Closed</option>
       </select>
     </label>
+  </div>
+
+  <!-- Area Ringkasan Counting Data -->
+  <div class="summary-area">
+    <span class="summary-title" id="summaryPicLabel">Total Tugas (Semua PIC):</span>
+    <div class="summary-badges">
+      <span class="count-chip count-open">Open: <b id="countOpen">0</b></span>
+      <span class="count-chip count-progress">Progress: <b id="countProgress">0</b></span>
+      <span class="count-chip count-closed">Closed: <b id="countClosed">0</b></span>
+    </div>
   </div>
 
   <div class="task-scroll-area">
@@ -531,26 +583,45 @@
 
     list.innerHTML = "";
 
-    const filtered = allTasks.filter(t => {
+    // 1. Hitung total per status berdasarkan PIC & keyword pencarian (mengabaikan filterStatus)
+    const scopeForCounting = allTasks.filter(t => {
       const matchPic = (selectedPic === "ALL") || (t.pic === selectedPic);
-      
-      let matchStatus = false;
-      if (selectedStatus === "ACTIVE") {
-        matchStatus = (t.status === "Open" || t.status === "Progress");
-      } else if (selectedStatus === "ALL") {
-        matchStatus = true;
-      } else {
-        matchStatus = (t.status === selectedStatus);
-      }
-
-      // Pencarian Keyword fleksibel (Task, PIC, Do, Action)
       const matchSearch = !keyword || 
         (t.task && t.task.toLowerCase().includes(keyword)) ||
         (t.pic && t.pic.toLowerCase().includes(keyword)) ||
         (t.updateDo && t.updateDo.toLowerCase().includes(keyword)) ||
         (t.updateAction && t.updateAction.toLowerCase().includes(keyword));
+      return matchPic && matchSearch;
+    });
 
-      return matchPic && matchStatus && matchSearch;
+    let openCount = 0;
+    let progressCount = 0;
+    let closedCount = 0;
+
+    scopeForCounting.forEach(t => {
+      if (t.status === "Open") openCount++;
+      else if (t.status === "Progress") progressCount++;
+      else if (t.status === "Closed") closedCount++;
+    });
+
+    // Update tampilan ringkasan
+    document.getElementById("summaryPicLabel").textContent = (selectedPic === "ALL") 
+      ? "Total Tugas (Semua PIC):" 
+      : `Total Tugas (${selectedPic}):`;
+
+    document.getElementById("countOpen").textContent = openCount;
+    document.getElementById("countProgress").textContent = progressCount;
+    document.getElementById("countClosed").textContent = closedCount;
+
+    // 2. Filter data untuk ditampilkan di list utama berdasarkan Filter Status juga
+    const filtered = scopeForCounting.filter(t => {
+      if (selectedStatus === "ACTIVE") {
+        return (t.status === "Open" || t.status === "Progress");
+      } else if (selectedStatus === "ALL") {
+        return true;
+      } else {
+        return (t.status === selectedStatus);
+      }
     });
 
     if (filtered.length === 0) {
