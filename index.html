@@ -14,7 +14,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      height: 100vh;
       margin: 0;
       padding: 10px;
     }
@@ -86,9 +86,9 @@
       outline: none;
     }
 
-    /* Area List Tugas dengan Scroll Terbatas (~8 list di HP) */
+    /* Area List Tugas dengan batasan tinggi ±8 list */
     .task-scroll-area {
-      max-height: 520px; /* Batas tinggi agar pas sekitar 8 item */
+      max-height: 480px; /* Dibatasi agar pas menampilkan sekitar 8 list */
       overflow-y: auto;
       padding-right: 4px;
     }
@@ -242,15 +242,14 @@
       h2 {
         font-size: 17px;
       }
+      .task-scroll-area {
+        max-height: 420px; /* Disesuaikan agar pas menampilkan sekitar 8 list di layar HP */
+      }
       .filter-box {
         flex-direction: column;
         gap: 8px;
         margin-bottom: 10px;
         padding-bottom: 10px;
-      }
-      /* Mengatur tinggi area list di HP agar pas memuat sekitar 8 item */
-      .task-scroll-area {
-        max-height: 440px; 
       }
     }
   </style>
@@ -283,7 +282,7 @@
     </label>
   </div>
 
-  <!-- Area List Tugas dengan Scroll Terbatas -->
+  <!-- Area List Tugas dengan Scroll Atas-Bawah -->
   <div class="task-scroll-area">
     <ul id="taskList">
       <li>Memuat data...</li>
@@ -591,9 +590,7 @@
     updateActionInput.value = "";
     statusInput.value = "Open";
     statusInput.className = "status-Open";
-    percentInput.value = "0%
-
-";
+    percentInput.value = "0%";
 
     closeAddModal();
     loadTasks();
