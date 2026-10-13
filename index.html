@@ -33,23 +33,25 @@
       overflow: hidden;
     }
     
-    /* Header & Tombol Utama */
+    /* Header & Tombol Aksi */
     .header-action-area {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
       flex-shrink: 0;
-      gap: 10px;
+      gap: 8px;
     }
     h2 { 
       color: #2564cf; 
       margin: 0; 
       font-size: 19px;
     }
-    .btn-open-add {
-      background-color: #2564cf;
-      color: white;
+    .button-group {
+      display: flex;
+      gap: 6px;
+    }
+    .btn-action-base {
       border: none;
       padding: 8px 12px;
       border-radius: 6px;
@@ -59,9 +61,20 @@
       white-space: nowrap;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
+    }
+    .btn-open-add {
+      background-color: #2564cf;
+      color: white;
     }
     .btn-open-add:hover { background-color: #1151b5; }
+
+    .btn-refresh {
+      background-color: #f3f2f1;
+      color: #323130;
+      border: 1px solid #c8c6c4;
+    }
+    .btn-refresh:hover { background-color: #e1dfdd; }
 
     /* Filter Combobox Area */
     .filter-box {
@@ -254,16 +267,26 @@
         flex-direction: column;
         gap: 6px;
       }
+      .button-group {
+        gap: 4px;
+      }
+      .btn-action-base {
+        padding: 7px 10px;
+        font-size: 12px;
+      }
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- Header & Tombol Tambah Tugas -->
+  <!-- Header & Tombol Aksi (Tambah & Refresh) -->
   <div class="header-action-area">
     <h2>Daftar Tugas</h2>
-    <button class="btn-open-add" onclick="openAddModal()">+ Tambah Tugas</button>
+    <div class="button-group">
+      <button class="btn-action-base btn-refresh" onclick="loadTasks()" title="Muat Ulang Data">🔄 Refresh</button>
+      <button class="btn-action-base btn-open-add" onclick="openAddModal()">+ Tambah</button>
+    </div>
   </div>
 
   <!-- Combobox Filter -->
@@ -424,12 +447,13 @@
 
   async function loadTasks() {
     try {
+      document.getElementById("taskList").innerHTML = "<li style='padding:15px; text-align:center; color:#8a8886;'>Memuat data terbaru...</li>";
       const response = await fetch(API_URL);
       allTasks = await response.json();
       updatePicOptions();
       renderTasks();
     } catch (err) {
-      document.getElementById("taskList").innerHTML = "<li style='padding:15px; text-align:center;'>Gagal memuat tugas.</li>";
+      document.getElementById("taskList").innerHTML = "<li style='padding:15px; text-align:center; color:#a80000;'>Gagal memuat tugas.</li>";
     }
   }
 
