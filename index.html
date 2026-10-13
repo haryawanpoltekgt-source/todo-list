@@ -3,8 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>WebTugas - Asset & System</title>
+  <title>DAFTAR TUGAS - Asset & System</title>
   <style>
+    :root {
+      --primary: #0f62fe;
+      --primary-hover: #0353e9;
+      --bg-app: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-main: #161616;
+      --text-secondary: #525252;
+      --border-color: #e0e0e0;
+      --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
     * {
       box-sizing: border-box;
     }
@@ -13,8 +25,9 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f3f2f1;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-app);
+      color: var(--text-main);
     }
     body {
       display: flex;
@@ -26,113 +39,133 @@
       max-width: 700px;
       height: 100%;
       max-height: 100vh;
-      background: white;
-      padding: 16px;
+      background: var(--card-bg);
+      padding: 18px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      box-shadow: 0 0 24px rgba(0, 0, 0, 0.06);
     }
     
     .header-action-area {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       flex-shrink: 0;
-      gap: 6px;
+      gap: 8px;
     }
     h2 { 
-      color: #2564cf; 
+      color: var(--primary); 
       margin: 0; 
-      font-size: 18px;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
       white-space: nowrap;
     }
     
-    /* Input Search Bar di Tengah */
+    /* Input Search Bar Profesional */
     .search-input {
       flex: 1;
-      padding: 7px 10px;
-      border: 1px solid #c8c6c4;
-      border-radius: 6px;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
       font-size: 13px;
       outline: none;
-      background: #faf9f8;
+      background: #fafafa;
+      transition: all 0.2s ease;
     }
     .search-input:focus {
       background: #fff;
-      border-color: #2564cf;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(15, 98, 254, 0.1);
     }
 
     .button-group {
       display: flex;
-      gap: 5px;
+      gap: 6px;
     }
     .btn-action-base {
       border: none;
-      padding: 7px 10px;
-      border-radius: 6px;
+      padding: 8px 12px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
       font-size: 12px;
       white-space: nowrap;
       display: flex;
       align-items: center;
-      gap: 3px;
+      gap: 4px;
+      transition: background 0.2s;
     }
     .btn-open-add {
-      background-color: #2564cf;
+      background-color: var(--primary);
       color: white;
     }
-    .btn-open-add:hover { background-color: #1151b5; }
+    .btn-open-add:hover { background-color: var(--primary-hover); }
 
     .btn-refresh {
-      background-color: #f3f2f1;
-      color: #323130;
-      border: 1px solid #c8c6c4;
+      background-color: #f1f3f5;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
     }
-    .btn-refresh:hover { background-color: #e1dfdd; }
+    .btn-refresh:hover { background-color: #e9ecef; }
 
+    /* Filter Box Profesional */
     .filter-box {
       display: flex;
-      gap: 8px;
-      margin-bottom: 8px;
+      gap: 10px;
+      margin-bottom: 12px;
       flex-shrink: 0;
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
     }
     .filter-box label {
       font-size: 11px;
-      font-weight: bold;
-      color: #605e5c;
+      font-weight: 700;
+      color: var(--text-secondary);
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 4px;
       flex: 1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .filter-box select {
       width: 100%;
-      padding: 7px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
       font-size: 13px;
       outline: none;
       background: #fff;
+      color: var(--text-main);
+      font-weight: 500;
+      transition: border-color 0.2s;
+    }
+    .filter-box select:focus {
+      border-color: var(--primary);
     }
 
-    /* Area Summary Counting Data */
+    /* Area Summary Counting Data - Desain Kartu Korporat */
     .summary-area {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #faf9f8;
-      border: 1px solid #e1dfdd;
-      border-radius: 6px;
-      padding: 6px 12px;
-      margin-bottom: 10px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 1px solid #dee2e6;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
       flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
     }
     .summary-title {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
-      color: #323130;
+      color: var(--text-main);
     }
     .summary-badges {
       display: flex;
@@ -141,16 +174,18 @@
     .count-chip {
       font-size: 11px;
       font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 12px;
+      padding: 4px 10px;
+      border-radius: 20px;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
     }
-    .count-open { background-color: #eff6fc; color: #0078d4; border: 1px solid #c7e0f4; }
-    .count-progress { background-color: #fff4ce; color: #8a6d00; border: 1px solid #fde074; }
-    .count-closed { background-color: #dff6dd; color: #107c41; border: 1px solid #92c353; }
+    .count-open { background-color: #e7f5ff; color: #1864ab; border: 1px solid #74c0fc; }
+    .count-progress { background-color: #fff9db; color: #f59f00; border: 1px solid #ffe066; }
+    .count-closed { background-color: #ebfbee; color: #2b8a3e; border: 1px solid #8ce99a; }
 
+    /* Area List Tugas Tetap Putih Bersih dengan Efek Shadow Elegan */
     .task-scroll-area {
       flex: 1;
       overflow-y: auto;
@@ -160,60 +195,65 @@
     ul { list-style: none; padding: 0; margin: 0; }
     
     li.task-item {
-      background: #fff;
-      padding: 10px 14px;
-      border: 1px solid #e1dfdd;
-      border-radius: 6px;
-      margin-bottom: 8px;
+      background: #ffffff;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
-      transition: background 0.2s, border-color 0.2s;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
     }
     li.task-item:hover {
-      background: #f8f9fa;
-      border-color: #2564cf;
+      background: #ffffff;
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
     }
     .task-preview-info {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 4px;
       overflow: hidden;
       flex: 1;
-      padding-right: 10px;
+      padding-right: 12px;
     }
     .task-plan-text {
       font-weight: 600;
-      color: #323130;
+      color: var(--text-main);
       font-size: 14px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .task-meta-preview {
-      font-size: 11px;
-      color: #605e5c;
+      font-size: 11.5px;
+      color: var(--text-secondary);
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
     }
     .badge-status {
-      padding: 3px 8px;
-      border-radius: 10px;
-      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 11.5px;
       font-weight: 600;
       white-space: nowrap;
     }
-    .status-Open { background-color: #eff6fc; color: #0078d4; }
-    .status-Progress { background-color: #fff4ce; color: #8a6d00; }
-    .status-Closed { background-color: #dff6dd; color: #107c41; }
+    .status-Open { background-color: #e7f5ff; color: #1864ab; }
+    .status-Progress { background-color: #fff9db; color: #f59f00; }
+    .status-Closed { background-color: #ebfbee; color: #2b8a3e; }
 
+    /* Modal Styling */
     .modal-overlay {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(2px);
       justify-content: center;
       align-items: center;
       z-index: 1000;
@@ -224,12 +264,12 @@
       background: white;
       width: 100%;
       max-width: 550px;
-      padding: 18px;
-      border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       max-height: 90vh;
       overflow-y: auto;
     }
@@ -237,115 +277,102 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
     }
-    .modal-header h3 { margin: 0; color: #2564cf; font-size: 17px; }
+    .modal-header h3 { margin: 0; color: var(--primary); font-size: 17px; }
     .btn-close-modal {
       background: transparent;
       border: none;
-      font-size: 20px;
+      font-size: 22px;
       cursor: pointer;
-      color: #605e5c;
+      color: var(--text-secondary);
       line-height: 1;
     }
     .modal-body {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
     .modal-body label {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 4px;
       font-size: 12px;
       font-weight: 600;
-      color: #605e5c;
+      color: var(--text-secondary);
     }
     .modal-body input, .modal-body select, .modal-body textarea {
-      padding: 7px 9px;
+      padding: 8px 10px;
       font-size: 13px;
       font-family: inherit;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
       outline: none;
       width: 100%;
+      background: #fafafa;
+    }
+    .modal-body input:focus, .modal-body select:focus, .modal-body textarea:focus {
+      background: #fff;
+      border-color: var(--primary);
     }
     .modal-body input:disabled, .modal-body select:disabled, .modal-body textarea:disabled {
-      background-color: #f3f2f1;
-      color: #605e5c;
+      background-color: #f1f3f5;
+      color: #868e96;
       cursor: not-allowed;
     }
     .modal-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px solid #eee;
-      padding-top: 10px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 12px;
     }
     .btn-delete {
       background: transparent;
-      color: #a80000;
+      color: #e03131;
       border: none;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
     }
     .btn-delete:hover { text-decoration: underline; }
     .btn-save {
-      background-color: #107c41;
+      background-color: #2b8a3e;
       color: white;
       border: none;
-      padding: 7px 14px;
-      border-radius: 4px;
+      padding: 8px 16px;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
       font-size: 13px;
+      transition: background 0.2s;
     }
-    .btn-save:hover { background-color: #0b5a2f; }
+    .btn-save:hover { background-color: #2b8a3e; opacity: 0.9; }
 
     @media (max-width: 480px) {
-      .container {
-        padding: 10px;
-        border-radius: 0;
-      }
-      h2 {
-        font-size: 16px;
-      }
-      .btn-action-base {
-        padding: 6px 8px;
-        font-size: 11px;
-      }
-      .search-input {
-        font-size: 12px;
-        padding: 6px 8px;
-      }
-      .summary-area {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-        padding: 6px 10px;
-      }
-      .summary-badges {
-        width: 100%;
-        justify-content: space-between;
-      }
+      .container { padding: 12px; border-radius: 0; }
+      h2 { font-size: 17px; }
+      .filter-box { padding: 8px; gap: 6px; }
+      .summary-area { flex-direction: column; align-items: flex-start; gap: 6px; padding: 8px 12px; }
+      .summary-badges { width: 100%; justify-content: space-between; }
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- Header dengan Search Bar di Tengah -->
+  <!-- Header dengan Search Bar Profesional -->
   <div class="header-action-area">
     <h2>Daftar Tugas</h2>
-    <input type="text" id="searchInput" class="search-input" placeholder="Cari..." oninput="renderTasks()">
+    <input type="text" id="searchInput" class="search-input" placeholder="Cari tugas..." oninput="renderTasks()">
     <div class="button-group">
       <button class="btn-action-base btn-refresh" onclick="loadTasks()" title="Muat Ulang Data">🔄</button>
       <button class="btn-action-base btn-open-add" onclick="openAddModal()">+ Tambah</button>
     </div>
   </div>
 
+  <!-- Filter Box Korporat -->
   <div class="filter-box">
     <label>
       Filter PIC:
@@ -365,7 +392,7 @@
     </label>
   </div>
 
-  <!-- Area Ringkasan Counting Data -->
+  <!-- Area Ringkasan Counting Data (Design Kartu Elegan) -->
   <div class="summary-area">
     <span class="summary-title" id="summaryPicLabel">Total Tugas (Semua PIC):</span>
     <div class="summary-badges">
@@ -375,9 +402,10 @@
     </div>
   </div>
 
+  <!-- Daftar List Tugas (Tetap Putih Bersih & Profesional) -->
   <div class="task-scroll-area">
     <ul id="taskList">
-      <li>Memuat data...</li>
+      <li style='text-align:center; color:#868e96; padding:20px;'>Memuat data...</li>
     </ul>
   </div>
 </div>
@@ -434,7 +462,7 @@
       </label>
     </div>
     <div class="modal-footer">
-      <button onclick="closeAddModal()" style="font-size: 13px; padding: 7px 10px; background: #f3f2f1; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Batal</button>
+      <button onclick="closeAddModal()" style="font-size: 13px; padding: 8px 12px; background: #f1f3f5; border: 1px solid #ced4da; border-radius: 6px; cursor: pointer; font-weight: 500;">Batal</button>
       <button class="btn-save" onclick="addTask()">Simpan Tugas Baru</button>
     </div>
   </div>
@@ -455,7 +483,7 @@
       </label>
       <label id="closedAtWrapper" style="display: none;">
         Tgl Ditutup (Closed):
-        <input type="text" id="modalClosedAt" readonly style="background-color: #e6f4ea; color: #107c41;">
+        <input type="text" id="modalClosedAt" readonly style="background-color: #ebfbee; color: #2b8a3e;">
       </label>
       <label>
         Tugas Saya (Plan):
@@ -501,7 +529,7 @@
     <div class="modal-footer">
       <button class="btn-delete" id="modalDeleteBtn" onclick="deleteTaskFromModal()">Hapus Tugas</button>
       <div style="display: flex; gap: 8px;">
-        <button onclick="closeModal()" style="font-size: 13px; padding: 7px 10px; background: #f3f2f1; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Tutup</button>
+        <button onclick="closeModal()" style="font-size: 13px; padding: 8px 12px; background: #f1f3f5; border: 1px solid #ced4da; border-radius: 6px; cursor: pointer; font-weight: 500;">Tutup</button>
         <button class="btn-save" id="modalSaveBtn" onclick="saveTaskDetails()">Simpan Perubahan</button>
       </div>
     </div>
@@ -530,7 +558,7 @@
 
   async function loadTasks() {
     try {
-      document.getElementById("taskList").innerHTML = "<li style='padding:15px; text-align:center; color:#8a8886;'>Memuat data terbaru...</li>";
+      document.getElementById("taskList").innerHTML = "<li style='padding:20px; text-align:center; color:#868e96;'>Memuat data terbaru...</li>";
       
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
@@ -547,7 +575,7 @@
       renderTasks();
     } catch (err) {
       console.error(err);
-      document.getElementById("taskList").innerHTML = "<li style='padding:15px; text-align:center; color:#a80000;'>Gagal memuat tugas. Silakan klik tombol Refresh.</li>";
+      document.getElementById("taskList").innerHTML = "<li style='padding:20px; text-align:center; color:#e03131;'>Gagal memuat tugas. Silakan klik tombol Refresh.</li>";
     }
   }
 
@@ -583,7 +611,6 @@
 
     list.innerHTML = "";
 
-    // 1. Hitung total per status berdasarkan PIC & keyword pencarian (mengabaikan filterStatus)
     const scopeForCounting = allTasks.filter(t => {
       const matchPic = (selectedPic === "ALL") || (t.pic === selectedPic);
       const matchSearch = !keyword || 
@@ -604,7 +631,6 @@
       else if (t.status === "Closed") closedCount++;
     });
 
-    // Update tampilan ringkasan
     document.getElementById("summaryPicLabel").textContent = (selectedPic === "ALL") 
       ? "Total Tugas (Semua PIC):" 
       : `Total Tugas (${selectedPic}):`;
@@ -613,7 +639,6 @@
     document.getElementById("countProgress").textContent = progressCount;
     document.getElementById("countClosed").textContent = closedCount;
 
-    // 2. Filter data untuk ditampilkan di list utama berdasarkan Filter Status juga
     const filtered = scopeForCounting.filter(t => {
       if (selectedStatus === "ACTIVE") {
         return (t.status === "Open" || t.status === "Progress");
@@ -625,7 +650,7 @@
     });
 
     if (filtered.length === 0) {
-      list.innerHTML = "<li style='text-align:center; color:#8a8886; display:block; padding:15px;'>Tidak ada tugas yang sesuai.</li>";
+      list.innerHTML = "<li style='text-align:center; color:#868e96; display:block; padding:20px;'>Tidak ada tugas yang sesuai.</li>";
       return;
     }
 
@@ -791,6 +816,7 @@
 
     const taskText = taskInput.value.trim();
     if (!taskText) {
+      print("Silakan isi nama tugas terlebih dahulu!");
       alert("Silakan isi nama tugas terlebih dahulu!");
       return;
     }
