@@ -5,38 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DAFTAR TUGAS - Asset & System</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f3f2f1;
       display: flex;
       justify-content: center;
-      padding: 30px 15px;
+      align-items: center;
+      height: 100vh;
       margin: 0;
+      padding: 10px;
     }
     .container {
       width: 100%;
       max-width: 700px;
+      height: 95vh;
       background: white;
-      padding: 24px;
+      padding: 20px;
       border-radius: 10px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
-    h2 { color: #2564cf; margin-top: 0; margin-bottom: 20px; }
+    h2 { 
+      color: #2564cf; 
+      margin-top: 0; 
+      margin-bottom: 15px; 
+      font-size: 22px;
+      flex-shrink: 0;
+    }
     
-    /* Input Form Area */
+    /* Input Form Area (Freeze / Tetap di atas) */
     .input-form {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       background: #fafafa;
-      padding: 15px;
+      padding: 12px;
       border-radius: 6px;
       border: 1px solid #eaeaea;
+      flex-shrink: 0;
     }
     .input-row {
       display: flex;
-      gap: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
     }
     input[type="text"], select {
       padding: 9px 12px;
@@ -46,27 +63,29 @@
       font-size: 14px;
       font-family: inherit;
     }
-    .input-row input[type="text"] { flex: 1; }
-    .input-row select { width: 130px; }
+    .input-row input[type="text"] { flex: 1; min-width: 120px; }
+    .input-row select { width: 110px; }
     
     button.btn-add {
-      padding: 10px 18px;
+      padding: 9px 16px;
       background-color: #2564cf;
       color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
       font-weight: 600;
+      flex-shrink: 0;
     }
     button.btn-add:hover { background-color: #1151b5; }
 
-    /* Filter Combobox Area */
+    /* Filter Combobox Area (Freeze / Tetap di atas) */
     .filter-box {
       display: flex;
       gap: 10px;
-      margin-bottom: 15px;
-      padding-bottom: 15px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
       border-bottom: 1px solid #eee;
+      flex-shrink: 0;
     }
     .filter-box label {
       font-size: 12px;
@@ -77,9 +96,18 @@
       gap: 4px;
       flex: 1;
     }
+    .filter-box select {
+      width: 100%;
+    }
 
-    /* Task List Table/List Style */
+    /* Area List Tugas dengan Scroll Atas-Bawah */
+    .task-scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
     ul { list-style: none; padding: 0; margin: 0; }
+    
     li.task-item {
       background: #fff;
       padding: 12px 16px;
@@ -101,6 +129,8 @@
       flex-direction: column;
       gap: 4px;
       overflow: hidden;
+      flex: 1;
+      padding-right: 10px;
     }
     .task-plan-text {
       font-weight: 600;
@@ -114,13 +144,15 @@
       font-size: 12px;
       color: #605e5c;
       display: flex;
-      gap: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
     }
     .badge-status {
-      padding: 2px 8px;
+      padding: 3px 8px;
       border-radius: 10px;
       font-size: 11px;
       font-weight: 600;
+      white-space: nowrap;
     }
     .status-Open { background-color: #eff6fc; color: #0078d4; }
     .status-Progress { background-color: #fff4ce; color: #8a6d00; }
@@ -142,12 +174,12 @@
       background: white;
       width: 100%;
       max-width: 550px;
-      padding: 24px;
+      padding: 20px;
       border-radius: 8px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.15);
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 12px;
       max-height: 90vh;
       overflow-y: auto;
     }
@@ -156,20 +188,21 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
+      padding-bottom: 8px;
     }
-    .modal-header h3 { margin: 0; color: #2564cf; }
-    .btn-close {
+    .modal-header h3 { margin: 0; color: #2564cf; font-size: 18px; }
+    .btn-close-modal {
       background: transparent;
       border: none;
-      font-size: 18px;
+      font-size: 22px;
       cursor: pointer;
       color: #605e5c;
+      line-height: 1;
     }
     .modal-body {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
     .modal-body label {
       display: flex;
@@ -186,13 +219,14 @@
       border: 1px solid #ccc;
       border-radius: 4px;
       outline: none;
+      width: 100%;
     }
     .modal-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-top: 1px solid #eee;
-      padding-top: 15px;
+      padding-top: 12px;
     }
     .btn-delete {
       background: transparent;
@@ -213,6 +247,46 @@
       font-weight: 600;
     }
     .btn-save:hover { background-color: #0b5a2f; }
+
+    /* Penyesuaian khusus untuk Smartphone (Media Query) */
+    @media (max-width: 480px) {
+      body {
+        padding: 0;
+        height: 100vh;
+        align-items: stretch;
+      }
+      .container {
+        height: 100vh;
+        border-radius: 0;
+        padding: 12px;
+      }
+      h2 {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+      .input-form {
+        padding: 10px;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .input-row {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .input-row select, .input-row input[type="text"] {
+        width: 100%;
+      }
+      button.btn-add {
+        width: 100%;
+        padding: 10px;
+      }
+      .filter-box {
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -220,11 +294,10 @@
 <div class="container">
   <h2>DAFTAR TUGAS - Asset & System</h2>
 
-  <!-- Input Form -->
+  <!-- Input Form (Freeze / Tetap di Atas) -->
   <div class="input-form">
     <div class="input-row">
       <input type="text" id="taskInput" placeholder="Tugas Saya (Plan)..." onkeypress="handleKeyPress(event)">
-      <!-- Input PIC dengan Datalist -->
       <input type="text" id="picInput" placeholder="PIC" list="picListOptions">
     </div>
     <div class="input-row">
@@ -254,7 +327,7 @@
     </div>
   </div>
 
-  <!-- Combobox Filter -->
+  <!-- Combobox Filter (Freeze / Tetap di Atas) -->
   <div class="filter-box">
     <label>
       Filter PIC:
@@ -273,10 +346,12 @@
     </label>
   </div>
 
-  <!-- Daftar Ringkas Tugas -->
-  <ul id="taskList">
-    <li>Memuat data...</li>
-  </ul>
+  <!-- Area List Tugas dengan Scroll Atas-Bawah -->
+  <div class="task-scroll-area">
+    <ul id="taskList">
+      <li>Memuat data...</li>
+    </ul>
+  </div>
 </div>
 
 <!-- Datalist Global untuk Referensi Nama PIC -->
@@ -287,7 +362,7 @@
   <div class="modal-content">
     <div class="modal-header">
       <h3 id="modalTitleID">Detail Tugas</h3>
-      <button class="btn-close" onclick="closeModal()">&times;</button>
+      <button class="btn-close-modal" onclick="closeModal()">&times;</button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="modalTaskId">
@@ -339,7 +414,7 @@
     <div class="modal-footer">
       <button class="btn-delete" onclick="deleteTaskFromModal()">Hapus Tugas</button>
       <div style="display: flex; gap: 10px;">
-        <button class="btn-close" style="font-size: 14px; padding: 8px 12px; background: #f3f2f1; border-radius: 4px;" onclick="closeModal()">Batal</button>
+        <button onclick="closeModal()" style="font-size: 14px; padding: 8px 12px; background: #f3f2f1; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Batal</button>
         <button class="btn-save" onclick="saveTaskDetails()">Simpan Perubahan</button>
       </div>
     </div>
@@ -359,20 +434,17 @@
       updatePicOptions();
       renderTasks();
     } catch (err) {
-      document.getElementById("taskList").innerHTML = "<li>Gagal memuat tugas.</li>";
+      document.getElementById("taskList").innerHTML = "<li style='padding:15px; text-align:center;'>Gagal memuat tugas.</li>";
     }
   }
 
-  // Memperbarui opsi Filter PIC & Datalist Rekomendasi PIC otomatis
   function updatePicOptions() {
     const filterPicSelect = document.getElementById("filterPic");
     const currentFilterValue = filterPicSelect.value;
     const datalist = document.getElementById("picListOptions");
     
-    // Ambil daftar nama PIC unik dari data yang ada
     const pics = [...new Set(allTasks.map(t => t.pic).filter(p => p && p !== "-"))];
 
-    // Update Filter PIC Combobox
     filterPicSelect.innerHTML = `<option value="ALL">Semua PIC</option>`;
     pics.forEach(pic => {
       const opt = document.createElement("option");
@@ -382,7 +454,6 @@
     });
     filterPicSelect.value = currentFilterValue;
 
-    // Update Datalist (Referensi input agar tidak duplikat)
     datalist.innerHTML = "";
     pics.forEach(pic => {
       const opt = document.createElement("option");
@@ -409,7 +480,6 @@
       return;
     }
 
-    // Tugas terbaru otomatis muncul di paling atas
     const reversedFiltered = filtered.slice().reverse();
 
     reversedFiltered.forEach(t => {
@@ -434,7 +504,6 @@
     });
   }
 
-  // Membuka Pop-up Detail
   function openModal(task) {
     document.getElementById("modalTaskId").value = task.id;
     document.getElementById("modalTitleID").textContent = `Detail Tugas (${task.id})`;
@@ -449,12 +518,10 @@
     document.getElementById("taskModal").style.display = "flex";
   }
 
-  // Menutup Pop-up Detail
   function closeModal() {
     document.getElementById("taskModal").style.display = "none";
   }
 
-  // Simpan Perubahan dari Modal
   async function saveTaskDetails() {
     const id = document.getElementById("modalTaskId").value;
     const task = document.getElementById("modalTaskText").value.trim();
@@ -488,7 +555,6 @@
     loadTasks();
   }
 
-  // Tambah Tugas Baru
   async function addTask() {
     const taskInput = document.getElementById("taskInput");
     const picInput = document.getElementById("picInput");
@@ -517,7 +583,6 @@
       })
     });
 
-    // Reset Form Input
     taskInput.value = "";
     picInput.value = "";
     updateDoInput.value = "";
@@ -529,7 +594,6 @@
     loadTasks();
   }
 
-  // Hapus Tugas dari dalam Modal
   async function deleteTaskFromModal() {
     const id = document.getElementById("modalTaskId").value;
     if (!confirm("Yakin ingin menghapus tugas ini?")) return;
