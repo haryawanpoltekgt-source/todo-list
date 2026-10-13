@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DAFTAR TUGAS - Asset & System </title>
+  <title>DAFTAR TUGAS - Asset & System</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -218,13 +218,14 @@
 <body>
 
 <div class="container">
-  <h2>Daftar Tugas - Asset & System</h2>
+  <h2>DAFTAR TUGAS - Asset & System</h2>
 
   <!-- Input Form -->
   <div class="input-form">
     <div class="input-row">
       <input type="text" id="taskInput" placeholder="Tugas Saya (Plan)..." onkeypress="handleKeyPress(event)">
-      <input type="text" id="picInput" placeholder="PIC">
+      <!-- Input PIC dengan Datalist -->
+      <input type="text" id="picInput" placeholder="PIC" list="picListOptions">
     </div>
     <div class="input-row">
       <input type="text" id="updateDoInput" placeholder="Update Rencana Awalan (Do)...">
@@ -278,6 +279,9 @@
   </ul>
 </div>
 
+<!-- Datalist Global untuk Referensi Nama PIC -->
+<datalist id="picListOptions"></datalist>
+
 <!-- Modal / Pop-up Detail Tugas -->
 <div class="modal-overlay" id="taskModal">
   <div class="modal-content">
@@ -297,7 +301,7 @@
       </label>
       <label>
         PIC:
-        <input type="text" id="modalPicText">
+        <input type="text" id="modalPicText" list="picListOptions">
       </label>
       <label>
         Update Rencana Awalan (Do):
@@ -352,19 +356,23 @@
     try {
       const response = await fetch(API_URL);
       allTasks = await response.json();
-      updatePicFilterOptions();
+      updatePicOptions();
       renderTasks();
     } catch (err) {
       document.getElementById("taskList").innerHTML = "<li>Gagal memuat tugas.</li>";
     }
   }
 
-  function updatePicFilterOptions() {
+  // Memperbarui opsi Filter PIC & Datalist Rekomendasi PIC otomatis
+  function updatePicOptions() {
     const filterPicSelect = document.getElementById("filterPic");
-    const currentValue = filterPicSelect.value;
+    const currentFilterValue = filterPicSelect.value;
+    const datalist = document.getElementById("picListOptions");
     
-    const pics = [...new Set(allTasks.map(t => t.pic).filter(p => p))];
+    // Ambil daftar nama PIC unik dari data yang ada
+    const pics = [...new Set(allTasks.map(t => t.pic).filter(p => p && p !== "-"))];
 
+    // Update Filter PIC Combobox
     filterPicSelect.innerHTML = `<option value="ALL">Semua PIC</option>`;
     pics.forEach(pic => {
       const opt = document.createElement("option");
@@ -372,8 +380,15 @@
       opt.textContent = pic;
       filterPicSelect.appendChild(opt);
     });
+    filterPicSelect.value = currentFilterValue;
 
-    filterPicSelect.value = currentValue;
+    // Update Datalist (Referensi input agar tidak duplikat)
+    datalist.innerHTML = "";
+    pics.forEach(pic => {
+      const opt = document.createElement("option");
+      opt.value = pic;
+      datalist.appendChild(opt);
+    });
   }
 
   function renderTasks() {
