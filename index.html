@@ -30,55 +30,38 @@
       flex-direction: column;
       overflow: hidden;
     }
+    
+    /* Header & Tombol Utama */
+    .header-action-area {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+      gap: 10px;
+    }
     h2 { 
       color: #2564cf; 
-      margin-top: 0; 
-      margin-bottom: 15px; 
-      font-size: 22px;
-      flex-shrink: 0;
+      margin: 0; 
+      font-size: 20px;
     }
-    
-    /* Input Form Area (Freeze / Tetap di atas) */
-    .input-form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 15px;
-      background: #fafafa;
-      padding: 12px;
-      border-radius: 6px;
-      border: 1px solid #eaeaea;
-      flex-shrink: 0;
-    }
-    .input-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    input[type="text"], select {
-      padding: 9px 12px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      outline: none;
-      font-size: 14px;
-      font-family: inherit;
-    }
-    .input-row input[type="text"] { flex: 1; min-width: 120px; }
-    .input-row select { width: 110px; }
-    
-    button.btn-add {
-      padding: 9px 16px;
+    .btn-open-add {
       background-color: #2564cf;
       color: white;
       border: none;
-      border-radius: 4px;
+      padding: 10px 14px;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
-      flex-shrink: 0;
+      font-size: 13px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
-    button.btn-add:hover { background-color: #1151b5; }
+    .btn-open-add:hover { background-color: #1151b5; }
 
-    /* Filter Combobox Area (Freeze / Tetap di atas) */
+    /* Filter Combobox Area (Freeze / Tetap di Atas) */
     .filter-box {
       display: flex;
       gap: 10px;
@@ -98,6 +81,11 @@
     }
     .filter-box select {
       width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 13px;
+      outline: none;
     }
 
     /* Area List Tugas dengan Scroll Atas-Bawah */
@@ -158,7 +146,7 @@
     .status-Progress { background-color: #fff4ce; color: #8a6d00; }
     .status-Closed { background-color: #dff6dd; color: #107c41; }
 
-    /* Modal / Pop-up Detail */
+    /* Modal / Pop-up Umum */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -261,24 +249,7 @@
         padding: 12px;
       }
       h2 {
-        font-size: 18px;
-        margin-bottom: 10px;
-      }
-      .input-form {
-        padding: 10px;
-        gap: 8px;
-        margin-bottom: 10px;
-      }
-      .input-row {
-        flex-direction: column;
-        gap: 8px;
-      }
-      .input-row select, .input-row input[type="text"] {
-        width: 100%;
-      }
-      button.btn-add {
-        width: 100%;
-        padding: 10px;
+        font-size: 17px;
       }
       .filter-box {
         flex-direction: column;
@@ -292,42 +263,13 @@
 <body>
 
 <div class="container">
-  <h2>DAFTAR TUGAS - Asset & System</h2>
-
-  <!-- Input Form (Freeze / Tetap di Atas) -->
-  <div class="input-form">
-    <div class="input-row">
-      <input type="text" id="taskInput" placeholder="Tugas Saya (Plan)..." onkeypress="handleKeyPress(event)">
-      <input type="text" id="picInput" placeholder="PIC" list="picListOptions">
-    </div>
-    <div class="input-row">
-      <input type="text" id="updateDoInput" placeholder="Update Rencana Awalan (Do)...">
-      <select id="statusInput" class="status-Open" onchange="this.className='status-'+this.value">
-        <option value="Open">Open</option>
-        <option value="Progress">Progress</option>
-        <option value="Closed">Closed</option>
-      </select>
-      <select id="percentInput">
-        <option value="0%">0%</option>
-        <option value="10%">10%</option>
-        <option value="20%">20%</option>
-        <option value="30%">30%</option>
-        <option value="40%">40%</option>
-        <option value="50%">50%</option>
-        <option value="60%">60%</option>
-        <option value="70%">70%</option>
-        <option value="80%">80%</option>
-        <option value="90%">90%</option>
-        <option value="100%">100%</option>
-      </select>
-    </div>
-    <div class="input-row">
-      <input type="text" id="updateActionInput" placeholder="Update Tindakan Terakhir (Action)...">
-      <button class="btn-add" onclick="addTask()">Tambah Tugas</button>
-    </div>
+  <!-- Header & Tombol Tambah Tugas -->
+  <div class="header-action-area">
+    <h2>Daftar Tugas</h2>
+    <button class="btn-open-add" onclick="openAddModal()">+ Tambah Tugas</button>
   </div>
 
-  <!-- Combobox Filter (Freeze / Tetap di Atas) -->
+  <!-- Combobox Filter -->
   <div class="filter-box">
     <label>
       Filter PIC:
@@ -357,7 +299,63 @@
 <!-- Datalist Global untuk Referensi Nama PIC -->
 <datalist id="picListOptions"></datalist>
 
-<!-- Modal / Pop-up Detail Tugas -->
+<!-- Pop-up Modal: Tambah Tugas Baru -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Tambah Tugas Baru</h3>
+      <button class="btn-close-modal" onclick="closeAddModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <label>
+        Tugas Saya (Plan):
+        <input type="text" id="taskInput" placeholder="Nama tugas..." onkeypress="handleAddKeyPress(event)">
+      </label>
+      <label>
+        PIC:
+        <input type="text" id="picInput" placeholder="Nama PIC" list="picListOptions">
+      </label>
+      <label>
+        Update Rencana Awalan (Do):
+        <input type="text" id="updateDoInput" placeholder="Rencana awal...">
+      </label>
+      <label>
+        Status (Check):
+        <select id="statusInput" class="status-Open" onchange="this.className='status-'+this.value">
+          <option value="Open">Open</option>
+          <option value="Progress">Progress</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </label>
+      <label>
+        % Status:
+        <select id="percentInput">
+          <option value="0%">0%</option>
+          <option value="10%">10%</option>
+          <option value="20%">20%</option>
+          <option value="30%">30%</option>
+          <option value="40%">40%</option>
+          <option value="50%">50%</option>
+          <option value="60%">60%</option>
+          <option value="70%">70%</option>
+          <option value="80%">80%</option>
+          <option value="90%">90%</option>
+          <option value="100%">100%</option>
+        </select>
+      </label>
+      <label>
+        Update Tindakan Terakhir (Action):
+        <textarea id="updateActionInput" rows="3" placeholder="Tindakan terakhir..."></textarea>
+      </label>
+    </div>
+    <div class="modal-footer">
+      <button onclick="closeAddModal()" style="font-size: 14px; padding: 8px 12px; background: #f3f2f1; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Batal</button>
+      <button class="btn-save" onclick="addTask()">Simpan Tugas Baru</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pop-up Modal: Detail & Edit Tugas -->
 <div class="modal-overlay" id="taskModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -504,6 +502,15 @@
     });
   }
 
+  // Kontrol Modal Tambah Tugas
+  function openAddModal() {
+    document.getElementById("addModal").style.display = "flex";
+  }
+  function closeAddModal() {
+    document.getElementById("addModal").style.display = "none";
+  }
+
+  // Kontrol Modal Detail/Edit Tugas
   function openModal(task) {
     document.getElementById("modalTaskId").value = task.id;
     document.getElementById("modalTitleID").textContent = `Detail Tugas (${task.id})`;
@@ -517,7 +524,6 @@
 
     document.getElementById("taskModal").style.display = "flex";
   }
-
   function closeModal() {
     document.getElementById("taskModal").style.display = "none";
   }
@@ -583,6 +589,7 @@
       })
     });
 
+    // Reset Form Input
     taskInput.value = "";
     picInput.value = "";
     updateDoInput.value = "";
@@ -591,6 +598,7 @@
     statusInput.className = "status-Open";
     percentInput.value = "0%";
 
+    closeAddModal();
     loadTasks();
   }
 
@@ -608,7 +616,7 @@
     loadTasks();
   }
 
-  function handleKeyPress(e) {
+  function handleAddKeyPress(e) {
     if (e.key === "Enter") addTask();
   }
 
