@@ -18,9 +18,7 @@
       --accent-green: #22c55e;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     html, body {
       height: 100%;
       margin: 0;
@@ -48,7 +46,7 @@
       position: relative;
     }
 
-    /* --- HALAMAN 1: PORTAL MENU UTAMA --- */
+    /* --- PORTAL MENU UTAMA --- */
     #homeView {
       display: flex;
       flex-direction: column;
@@ -439,6 +437,11 @@
     .modal-body input:focus, .modal-body select:focus, .modal-body textarea:focus {
       border-color: var(--accent-blue);
     }
+    .modal-body input:disabled, .modal-body select:disabled, .modal-body textarea:disabled {
+      background-color: #1a202c;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
     .modal-footer {
       display: flex;
       justify-content: space-between;
@@ -481,7 +484,7 @@
     </div>
     
     <div class="menu-grid">
-      <!-- Menu 1: Web Kerja (Akan memunculkan modal login) -->
+      <!-- Menu 1: Web Kerja -->
       <div class="menu-card" onclick="openLoginModal()">
         <div class="menu-icon icon-work">📋</div>
         <div class="menu-info">
@@ -499,7 +502,7 @@
         </div>
       </div>
 
-      <!-- Menu 3: Permintaan Bantuan (Dalam Pengembangan) -->
+      <!-- Menu 3: Permintaan Bantuan -->
       <div class="menu-card" onclick="switchView('requestView')">
         <div class="menu-icon icon-request">🛠️</div>
         <div class="menu-info">
@@ -514,7 +517,7 @@
   <!-- ==================== HALAMAN 2: WEB KERJA ==================== -->
   <div id="workView" class="app-view">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink: 0;">
-      <button class="back-nav" onclick="switchView('homeView')">← Keluar / Menu Utama</button>
+      <button class="back-nav" onclick="logout()">← Keluar / Menu Utama</button>
       <span id="loggedInUserLabel" style="font-size: 11.5px; color: #4ade80; font-weight: 600;"></span>
     </div>
     
@@ -568,7 +571,7 @@
   </div>
 
 
-  <!-- ==================== HALAMAN 3: PERMINTAAN BANTUAN (DEVELOPMENT) ==================== -->
+  <!-- ==================== HALAMAN 3: PERMINTAAN BANTUAN ==================== -->
   <div id="requestView" class="app-view" style="justify-content: center; align-items: center; text-align: center; padding: 20px;">
     <button class="back-nav" onclick="switchView('homeView')" style="position: absolute; top: 16px; left: 16px;">← Menu Utama</button>
     <div style="font-size: 48px; margin-bottom: 12px;">🚧</div>
@@ -651,8 +654,8 @@
         <input type="text" id="taskInput" placeholder="Nama tugas..." onkeypress="handleAddKeyPress(event)">
       </label>
       <label>
-        PIC:
-        <input type="text" id="picInput" placeholder="Nama PIC" list="picListOptions">
+        PIC (Otomatis sesuai Login):
+        <input type="text" id="picInput" readonly disabled style="background-color: #1a202c; color: #38bdf8; font-weight: bold;">
       </label>
       <label>
         Update Rencana Awalan (Do):
@@ -718,7 +721,7 @@
       </label>
       <label>
         PIC:
-        <input type="text" id="modalPicText" list="picListOptions">
+        <input type="text" id="modalPicText" readonly disabled style="background-color: #1a202c; color: #cbd5e1;">
       </label>
       <label>
         Update Rencana Awalan (Do):
@@ -764,9 +767,10 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbyJKJp6gV2qLmEKliIPiRxQxRjNkS0pCPv9NTKM85z9kBJd3Q-Bkxu4Gv8U7y8vFH0/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwEtBCnhJmx0TfC5y58GZpYaRUFlrA8ltLKAuzIx7g_UXHrCvk4yqnWkox7moY3_vLv/exec";
 
   let allTasks = [];
+  let currentUserNama = ""; // Menyimpan nama user yang sedang aktif login
 
   function switchView(viewId) {
     document.getElementById('homeView').style.display = 'none';
@@ -776,8 +780,21 @@
     document.getElementById(viewId).style.display = 'flex';
   }
 
+  function logout() {
+    currentUserNama = "";
+    document.getElementById("loggedInUserLabel").textContent = "";
+    switchView('homeView');
+  }
+
   // --- MODAL LOGIN & REGISTER ---
-  function openLoginModal() { document.getElementById("loginModal").style.display = "flex"; }
+  function openLoginModal() { 
+    if (currentUserNama) {
+      switchView('workView');
+      loadTasks();
+    } else {
+      document.getElementById("loginModal").style.display = "flex"; 
+    }
+  }
   function closeLoginModal() { document.getElementById("loginModal").style.display = "none"; }
 
   function openRegisterModal() { document.getElementById("registerModal").style.display = "flex"; }
@@ -801,7 +818,8 @@
       const res = await response.json();
 
       if (res.status === "success") {
-        document.getElementById("loggedInUserLabel").textContent = `Login: ${res.nama} (${nip})`;
+        currentUserNama = res.nama; // Simpan nama login user
+        document.getElementById("loggedInUserLabel").textContent = `👤 ${currentUserNama} (${nip})`;
         closeLoginModal();
         switchView('workView');
         loadTasks();
@@ -1086,7 +1104,11 @@
     }
   }
 
-  function openAddModal() { document.getElementById("addModal").style.display = "flex"; }
+  // --- MEMBUKA MODAL TAMBAH TUGAS DENGAN PIC OTOMATIS ---
+  function openAddModal() { 
+    document.getElementById("picInput").value = currentUserNama || "-";
+    document.getElementById("addModal").style.display = "flex"; 
+  }
   function closeAddModal() { document.getElementById("addModal").style.display = "none"; }
 
   function openModal(task) {
@@ -1105,7 +1127,7 @@
     }
 
     document.getElementById("modalTaskText").value = task.task || "";
-    document.getElementById("modalPicText").value = task.pic || "";
+    document.getElementById("modalPicText").value = task.pic || "-";
     document.getElementById("modalUpdateDoText").value = task.updateDo || "";
     document.getElementById("modalStatusSelect").value = task.status || "Open";
     document.getElementById("modalPercentSelect").value = task.percentStatus || "0%";
@@ -1113,7 +1135,6 @@
 
     const inputs = [
       document.getElementById("modalTaskText"),
-      document.getElementById("modalPicText"),
       document.getElementById("modalUpdateDoText"),
       document.getElementById("modalStatusSelect"),
       document.getElementById("modalPercentSelect"),
@@ -1168,7 +1189,6 @@
 
   async function addTask() {
     const taskInput = document.getElementById("taskInput");
-    const picInput = document.getElementById("picInput");
     const updateDoInput = document.getElementById("updateDoInput");
     const statusInput = document.getElementById("statusInput");
     const percentInput = document.getElementById("percentInput");
@@ -1187,7 +1207,7 @@
         body: new URLSearchParams({
           action: "add",
           task: taskText,
-          pic: picInput.value.trim() || "-",
+          pic: currentUserNama || "-", // Otomatis memakai nama user yang login
           updateDo: updateDoInput.value.trim(),
           status: statusInput.value,
           percentStatus: percentInput.value,
@@ -1196,7 +1216,6 @@
       });
 
       taskInput.value = "";
-      picInput.value = "";
       updateDoInput.value = "";
       updateActionInput.value = "";
       statusInput.value = "Open";
