@@ -16,6 +16,7 @@
       --accent-purple: #8b5cf6;
       --accent-cyan: #06b6d4;
       --accent-green: #22c55e;
+      --accent-warn: #f59e0b;
     }
 
     * { box-sizing: border-box; }
@@ -77,6 +78,66 @@
       color: var(--text-main);
       letter-spacing: 0.5px;
     }
+
+    /* --- CUSTOM ALERT / NOTIFICATION MODAL --- */
+    .custom-alert-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+      z-index: 3000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+    .custom-alert-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      width: 100%;
+      max-width: 360px;
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      animation: alertPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes alertPop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .alert-icon-wrapper {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 22px;
+    }
+    .alert-icon-warning { background: rgba(245, 158, 11, 0.15); color: var(--accent-warn); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .alert-icon-success { background: rgba(34, 197, 94, 0.15); color: var(--accent-green); border: 1px solid rgba(34, 197, 94, 0.3); }
+    .alert-icon-info { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); border: 1px solid rgba(59, 130, 246, 0.3); }
+    
+    .custom-alert-box h4 { margin: 0; font-size: 16px; color: #ffffff; font-weight: 700; }
+    .custom-alert-box p { margin: 0; font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .btn-alert-ok {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      transition: opacity 0.2s;
+    }
+    .btn-alert-ok:hover { opacity: 0.9; }
 
     /* --- PORTAL MENU UTAMA --- */
     #homeView {
@@ -514,6 +575,16 @@
     <div class="loading-text" id="loadingText">Memproses data...</div>
   </div>
 
+  <!-- CUSTOM ALERT / NOTIFICATION MODAL -->
+  <div class="custom-alert-overlay" id="customAlertOverlay">
+    <div class="custom-alert-box">
+      <div class="alert-icon-wrapper" id="alertIcon">⚠️</div>
+      <h4 id="alertTitle">Informasi Sistem</h4>
+      <p id="alertMessage">Pesan pemberitahuan...</p>
+      <button class="btn-alert-ok" onclick="closeCustomAlert()">Mengerti</button>
+    </div>
+  </div>
+
   <!-- ==================== HALAMAN 1: PORTAL MENU UTAMA ==================== -->
   <div id="homeView">
     <div class="portal-header">
@@ -802,7 +873,7 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbzb0E_3xJMC-XmaTLr0J3UmpzcZN9Eory2Di1dMXhpLmIsztecyLdRdZgYOd0UmND3Q/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbyzuM_Tk9NSdlFoegeFt3SgYcwLNCk2b7rfuOPGyEc2G6kPBMTS5ZIQR59gusL2jLVn/exec";
 
   let allTasks = [];
   let currentUserNama = "";
@@ -814,6 +885,30 @@
   }
   function hideLoading() {
     document.getElementById("loadingOverlay").style.display = "none";
+  }
+
+  // FUNGSI CUSTOM ALERT PENGGANTI ALERT BAWAAN BROWSER
+  function showCustomAlert(title, message, type = "warning") {
+    document.getElementById("alertTitle").textContent = title;
+    document.getElementById("alertMessage").textContent = message;
+    
+    const iconEl = document.getElementById("alertIcon");
+    iconEl.className = "alert-icon-wrapper";
+    if (type === "warning") {
+      iconEl.textContent = "⚠️";
+      iconEl.classList.add("alert-icon-warning");
+    } else if (type === "success") {
+      iconEl.textContent = "✅";
+      iconEl.classList.add("alert-icon-success");
+    } else {
+      iconEl.textContent = "ℹ️";
+      iconEl.classList.add("alert-icon-info");
+    }
+
+    document.getElementById("customAlertOverlay").style.display = "flex";
+  }
+  function closeCustomAlert() {
+    document.getElementById("customAlertOverlay").style.display = "none";
   }
 
   function switchView(viewId) {
@@ -848,7 +943,7 @@
     const password = document.getElementById("loginPass").value.trim();
 
     if (!nip || !password) {
-      alert("NIP dan Password harus diisi!");
+      showCustomAlert("Form Belum Lengkap", "Nomor Induk Pegawai (NIP) dan Password wajib diisi.", "warning");
       return;
     }
 
@@ -870,15 +965,15 @@
         switchView('workView');
         loadTasks();
       } else if (res.status === "wrong_password") {
-        alert("Password salah!");
+        showCustomAlert("Gagal Masuk", "Password yang Anda masukkan salah.", "warning");
       } else if (res.status === "pending") {
-        alert("Akun Anda masih berstatus PENDING. Menunggu persetujuan SuperUser.");
+        showCustomAlert("Akses Tertunda", "Akun Anda masih berstatus PENDING. Menunggu persetujuan SuperUser.", "warning");
       } else {
-        alert("NIP tidak ditemukan. Silakan buat akun terlebih dahulu.");
+        showCustomAlert("Akun Tidak Ditemukan", "NIP belum terdaftar. Silakan buat akun terlebih dahulu.", "warning");
       }
     } catch (err) {
       hideLoading();
-      alert("Gagal melakukan login. Periksa koneksi internet.");
+      showCustomAlert("Kesalahan Jaringan", "Gagal terhubung ke server. Periksa koneksi internet Anda.", "warning");
     }
   }
 
@@ -888,7 +983,7 @@
     const password = document.getElementById("regPass").value.trim();
 
     if (!nip || !nama || !password) {
-      alert("Semua kolom wajib diisi!");
+      showCustomAlert("Form Belum Lengkap", "Semua kolom pendaftaran wajib diisi dengan benar.", "warning");
       return;
     }
 
@@ -903,19 +998,19 @@
       hideLoading();
 
       if (res.status === "success") {
-        alert("Pendaftaran berhasil! Akun Anda sedang menunggu persetujuan (Approved) dari SuperUser.");
+        showCustomAlert("Pendaftaran Berhasil", "Akun berhasil didaftarkan! Silakan menunggu persetujuan (Approved) dari SuperUser.", "success");
         document.getElementById("regNip").value = "";
         document.getElementById("regNama").value = "";
         document.getElementById("regPass").value = "";
         closeRegisterModal();
       } else if (res.status === "registered") {
-        alert("NIP tersebut sudah terdaftar sebelumnya.");
+        showCustomAlert("NIP Terdaftar", "Nomor Induk Pegawai tersebut sudah terdaftar sebelumnya.", "warning");
       } else {
-        alert("Gagal mendaftarkan akun.");
+        showCustomAlert("Pendaftaran Gagal", "Terjadi kendala saat mendaftarkan akun.", "warning");
       }
     } catch (err) {
       hideLoading();
-      alert("Terjadi kesalahan koneksi.");
+      showCustomAlert("Kesalahan Jaringan", "Gagal terhubung ke server.", "warning");
     }
   }
 
@@ -1005,11 +1100,8 @@
     }
   }
 
-  // --- MEMPERBARUI OPTION PIC SEKALIGUS AUTO-SELECT PIC USER LOGIN ---
   function updatePicOptions() {
     const filterPicSelect = document.getElementById("filterPic");
-    const datalist = document.getElementById("picListOptions");
-    
     const pics = [...new Set(allTasks.map(t => t.pic).filter(p => p && p !== "-"))];
 
     filterPicSelect.innerHTML = `<option value="ALL">Semua PIC</option>`;
@@ -1022,13 +1114,11 @@
       opt.textContent = pic;
       filterPicSelect.appendChild(opt);
 
-      // Pencocokan fleksibel antara nama login dengan nama PIC
       if (currentUserNama && pic.toLowerCase().trim().includes(currentUserNama.toLowerCase().trim().split(' ')[0])) {
         matchedUserPic = pic;
       }
     });
 
-    // Otomatis memilih PIC user yang sedang login jika ada di daftar, atau set default
     if (matchedUserPic) {
       filterPicSelect.value = matchedUserPic;
     } else {
@@ -1222,7 +1312,7 @@
     const updateAction = document.getElementById("modalUpdateActionText").value.trim();
 
     if (!task) {
-      alert("Nama tugas (Plan) tidak boleh kosong!");
+      showCustomAlert("Peringatan", "Nama tugas (Plan) tidak boleh kosong!", "warning");
       return;
     }
 
@@ -1247,7 +1337,7 @@
       loadTasks();
     } catch (err) {
       hideLoading();
-      alert("Gagal menyimpan perubahan. Silakan coba lagi.");
+      showCustomAlert("Kesalahan", "Gagal menyimpan perubahan. Silakan coba lagi.", "warning");
     }
   }
 
@@ -1260,7 +1350,7 @@
 
     const taskText = taskInput.value.trim();
     if (!taskText) {
-      alert("Silakan isi nama tugas terlebih dahulu!");
+      showCustomAlert("Peringatan", "Silakan isi nama tugas terlebih dahulu!", "warning");
       return;
     }
 
@@ -1291,7 +1381,7 @@
       loadTasks();
     } catch (err) {
       hideLoading();
-      alert("Gagal menambahkan tugas. Silakan coba lagi.");
+      showCustomAlert("Kesalahan", "Gagal menambahkan tugas. Silakan coba lagi.", "warning");
     }
   }
 
@@ -1311,7 +1401,7 @@
       loadTasks();
     } catch (err) {
       hideLoading();
-      alert("Gagal menghapus tugas.");
+      showCustomAlert("Kesalahan", "Gagal menghapus tugas.", "warning");
     }
   }
 
