@@ -252,14 +252,15 @@
       align-items: center;
     }
 
-    /* STYLING BADGE PIC WARNA-WARNI */
+    /* STYLING BADGE PIC PROFESIONAL & KONTRAS */
     .pic-tag-badge {
       display: inline-block;
-      padding: 1.5px 7px;
-      border-radius: 4px;
+      padding: 2px 8px;
+      border-radius: 5px;
       font-weight: 700;
-      font-size: 10.5px;
-      letter-spacing: 0.2px;
+      font-size: 11px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
     .closed-date-tag {
@@ -532,7 +533,7 @@
       </label>
       <label>
         % Status:
-        <select id="modalPercentSelect" onchange="handlePercentChange('edit')">
+        <select id="modalPercentSelect" onchange="handlePercentSelect('edit')">
           <option value="0%">0%</option>
           <option value="10%">10%</option>
           <option value="20%">20%</option>
@@ -576,7 +577,7 @@
   setInterval(updateClock, 1000);
   updateClock();
 
-  // FUNGSI KHUSUS PEMETIK WARNA PIC
+  // PEMETAAN WARNA KHUSUS & PROFESIONAL UNTUK SETIAP PIC
   function getPicBadgeStyle(picName) {
     if (!picName || picName === "-") {
       return { bg: "rgba(255,255,255,0.1)", text: "#cbd5e1" };
@@ -584,36 +585,42 @@
     
     const p = picName.toLowerCase().trim();
 
-    // Pemetaan khusus yang diminta
+    // Pemetaan Spesifik
     if (p.includes("saripudin")) {
-      return { bg: "#ffffff", text: "#1e293b" }; // Saripudin: Putih
+      return { bg: "#ffffff", text: "#0f172a" }; // Saripudin: Putih Bersih
     }
     if (p.includes("yossandy")) {
-      return { bg: "#ef4444", text: "#ffffff" }; // Yossandy: Merah
+      return { bg: "#ef4444", text: "#ffffff" }; // Yossandy: Merah Menyala
+    }
+    if (p.includes("test1")) {
+      return { bg: "#3b82f6", text: "#ffffff" }; // Test1: Biru Terang
+    }
+    if (p.includes("test2")) {
+      return { bg: "#8b5cf6", text: "#ffffff" }; // Test2: Ungu Elegan
     }
     if (p.includes("nursandi")) {
-      return { bg: "#06b6d4", text: "#ffffff" }; // Nursandi: Cyan/Biru Muda
+      return { bg: "#06b6d4", text: "#ffffff" }; // Nursandi: Cyan
     }
     if (p.includes("nedi")) {
-      return { bg: "#a855f7", text: "#ffffff" }; // M. Nedi: Ungu
+      return { bg: "#ec4899", text: "#ffffff" }; // M. Nedi: Pink / Magenta
     }
     if (p.includes("harits")) {
       return { bg: "#f97316", text: "#ffffff" }; // Harits: Oranye
     }
     if (p.includes("febry")) {
-      return { bg: "#10b981", text: "#ffffff" }; // Febry: Hijau
+      return { bg: "#10b981", text: "#ffffff" }; // Febry: Hijau Emerald
     }
     if (p.includes("trengginas")) {
-      return { bg: "#ec4899", text: "#ffffff" }; // Trengginas: Pink
+      return { bg: "#eab308", text: "#0f172a" }; // Trengginas: Kuning Emas
     }
 
-    // Generator warna otomatis jika ada PIC baru di luar daftar di atas
+    // Generator warna cadangan otomatis jika ada nama lain
     let hash = 0;
     for (let i = 0; i < p.length; i++) {
       hash = p.charCodeAt(i) + ((hash << 5) - hash);
     }
     const hue = Math.abs(hash) % 360;
-    return { bg: `hsl(${hue}, 75%, 45%)`, text: "#ffffff" };
+    return { bg: `hsl(${hue}, 80%, 50%)`, text: "#ffffff" };
   }
 
   function formatDateCustom(dateString) {
@@ -753,7 +760,7 @@
         closedDateHtml = `<span>•</span> <span class="closed-date-tag">Closed: ${formatShortDate(t.closedAt)}</span>`;
       }
 
-      // Ambil gaya warna untuk PIC
+      // Terapkan styling badge PIC
       const picStyle = getPicBadgeStyle(t.pic);
       const picBadgeHtml = `<span class="pic-tag-badge" style="background-color: ${picStyle.bg}; color: ${picStyle.text};">${t.pic || "-"}</span>`;
 
