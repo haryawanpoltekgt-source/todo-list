@@ -53,13 +53,24 @@
       flex-shrink: 0;
       gap: 6px;
     }
+    .brand-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      white-space: nowrap;
+    }
     h2 { 
       color: #ffffff; 
       margin: 0; 
       font-size: 18px;
       font-weight: 700;
       letter-spacing: -0.3px;
-      white-space: nowrap;
+    }
+    .live-clock {
+      font-size: 10.5px;
+      color: #94a3b8;
+      font-weight: 500;
+      letter-spacing: 0.2px;
     }
     
     /* Search Bar */
@@ -238,6 +249,11 @@
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
+      align-items: center;
+    }
+    .closed-date-tag {
+      color: #4ade80;
+      font-weight: 500;
     }
     .badge-status {
       padding: 3px 8px;
@@ -360,7 +376,10 @@
 <div class="container">
   <!-- Header dengan Search & Tombol Tambah yang Proporsional -->
   <div class="header-action-area">
-    <h2>Web Kerja</h2>
+    <div class="brand-wrapper">
+      <h2>Web Kerja</h2>
+      <div id="liveClock" class="live-clock">Memuat waktu...</div>
+    </div>
     <input type="text" id="searchInput" class="search-input" placeholder="Cari..." oninput="renderTasks()">
     <div class="button-group">
       <button class="btn-action-base btn-refresh" onclick="loadTasks()" title="Muat Ulang">🔄</button>
@@ -502,7 +521,7 @@
       </label>
       <label>
         % Status:
-        <select id="modalPercentSelect" onchange="handlePercentChange('edit')">
+        <select id="modalPercentSelect" onchange="handlePercentSelect('edit')">
           <option value="0%">0%</option>
           <option value="10%">10%</option>
           <option value="20%">20%</option>
@@ -536,6 +555,17 @@
 
   let allTasks = [];
 
+  // Live Real-Time Clock
+  function updateClock() {
+    const now = new Date();
+    const options = { day: '2-digit', month: 'short', year: 'numeric' };
+    const dateStr = now.toLocaleDateString('id-ID', options);
+    const timeStr = now.toTimeString().split(' ')[0];
+    document.getElementById("liveClock").textContent = `${dateStr}, ${timeStr}`;
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
   function formatDateCustom(dateString) {
     if (!dateString) return "-";
     const d = new Date(dateString);
@@ -549,6 +579,19 @@
     const minutes = String(d.getMinutes()).padStart(2, '0');
 
     return `${day} ${month} ${year} ${hours}:${minutes}`;
+  }
+
+  // Format ringkas khusus tanggal closed pada kartu list
+  function formatShortDate(dateString) {
+    if (!dateString) return "";
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return dateString;
+    const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = months[d.getMonth()];
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${day} ${month}, ${hours}:${minutes}`;
   }
 
   async function loadTasks() {
@@ -656,6 +699,12 @@
       li.className = `task-item status-${t.status}`;
       li.onclick = () => openModal(t);
 
+      // Tampilkan tanggal closed jika status closed dan closedAt tersedia
+      let closedDateHtml = "";
+      if (t.status === "Closed" && t.closedAt) {
+        closedDateHtml = `<span>•</span> <span class="closed-date-tag">Closed: ${formatShortDate(t.closedAt)}</span>`;
+      }
+
       li.innerHTML = `
         <div class="task-preview-info">
           <span class="task-plan-text">${t.task || "(Tanpa Nama Tugas)"}</span>
@@ -663,6 +712,7 @@
             <span><b>PIC:</b> ${t.pic || "-"}</span>
             <span>•</span>
             <span><b>% Status:</b> ${t.percentStatus || "0%"}</span>
+            ${closedDateHtml}
           </div>
         </div>
         <div>
