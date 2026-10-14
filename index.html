@@ -559,7 +559,6 @@
       gap: 5px;
     }
     .badge-hadir { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
-    .badge-alpha { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
 
     /* Modal Styling Dark */
     .modal-overlay {
@@ -713,7 +712,7 @@
         </div>
       </div>
 
-      <!-- TOMBOL ABSENSI PDCA BARU -->
+      <!-- TOMBOL ABSENSI PDCA -->
       <div class="menu-card" onclick="openAbsensiView()">
         <div class="menu-icon icon-absensi">📊</div>
         <div class="menu-info">
@@ -1007,7 +1006,7 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwZj-rNWPDLwfAFgC9im7SLKBkj419tq6RkJI82aGhNUPWQZwgakpqpRlkGVHeCIyiV/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwwRy4WhfP7x2Ar0P5cU8jQcsHuULM6d0zSLr5Y4NVpBr6j6b2asEw8QaVW_abb_5sz/exec";
 
   let allTasks = [];
   let currentUserNama = "";
@@ -1021,7 +1020,6 @@
     document.getElementById("loadingOverlay").style.display = "none";
   }
 
-  // CUSTOM ALERT MODAL
   function showCustomAlert(title, message, type = "warning") {
     document.getElementById("alertTitle").textContent = title;
     document.getElementById("alertMessage").textContent = message;
@@ -1102,10 +1100,8 @@
   function openRegisterModal() { document.getElementById("registerModal").style.display = "flex"; }
   function closeRegisterModal() { document.getElementById("registerModal").style.display = "none"; }
 
-  // FUNGSI MEMBUKA HALAMAN ABSENSI
   function openAbsensiView() {
     switchView('absensiView');
-    // Set default tanggal hari ini pada date picker
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("absensiDatePicker").value = today;
     loadAbsensiData();
@@ -1127,16 +1123,11 @@
     }
   }
 
-  async function renderAbsensiList() {
+  function renderAbsensiList() {
     const container = document.getElementById("absensiListContainer");
     const selectedDate = document.getElementById("absensiDatePicker").value;
     container.innerHTML = "<div style='text-align:center; color:#9099a2; padding:20px;'>Memproses data...</div>";
 
-    // Ambil daftar user terdaftar dari Sheet2 via load / kita fetch ulang atau gunakan cache task PIC
-    // Untuk memastikan semua user terdaftar (SuperUser & Member) tampil meski belum absen, 
-    // kita bisa mengambil daftar unik PIC dari task atau fetch akun. 
-    // Di sini kita ambil data absensi cache yang mencatat siapa saja yang login di tanggal tersebut.
-    
     const absensiRecords = window.absensiCache || [];
     const filteredAbsensi = absensiRecords.filter(a => a.tanggal === selectedDate);
 
