@@ -1006,7 +1006,7 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwwRy4WhfP7x2Ar0P5cU8jQcsHuULM6d0zSLr5Y4NVpBr6j6b2asEw8QaVW_abb_5sz/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbw_QjZNmV4QeWw-228JbT24_zYlu51hxwECGGIQ6u2iFzZlS06msz96GeNXg3Z2dK23/exec";
 
   let allTasks = [];
   let currentUserNama = "";
@@ -1102,6 +1102,7 @@
 
   function openAbsensiView() {
     switchView('absensiView');
+    // Set otomatis tanggal hari ini pada date picker
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("absensiDatePicker").value = today;
     loadAbsensiData();
