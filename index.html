@@ -806,7 +806,7 @@
 
   let allTasks = [];
   let currentUserNama = "";
-  let currentUserRole = "Member"; // Default Member
+  let currentUserRole = "Member";
 
   function showLoading(text = "Memproses data...") {
     document.getElementById("loadingText").textContent = text;
@@ -1005,21 +1005,35 @@
     }
   }
 
+  // --- MEMPERBARUI OPTION PIC SEKALIGUS AUTO-SELECT PIC USER LOGIN ---
   function updatePicOptions() {
     const filterPicSelect = document.getElementById("filterPic");
-    const currentFilterValue = filterPicSelect.value;
     const datalist = document.getElementById("picListOptions");
     
     const pics = [...new Set(allTasks.map(t => t.pic).filter(p => p && p !== "-"))];
 
     filterPicSelect.innerHTML = `<option value="ALL">Semua PIC</option>`;
+    
+    let matchedUserPic = "";
+
     pics.forEach(pic => {
       const opt = document.createElement("option");
       opt.value = pic;
       opt.textContent = pic;
       filterPicSelect.appendChild(opt);
+
+      // Pencocokan fleksibel antara nama login dengan nama PIC
+      if (currentUserNama && pic.toLowerCase().trim().includes(currentUserNama.toLowerCase().trim().split(' ')[0])) {
+        matchedUserPic = pic;
+      }
     });
-    filterPicSelect.value = currentFilterValue;
+
+    // Otomatis memilih PIC user yang sedang login jika ada di daftar, atau set default
+    if (matchedUserPic) {
+      filterPicSelect.value = matchedUserPic;
+    } else {
+      filterPicSelect.value = "ALL";
+    }
   }
 
   function renderTasks() {
@@ -1176,9 +1190,8 @@
     document.getElementById("modalPercentSelect").value = task.percentStatus || "0%";
     document.getElementById("modalUpdateActionText").value = task.updateAction || "";
 
-    // CEK HAK AKSES EDIT & HAPUS (SuperUser atau PIC yang bersangkutan)
     const isSuperUser = (currentUserRole.toLowerCase() === "superuser");
-    const isOwner = (task.pic.trim().toLowerCase() === currentUserNama.trim().toLowerCase());
+    const isOwner = (task.pic.trim().toLowerCase().includes(currentUserNama.trim().toLowerCase().split(' ')[0]));
     const canEdit = isSuperUser || isOwner;
 
     const inputs = [
@@ -1191,7 +1204,6 @@
 
     inputs.forEach(el => el.disabled = (isClosed || !canEdit));
 
-    // Tombol Save & Delete hanya muncul jika punya hak akses dan belum closed
     document.getElementById("modalSaveBtn").style.display = (isClosed || !canEdit) ? "none" : "inline-block";
     document.getElementById("modalDeleteBtn").style.display = (isClosed || !canEdit) ? "none" : "inline-block";
 
