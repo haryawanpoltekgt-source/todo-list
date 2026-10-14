@@ -15,6 +15,7 @@
       --accent-blue: #3b82f6;
       --accent-purple: #8b5cf6;
       --accent-cyan: #06b6d4;
+      --accent-green: #22c55e;
     }
 
     * {
@@ -55,7 +56,7 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      gap: 24px;
+      gap: 20px;
       padding: 20px;
     }
     .portal-header h1 {
@@ -73,14 +74,14 @@
     .menu-grid {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       width: 100%;
       max-width: 400px;
     }
     .menu-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      padding: 18px 20px;
+      padding: 16px 18px;
       border-radius: 14px;
       cursor: pointer;
       display: flex;
@@ -96,8 +97,8 @@
       transform: translateY(-2px);
     }
     .menu-icon {
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       border-radius: 10px;
       display: flex;
       justify-content: center;
@@ -107,11 +108,12 @@
     }
     .icon-work { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
     .icon-request { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
+    .icon-register { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
     
-    .menu-info h3 { margin: 0 0 3px 0; font-size: 15px; color: #ffffff; font-weight: 700; }
+    .menu-info h3 { margin: 0 0 3px 0; font-size: 14.5px; color: #ffffff; font-weight: 700; }
     .menu-info span { font-size: 11.5px; color: var(--text-secondary); }
 
-    /* --- HALAMAN 2 & 3: KONTEN UTAMA --- */
+    /* --- HALAMAN KONTEN UTAMA --- */
     .app-view {
       display: none;
       flex-direction: column;
@@ -383,7 +385,7 @@
       background: var(--card-bg);
       color: var(--text-main);
       width: 100%;
-      max-width: 550px;
+      max-width: 450px;
       padding: 18px;
       border-radius: 12px;
       border: 1px solid var(--border-color);
@@ -437,11 +439,6 @@
     .modal-body input:focus, .modal-body select:focus, .modal-body textarea:focus {
       border-color: var(--accent-blue);
     }
-    .modal-body input:disabled, .modal-body select:disabled, .modal-body textarea:disabled {
-      background-color: #1a202c;
-      color: #4a5568;
-      cursor: not-allowed;
-    }
     .modal-footer {
       display: flex;
       justify-content: space-between;
@@ -467,6 +464,7 @@
       cursor: pointer;
       font-weight: 600;
       font-size: 12.5px;
+      width: 100%;
     }
     .btn-save:hover { opacity: 0.9; }
   </style>
@@ -483,8 +481,8 @@
     </div>
     
     <div class="menu-grid">
-      <!-- Menu 1: Web Kerja -->
-      <div class="menu-card" onclick="switchView('workView')">
+      <!-- Menu 1: Web Kerja (Akan memunculkan modal login) -->
+      <div class="menu-card" onclick="openLoginModal()">
         <div class="menu-icon icon-work">📋</div>
         <div class="menu-info">
           <h3>Web Kerja</h3>
@@ -492,7 +490,16 @@
         </div>
       </div>
 
-      <!-- Menu 2: Permintaan Bantuan (Dalam Pengembangan) -->
+      <!-- Menu 2: Buat Akun Baru -->
+      <div class="menu-card" onclick="openRegisterModal()">
+        <div class="menu-icon icon-register">👤</div>
+        <div class="menu-info">
+          <h3>Buat Akun</h3>
+          <span>Daftar akun baru (Membutuhkan Approval SuperUser)</span>
+        </div>
+      </div>
+
+      <!-- Menu 3: Permintaan Bantuan (Dalam Pengembangan) -->
       <div class="menu-card" onclick="switchView('requestView')">
         <div class="menu-icon icon-request">🛠️</div>
         <div class="menu-info">
@@ -506,7 +513,10 @@
 
   <!-- ==================== HALAMAN 2: WEB KERJA ==================== -->
   <div id="workView" class="app-view">
-    <button class="back-nav" onclick="switchView('homeView')">← Menu Utama</button>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink: 0;">
+      <button class="back-nav" onclick="switchView('homeView')">← Keluar / Menu Utama</button>
+      <span id="loggedInUserLabel" style="font-size: 11.5px; color: #4ade80; font-weight: 600;"></span>
+    </div>
     
     <div class="header-action-area">
       <div class="brand-wrapper">
@@ -572,7 +582,63 @@
 
 <datalist id="picListOptions"></datalist>
 
-<!-- Pop-up Modal: Tambah Tugas Baru Utama -->
+
+<!-- ==================== MODAL LOGIN WEB KERJA ==================== -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Login Web Kerja</h3>
+      <button class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <label>
+        Nomor Induk Pegawai (NIP):
+        <input type="text" id="loginNip" placeholder="Masukkan NIP...">
+      </label>
+      <label>
+        Password:
+        <input type="password" id="loginPass" placeholder="Masukkan password...">
+      </label>
+    </div>
+    <div class="modal-footer" style="justify-content: flex-end; gap: 6px;">
+      <button onclick="closeLoginModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Batal</button>
+      <button class="btn-save" style="width: auto;" onclick="submitLogin()">Masuk</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ==================== MODAL BUAT AKUN (REGISTRASI) ==================== -->
+<div class="modal-overlay" id="registerModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Pendaftaran Akun Baru</h3>
+      <button class="btn-close-modal" onclick="closeRegisterModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <label>
+        NIP (Nomor Induk Pegawai):
+        <input type="text" id="regNip" placeholder="Masukkan NIP unik...">
+      </label>
+      <label>
+        Nama Lengkap:
+        <input type="text" id="regNama" placeholder="Masukkan nama lengkap...">
+      </label>
+      <label>
+        Password:
+        <input type="password" id="regPass" placeholder="Buat password...">
+      </label>
+      <span style="font-size: 11px; color: #94a3b8; margin-top: 4px;">*Akun baru memerlukan persetujuan (Approved) oleh SuperUser melalui Google Sheet sebelum dapat digunakan untuk login.</span>
+    </div>
+    <div class="modal-footer" style="justify-content: flex-end; gap: 6px;">
+      <button onclick="closeRegisterModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Batal</button>
+      <button class="btn-save" style="width: auto; background: linear-gradient(135deg, #10b981, #059669);" onclick="submitRegister()">Daftar Akun</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ==================== MODAL TAMBAH TUGAS UTAMA ==================== -->
 <div class="modal-overlay" id="addModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -628,7 +694,8 @@
   </div>
 </div>
 
-<!-- Pop-up Modal: Detail & Edit Tugas Utama -->
+
+<!-- ==================== MODAL DETAIL & EDIT TUGAS ==================== -->
 <div class="modal-overlay" id="taskModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -701,16 +768,86 @@
 
   let allTasks = [];
 
-  // Fungsi Pindah Antar Layar / View
   function switchView(viewId) {
     document.getElementById('homeView').style.display = 'none';
     document.getElementById('workView').style.display = 'none';
     document.getElementById('requestView').style.display = 'none';
 
-    document.getElementById(viewId).style.display = viewId === 'homeView' ? 'flex' : 'flex';
+    document.getElementById(viewId).style.display = 'flex';
+  }
 
-    if (viewId === 'workView') {
-      loadTasks();
+  // --- MODAL LOGIN & REGISTER ---
+  function openLoginModal() { document.getElementById("loginModal").style.display = "flex"; }
+  function closeLoginModal() { document.getElementById("loginModal").style.display = "none"; }
+
+  function openRegisterModal() { document.getElementById("registerModal").style.display = "flex"; }
+  function closeRegisterModal() { document.getElementById("registerModal").style.display = "none"; }
+
+  async function submitLogin() {
+    const nip = document.getElementById("loginNip").value.trim();
+    const password = document.getElementById("loginPass").value.trim();
+
+    if (!nip || !password) {
+      alert("NIP dan Password harus diisi!");
+      return;
+    }
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ action: "login", nip: nip, password: password })
+      });
+      const res = await response.json();
+
+      if (res.status === "success") {
+        document.getElementById("loggedInUserLabel").textContent = `Login: ${res.nama} (${nip})`;
+        closeLoginModal();
+        switchView('workView');
+        loadTasks();
+      } else if (res.status === "wrong_password") {
+        alert("Password salah!");
+      } else if (res.status === "pending") {
+        alert("Akun Anda masih berstatus PENDING. Menunggu persetujuan SuperUser.");
+      } else {
+        alert("NIP tidak ditemukan. Silakan buat akun terlebih dahulu.");
+      }
+    } catch (err) {
+      alert("Gagal melakukan login. Periksa koneksi internet.");
+    }
+  }
+
+  async function submitRegister() {
+    const nip = document.getElementById("regNip").value.trim();
+    const nama = document.getElementById("regNama").value.trim();
+    const password = document.getElementById("regPass").value.trim();
+
+    if (!nip || !nama || !password) {
+      alert("Semua kolom wajib diisi!");
+      return;
+    }
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ action: "register", nip: nip, nama: nama, password: password })
+      });
+      const res = await response.json();
+
+      if (res.status === "success") {
+        alert("Pendaftaran berhasil! Akun Anda sedang menunggu persetujuan (Approved) dari SuperUser.");
+        document.getElementById("regNip").value = "";
+        document.getElementById("regNama").value = "";
+        document.getElementById("regPass").value = "";
+        closeRegisterModal();
+      } else if (res.status === "registered") {
+        alert("NIP tersebut sudah terdaftar sebelumnya.");
+      } else {
+        alert("Gagal mendaftarkan akun.");
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan koneksi.");
     }
   }
 
@@ -719,7 +856,8 @@
     const options = { day: '2-digit', month: 'short', year: 'numeric' };
     const dateStr = now.toLocaleDateString('id-ID', options);
     const timeStr = now.toTimeString().split(' ')[0];
-    document.getElementById("liveClock").textContent = `${dateStr}, ${timeStr}`;
+    const clockEl = document.getElementById("liveClock");
+    if (clockEl) clockEl.textContent = `${dateStr}, ${timeStr}`;
   }
   setInterval(updateClock, 1000);
   updateClock();
@@ -948,12 +1086,8 @@
     }
   }
 
-  function openAddModal() {
-    document.getElementById("addModal").style.display = "flex";
-  }
-  function closeAddModal() {
-    document.getElementById("addModal").style.display = "none";
-  }
+  function openAddModal() { document.getElementById("addModal").style.display = "flex"; }
+  function closeAddModal() { document.getElementById("addModal").style.display = "none"; }
 
   function openModal(task) {
     document.getElementById("modalTaskId").value = task.id;
@@ -994,9 +1128,7 @@
     document.getElementById("taskModal").style.display = "flex";
   }
 
-  function closeModal() {
-    document.getElementById("taskModal").style.display = "none";
-  }
+  function closeModal() { document.getElementById("taskModal").style.display = "none"; }
 
   async function saveTaskDetails() {
     const id = document.getElementById("modalTaskId").value;
