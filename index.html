@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Web Kerja - Asset & System</title>
+  <title>Portal Asset & System</title>
   <style>
     :root {
       --bg-app: #12161f;
@@ -14,6 +14,7 @@
       --border-color: #2a3447;
       --accent-blue: #3b82f6;
       --accent-purple: #8b5cf6;
+      --accent-cyan: #06b6d4;
     }
 
     * {
@@ -43,8 +44,97 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      position: relative;
     }
+
+    /* --- HALAMAN 1: PORTAL MENU UTAMA --- */
+    #homeView {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 24px;
+      padding: 20px;
+    }
+    .portal-header h1 {
+      color: #ffffff;
+      font-size: 24px;
+      margin: 0 0 6px 0;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .portal-header p {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin: 0;
+    }
+    .menu-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+      max-width: 400px;
+    }
+    .menu-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 18px 20px;
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      text-align: left;
+    }
+    .menu-card:hover {
+      background: var(--card-hover);
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+    }
+    .menu-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .icon-work { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .icon-request { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
     
+    .menu-info h3 { margin: 0 0 3px 0; font-size: 15px; color: #ffffff; font-weight: 700; }
+    .menu-info span { font-size: 11.5px; color: var(--text-secondary); }
+
+    /* --- HALAMAN 2 & 3: KONTEN UTAMA --- */
+    .app-view {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .back-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-blue);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 10px;
+      background: none;
+      border: none;
+      padding: 0;
+      flex-shrink: 0;
+    }
+    .back-nav:hover { text-decoration: underline; }
+
     .header-action-area {
       display: flex;
       justify-content: space-between;
@@ -213,7 +303,6 @@
       opacity: 0.95;
     }
 
-    /* Kartu Gradien Sesuai Status */
     li.task-item.status-Open {
       background: linear-gradient(135deg, #1e293b 0%, #1e3a8a 100%);
       border-left: 4px solid #60a5fa;
@@ -252,7 +341,6 @@
       align-items: center;
     }
 
-    /* STYLING BADGE PIC PROFESIONAL & KONTRAS */
     .pic-tag-badge {
       display: inline-block;
       padding: 2px 8px;
@@ -386,54 +474,100 @@
 <body>
 
 <div class="container">
-  <!-- Header dengan Search & Tombol Tambah -->
-  <div class="header-action-area">
-    <div class="brand-wrapper">
-      <h2>Web Kerja</h2>
-      <div id="liveClock" class="live-clock">Memuat waktu...</div>
-    </div>
-    <input type="text" id="searchInput" class="search-input" placeholder="Cari..." oninput="renderTasks()">
-    <div class="button-group">
-      <button class="btn-action-base btn-refresh" onclick="loadTasks()" title="Muat Ulang">🔄</button>
-      <button class="btn-action-base btn-open-add" onclick="openAddModal()">+ Tambah</button>
-    </div>
-  </div>
 
-  <div class="filter-box">
-    <label>
-      Filter PIC:
-      <select id="filterPic" onchange="renderTasks()">
-        <option value="ALL">Semua PIC</option>
-      </select>
-    </label>
-    <label>
-      Filter Status:
-      <select id="filterStatus" onchange="renderTasks()">
-        <option value="ACTIVE" selected>Tugas Aktif</option>
-        <option value="ALL">Semua Status</option>
-        <option value="Open">Open</option>
-        <option value="Progress">Progress</option>
-        <option value="Closed">Closed</option>
-      </select>
-    </label>
-  </div>
+  <!-- ==================== HALAMAN 1: PORTAL MENU UTAMA ==================== -->
+  <div id="homeView">
+    <div class="portal-header">
+      <h1>Portal Asset & System</h1>
+      <p>Pilih menu sistem operasional kerja harian</p>
+    </div>
+    
+    <div class="menu-grid">
+      <!-- Menu 1: Web Kerja -->
+      <div class="menu-card" onclick="switchView('workView')">
+        <div class="menu-icon icon-work">📋</div>
+        <div class="menu-info">
+          <h3>Web Kerja</h3>
+          <span>Kelola daftar tugas & progress operasional</span>
+        </div>
+      </div>
 
-  <!-- Area Ringkasan Counting Data -->
-  <div class="summary-area">
-    <span class="summary-title" id="summaryPicLabel">Total Tugas (Semua PIC):</span>
-    <div class="summary-badges">
-      <span class="count-chip count-open">Open: <b id="countOpen">0</b></span>
-      <span class="count-chip count-progress">Progress: <b id="countProgress">0</b></span>
-      <span class="count-chip count-closed">Closed: <b id="countClosed">0</b></span>
+      <!-- Menu 2: Permintaan Bantuan (Dalam Pengembangan) -->
+      <div class="menu-card" onclick="switchView('requestView')">
+        <div class="menu-icon icon-request">🛠️</div>
+        <div class="menu-info">
+          <h3>Permintaan Bantuan Asset & System</h3>
+          <span>Formulir pengajuan & perbaikan (Segera Hadir)</span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Daftar List Tugas -->
-  <div class="task-scroll-area">
-    <ul id="taskList">
-      <li style='text-align:center; color:#9099a2; padding:20px;'>Memuat data...</li>
-    </ul>
+
+  <!-- ==================== HALAMAN 2: WEB KERJA ==================== -->
+  <div id="workView" class="app-view">
+    <button class="back-nav" onclick="switchView('homeView')">← Menu Utama</button>
+    
+    <div class="header-action-area">
+      <div class="brand-wrapper">
+        <h2>Web Kerja</h2>
+        <div id="liveClock" class="live-clock">Memuat waktu...</div>
+      </div>
+      <input type="text" id="searchInput" class="search-input" placeholder="Cari..." oninput="renderTasks()">
+      <div class="button-group">
+        <button class="btn-action-base btn-refresh" onclick="loadTasks()" title="Muat Ulang">🔄</button>
+        <button class="btn-action-base btn-open-add" onclick="openAddModal()">+ Tambah</button>
+      </div>
+    </div>
+
+    <div class="filter-box">
+      <label>
+        Filter PIC:
+        <select id="filterPic" onchange="renderTasks()">
+          <option value="ALL">Semua PIC</option>
+        </select>
+      </label>
+      <label>
+        Filter Status:
+        <select id="filterStatus" onchange="renderTasks()">
+          <option value="ACTIVE" selected>Tugas Aktif</option>
+          <option value="ALL">Semua Status</option>
+          <option value="Open">Open</option>
+          <option value="Progress">Progress</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </label>
+    </div>
+
+    <!-- Area Ringkasan Counting Data -->
+    <div class="summary-area">
+      <span class="summary-title" id="summaryPicLabel">Total Tugas (Semua PIC):</span>
+      <div class="summary-badges">
+        <span class="count-chip count-open">Open: <b id="countOpen">0</b></span>
+        <span class="count-chip count-progress">Progress: <b id="countProgress">0</b></span>
+        <span class="count-chip count-closed">Closed: <b id="countClosed">0</b></span>
+      </div>
+    </div>
+
+    <!-- Daftar List Tugas -->
+    <div class="task-scroll-area">
+      <ul id="taskList">
+        <li style='text-align:center; color:#9099a2; padding:20px;'>Memuat data...</li>
+      </ul>
+    </div>
   </div>
+
+
+  <!-- ==================== HALAMAN 3: PERMINTAAN BANTUAN (DEVELOPMENT) ==================== -->
+  <div id="requestView" class="app-view" style="justify-content: center; align-items: center; text-align: center; padding: 20px;">
+    <button class="back-nav" onclick="switchView('homeView')" style="position: absolute; top: 16px; left: 16px;">← Menu Utama</button>
+    <div style="font-size: 48px; margin-bottom: 12px;">🚧</div>
+    <h2 style="font-size: 20px; margin-bottom: 8px;">Permintaan Bantuan Asset & System</h2>
+    <p style="color: var(--text-secondary); font-size: 13px; max-width: 320px; line-height: 1.5;">
+      Modul ini sedang dalam tahap pengembangan (*development*). Segera hadir untuk memfasilitasi pengajuan dan perbaikan asset Anda secara terintegrasi.
+    </p>
+  </div>
+
 </div>
 
 <datalist id="picListOptions"></datalist>
@@ -567,6 +701,19 @@
 
   let allTasks = [];
 
+  // Fungsi Pindah Antar Layar / View
+  function switchView(viewId) {
+    document.getElementById('homeView').style.display = 'none';
+    document.getElementById('workView').style.display = 'none';
+    document.getElementById('requestView').style.display = 'none';
+
+    document.getElementById(viewId).style.display = viewId === 'homeView' ? 'flex' : 'flex';
+
+    if (viewId === 'workView') {
+      loadTasks();
+    }
+  }
+
   function updateClock() {
     const now = new Date();
     const options = { day: '2-digit', month: 'short', year: 'numeric' };
@@ -577,44 +724,22 @@
   setInterval(updateClock, 1000);
   updateClock();
 
-  // PEMETAAN WARNA KHUSUS & PROFESIONAL UNTUK SETIAP PIC
   function getPicBadgeStyle(picName) {
     if (!picName || picName === "-") {
       return { bg: "rgba(255,255,255,0.1)", text: "#cbd5e1" };
     }
-    
     const p = picName.toLowerCase().trim();
 
-    // Pemetaan Spesifik
-    if (p.includes("saripudin")) {
-      return { bg: "#ffffff", text: "#0f172a" }; // Saripudin: Putih Bersih
-    }
-    if (p.includes("yossandy")) {
-      return { bg: "#ef4444", text: "#ffffff" }; // Yossandy: Merah Menyala
-    }
-    if (p.includes("test1")) {
-      return { bg: "#3b82f6", text: "#ffffff" }; // Test1: Biru Terang
-    }
-    if (p.includes("test2")) {
-      return { bg: "#8b5cf6", text: "#ffffff" }; // Test2: Ungu Elegan
-    }
-    if (p.includes("nursandi")) {
-      return { bg: "#06b6d4", text: "#ffffff" }; // Nursandi: Cyan
-    }
-    if (p.includes("nedi")) {
-      return { bg: "#ec4899", text: "#ffffff" }; // M. Nedi: Pink / Magenta
-    }
-    if (p.includes("harits")) {
-      return { bg: "#f97316", text: "#ffffff" }; // Harits: Oranye
-    }
-    if (p.includes("febry")) {
-      return { bg: "#10b981", text: "#ffffff" }; // Febry: Hijau Emerald
-    }
-    if (p.includes("trengginas")) {
-      return { bg: "#eab308", text: "#0f172a" }; // Trengginas: Kuning Emas
-    }
+    if (p.includes("saripudin")) return { bg: "#ffffff", text: "#0f172a" };
+    if (p.includes("yossandy")) return { bg: "#ef4444", text: "#ffffff" };
+    if (p.includes("test1")) return { bg: "#3b82f6", text: "#ffffff" };
+    if (p.includes("test2")) return { bg: "#8b5cf6", text: "#ffffff" };
+    if (p.includes("nursandi")) return { bg: "#06b6d4", text: "#ffffff" };
+    if (p.includes("nedi")) return { bg: "#ec4899", text: "#ffffff" };
+    if (p.includes("harits")) return { bg: "#f97316", text: "#ffffff" };
+    if (p.includes("febry")) return { bg: "#10b981", text: "#ffffff" };
+    if (p.includes("trengginas")) return { bg: "#eab308", text: "#0f172a" };
 
-    // Generator warna cadangan otomatis jika ada nama lain
     let hash = 0;
     for (let i = 0; i < p.length; i++) {
       hash = p.charCodeAt(i) + ((hash << 5) - hash);
@@ -760,7 +885,6 @@
         closedDateHtml = `<span>•</span> <span class="closed-date-tag">Closed: ${formatShortDate(t.closedAt)}</span>`;
       }
 
-      // Terapkan styling badge PIC
       const picStyle = getPicBadgeStyle(t.pic);
       const picBadgeHtml = `<span class="pic-tag-badge" style="background-color: ${picStyle.bg}; color: ${picStyle.text};">${t.pic || "-"}</span>`;
 
@@ -973,8 +1097,6 @@
   function handleAddKeyPress(e) {
     if (e.key === "Enter") addTask();
   }
-
-  loadTasks();
 </script>
 
 </body>
