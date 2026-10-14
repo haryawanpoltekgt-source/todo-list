@@ -46,6 +46,38 @@
       position: relative;
     }
 
+    /* --- LOADING OVERLAY ANIMATION --- */
+    #loadingOverlay {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(18, 22, 31, 0.85);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .spinner {
+      width: 45px;
+      height: 45px;
+      border: 4px solid var(--border-color);
+      border-top: 4px solid var(--accent-blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .loading-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      letter-spacing: 0.5px;
+    }
+
     /* --- PORTAL MENU UTAMA --- */
     #homeView {
       display: flex;
@@ -476,6 +508,12 @@
 
 <div class="container">
 
+  <!-- LOADING OVERLAY -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loadingText">Memproses data...</div>
+  </div>
+
   <!-- ==================== HALAMAN 1: PORTAL MENU UTAMA ==================== -->
   <div id="homeView">
     <div class="portal-header">
@@ -484,7 +522,6 @@
     </div>
     
     <div class="menu-grid">
-      <!-- Menu 1: Web Kerja -->
       <div class="menu-card" onclick="openLoginModal()">
         <div class="menu-icon icon-work">📋</div>
         <div class="menu-info">
@@ -493,7 +530,6 @@
         </div>
       </div>
 
-      <!-- Menu 2: Buat Akun Baru -->
       <div class="menu-card" onclick="openRegisterModal()">
         <div class="menu-icon icon-register">👤</div>
         <div class="menu-info">
@@ -502,7 +538,6 @@
         </div>
       </div>
 
-      <!-- Menu 3: Permintaan Bantuan -->
       <div class="menu-card" onclick="switchView('requestView')">
         <div class="menu-icon icon-request">🛠️</div>
         <div class="menu-info">
@@ -767,26 +802,34 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbyJKJp6gV2qLmEKliIPiRxQxRjNkS0pCPv9NTKM85z9kBJd3Q-Bkxu4Gv8U7y8vFH0/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbzb0E_3xJMC-XmaTLr0J3UmpzcZN9Eory2Di1dMXhpLmIsztecyLdRdZgYOd0UmND3Q/exec";
 
   let allTasks = [];
-  let currentUserNama = ""; // Menyimpan nama user yang sedang aktif login
+  let currentUserNama = "";
+  let currentUserRole = "Member"; // Default Member
+
+  function showLoading(text = "Memproses data...") {
+    document.getElementById("loadingText").textContent = text;
+    document.getElementById("loadingOverlay").style.display = "flex";
+  }
+  function hideLoading() {
+    document.getElementById("loadingOverlay").style.display = "none";
+  }
 
   function switchView(viewId) {
     document.getElementById('homeView').style.display = 'none';
     document.getElementById('workView').style.display = 'none';
     document.getElementById('requestView').style.display = 'none';
-
     document.getElementById(viewId).style.display = 'flex';
   }
 
   function logout() {
     currentUserNama = "";
+    currentUserRole = "Member";
     document.getElementById("loggedInUserLabel").textContent = "";
     switchView('homeView');
   }
 
-  // --- MODAL LOGIN & REGISTER ---
   function openLoginModal() { 
     if (currentUserNama) {
       switchView('workView');
@@ -809,6 +852,7 @@
       return;
     }
 
+    showLoading("Memverifikasi akun...");
     try {
       const response = await fetch(API_URL, {
         method: "POST",
@@ -816,10 +860,12 @@
         body: new URLSearchParams({ action: "login", nip: nip, password: password })
       });
       const res = await response.json();
+      hideLoading();
 
       if (res.status === "success") {
-        currentUserNama = res.nama; // Simpan nama login user
-        document.getElementById("loggedInUserLabel").textContent = `👤 ${currentUserNama} (${nip})`;
+        currentUserNama = res.nama;
+        currentUserRole = res.role || "Member";
+        document.getElementById("loggedInUserLabel").textContent = `👤 ${currentUserNama} (${currentUserRole}) - ${nip}`;
         closeLoginModal();
         switchView('workView');
         loadTasks();
@@ -831,6 +877,7 @@
         alert("NIP tidak ditemukan. Silakan buat akun terlebih dahulu.");
       }
     } catch (err) {
+      hideLoading();
       alert("Gagal melakukan login. Periksa koneksi internet.");
     }
   }
@@ -845,6 +892,7 @@
       return;
     }
 
+    showLoading("Mendaftarkan akun baru...");
     try {
       const response = await fetch(API_URL, {
         method: "POST",
@@ -852,6 +900,7 @@
         body: new URLSearchParams({ action: "register", nip: nip, nama: nama, password: password })
       });
       const res = await response.json();
+      hideLoading();
 
       if (res.status === "success") {
         alert("Pendaftaran berhasil! Akun Anda sedang menunggu persetujuan (Approved) dari SuperUser.");
@@ -865,6 +914,7 @@
         alert("Gagal mendaftarkan akun.");
       }
     } catch (err) {
+      hideLoading();
       alert("Terjadi kesalahan koneksi.");
     }
   }
@@ -932,14 +982,14 @@
   }
 
   async function loadTasks() {
+    showLoading("Memuat data tugas...");
     try {
-      document.getElementById("taskList").innerHTML = "<li style='padding:20px; text-align:center; color:#9099a2;'>Memuat data terbaru...</li>";
-      
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
 
       const response = await fetch(API_URL, { signal: controller.signal });
       clearTimeout(timeoutId);
+      hideLoading();
 
       if (!response.ok) throw new Error("Network response was not ok");
       
@@ -949,6 +999,7 @@
       updatePicOptions();
       renderTasks();
     } catch (err) {
+      hideLoading();
       console.error(err);
       document.getElementById("taskList").innerHTML = "<li style='padding:20px; text-align:center; color:#f87171;'>Gagal memuat tugas. Silakan klik tombol Refresh.</li>";
     }
@@ -969,13 +1020,6 @@
       filterPicSelect.appendChild(opt);
     });
     filterPicSelect.value = currentFilterValue;
-
-    datalist.innerHTML = "";
-    pics.forEach(pic => {
-      const opt = document.createElement("option");
-      opt.value = pic;
-      datalist.appendChild(opt);
-    });
   }
 
   function renderTasks() {
@@ -1104,7 +1148,6 @@
     }
   }
 
-  // --- MEMBUKA MODAL TAMBAH TUGAS DENGAN PIC OTOMATIS ---
   function openAddModal() { 
     document.getElementById("picInput").value = currentUserNama || "-";
     document.getElementById("addModal").style.display = "flex"; 
@@ -1133,6 +1176,11 @@
     document.getElementById("modalPercentSelect").value = task.percentStatus || "0%";
     document.getElementById("modalUpdateActionText").value = task.updateAction || "";
 
+    // CEK HAK AKSES EDIT & HAPUS (SuperUser atau PIC yang bersangkutan)
+    const isSuperUser = (currentUserRole.toLowerCase() === "superuser");
+    const isOwner = (task.pic.trim().toLowerCase() === currentUserNama.trim().toLowerCase());
+    const canEdit = isSuperUser || isOwner;
+
     const inputs = [
       document.getElementById("modalTaskText"),
       document.getElementById("modalUpdateDoText"),
@@ -1141,10 +1189,11 @@
       document.getElementById("modalUpdateActionText")
     ];
 
-    inputs.forEach(el => el.disabled = isClosed);
+    inputs.forEach(el => el.disabled = (isClosed || !canEdit));
 
-    document.getElementById("modalSaveBtn").style.display = isClosed ? "none" : "inline-block";
-    document.getElementById("modalDeleteBtn").style.display = isClosed ? "none" : "inline-block";
+    // Tombol Save & Delete hanya muncul jika punya hak akses dan belum closed
+    document.getElementById("modalSaveBtn").style.display = (isClosed || !canEdit) ? "none" : "inline-block";
+    document.getElementById("modalDeleteBtn").style.display = (isClosed || !canEdit) ? "none" : "inline-block";
 
     document.getElementById("taskModal").style.display = "flex";
   }
@@ -1165,6 +1214,7 @@
       return;
     }
 
+    showLoading("Menyimpan perubahan...");
     try {
       await fetch(API_URL, {
         method: "POST",
@@ -1180,9 +1230,11 @@
           updateAction: updateAction
         })
       });
+      hideLoading();
       closeModal();
       loadTasks();
     } catch (err) {
+      hideLoading();
       alert("Gagal menyimpan perubahan. Silakan coba lagi.");
     }
   }
@@ -1200,6 +1252,7 @@
       return;
     }
 
+    showLoading("Menyimpan tugas baru...");
     try {
       await fetch(API_URL, {
         method: "POST",
@@ -1207,13 +1260,14 @@
         body: new URLSearchParams({
           action: "add",
           task: taskText,
-          pic: currentUserNama || "-", // Otomatis memakai nama user yang login
+          pic: currentUserNama || "-",
           updateDo: updateDoInput.value.trim(),
           status: statusInput.value,
           percentStatus: percentInput.value,
           updateAction: updateActionInput.value.trim()
         })
       });
+      hideLoading();
 
       taskInput.value = "";
       updateDoInput.value = "";
@@ -1224,6 +1278,7 @@
       closeAddModal();
       loadTasks();
     } catch (err) {
+      hideLoading();
       alert("Gagal menambahkan tugas. Silakan coba lagi.");
     }
   }
@@ -1232,15 +1287,18 @@
     const id = document.getElementById("modalTaskId").value;
     if (!confirm("Yakin ingin menghapus tugas ini?")) return;
 
+    showLoading("Menghapus tugas...");
     try {
       await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ action: "delete", id: id })
       });
+      hideLoading();
       closeModal();
       loadTasks();
     } catch (err) {
+      hideLoading();
       alert("Gagal menghapus tugas.");
     }
   }
