@@ -187,7 +187,7 @@
     .count-progress { background-color: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
     .count-closed { background-color: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
 
-    /* Daftar List Tugas - Gradien Aesthetic & Profesional Sesuai Status */
+    /* Daftar List Tugas */
     .task-scroll-area {
       flex: 1;
       overflow-y: auto;
@@ -230,7 +230,7 @@
     .task-preview-info {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 4px;
       overflow: hidden;
       flex: 1;
       padding-right: 10px;
@@ -251,6 +251,17 @@
       flex-wrap: wrap;
       align-items: center;
     }
+
+    /* STYLING BADGE PIC WARNA-WARNI */
+    .pic-tag-badge {
+      display: inline-block;
+      padding: 1.5px 7px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 10.5px;
+      letter-spacing: 0.2px;
+    }
+
     .closed-date-tag {
       color: #4ade80;
       font-weight: 500;
@@ -374,7 +385,7 @@
 <body>
 
 <div class="container">
-  <!-- Header dengan Search & Tombol Tambah yang Proporsional -->
+  <!-- Header dengan Search & Tombol Tambah -->
   <div class="header-action-area">
     <div class="brand-wrapper">
       <h2>Web Kerja</h2>
@@ -426,7 +437,7 @@
 
 <datalist id="picListOptions"></datalist>
 
-<!-- Pop-up Modal: Tambah Tugas Baru -->
+<!-- Pop-up Modal: Tambah Tugas Baru Utama -->
 <div class="modal-overlay" id="addModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -482,7 +493,7 @@
   </div>
 </div>
 
-<!-- Pop-up Modal: Detail & Edit Tugas -->
+<!-- Pop-up Modal: Detail & Edit Tugas Utama -->
 <div class="modal-overlay" id="taskModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -521,7 +532,7 @@
       </label>
       <label>
         % Status:
-        <select id="modalPercentSelect" onchange="handlePercentSelect('edit')">
+        <select id="modalPercentSelect" onchange="handlePercentChange('edit')">
           <option value="0%">0%</option>
           <option value="10%">10%</option>
           <option value="20%">20%</option>
@@ -555,7 +566,6 @@
 
   let allTasks = [];
 
-  // Live Real-Time Clock
   function updateClock() {
     const now = new Date();
     const options = { day: '2-digit', month: 'short', year: 'numeric' };
@@ -565,6 +575,46 @@
   }
   setInterval(updateClock, 1000);
   updateClock();
+
+  // FUNGSI KHUSUS PEMETIK WARNA PIC
+  function getPicBadgeStyle(picName) {
+    if (!picName || picName === "-") {
+      return { bg: "rgba(255,255,255,0.1)", text: "#cbd5e1" };
+    }
+    
+    const p = picName.toLowerCase().trim();
+
+    // Pemetaan khusus yang diminta
+    if (p.includes("saripudin")) {
+      return { bg: "#ffffff", text: "#1e293b" }; // Saripudin: Putih
+    }
+    if (p.includes("yossandy")) {
+      return { bg: "#ef4444", text: "#ffffff" }; // Yossandy: Merah
+    }
+    if (p.includes("nursandi")) {
+      return { bg: "#06b6d4", text: "#ffffff" }; // Nursandi: Cyan/Biru Muda
+    }
+    if (p.includes("nedi")) {
+      return { bg: "#a855f7", text: "#ffffff" }; // M. Nedi: Ungu
+    }
+    if (p.includes("harits")) {
+      return { bg: "#f97316", text: "#ffffff" }; // Harits: Oranye
+    }
+    if (p.includes("febry")) {
+      return { bg: "#10b981", text: "#ffffff" }; // Febry: Hijau
+    }
+    if (p.includes("trengginas")) {
+      return { bg: "#ec4899", text: "#ffffff" }; // Trengginas: Pink
+    }
+
+    // Generator warna otomatis jika ada PIC baru di luar daftar di atas
+    let hash = 0;
+    for (let i = 0; i < p.length; i++) {
+      hash = p.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = Math.abs(hash) % 360;
+    return { bg: `hsl(${hue}, 75%, 45%)`, text: "#ffffff" };
+  }
 
   function formatDateCustom(dateString) {
     if (!dateString) return "-";
@@ -581,7 +631,6 @@
     return `${day} ${month} ${year} ${hours}:${minutes}`;
   }
 
-  // Format ringkas khusus tanggal closed pada kartu list
   function formatShortDate(dateString) {
     if (!dateString) return "";
     const d = new Date(dateString);
@@ -699,17 +748,20 @@
       li.className = `task-item status-${t.status}`;
       li.onclick = () => openModal(t);
 
-      // Tampilkan tanggal closed jika status closed dan closedAt tersedia
       let closedDateHtml = "";
       if (t.status === "Closed" && t.closedAt) {
         closedDateHtml = `<span>•</span> <span class="closed-date-tag">Closed: ${formatShortDate(t.closedAt)}</span>`;
       }
 
+      // Ambil gaya warna untuk PIC
+      const picStyle = getPicBadgeStyle(t.pic);
+      const picBadgeHtml = `<span class="pic-tag-badge" style="background-color: ${picStyle.bg}; color: ${picStyle.text};">${t.pic || "-"}</span>`;
+
       li.innerHTML = `
         <div class="task-preview-info">
           <span class="task-plan-text">${t.task || "(Tanpa Nama Tugas)"}</span>
           <div class="task-meta-preview">
-            <span><b>PIC:</b> ${t.pic || "-"}</span>
+            <span><b>PIC:</b> ${picBadgeHtml}</span>
             <span>•</span>
             <span><b>% Status:</b> ${t.percentStatus || "0%"}</span>
             ${closedDateHtml}
