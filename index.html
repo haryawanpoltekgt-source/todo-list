@@ -232,7 +232,6 @@
     .icon-work { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
     .icon-request { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
     .icon-register { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
-    .icon-absensi { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
     
     .menu-info h3 { margin: 0 0 2px 0; font-size: 14px; color: #ffffff; font-weight: 700; }
     .menu-info span { font-size: 11px; color: var(--text-secondary); }
@@ -334,6 +333,13 @@
       border: 1px solid var(--border-color);
     }
     .btn-refresh:hover { background-color: var(--card-hover); color: var(--text-main); }
+
+    .btn-absensi {
+      background: rgba(139, 92, 246, 0.15);
+      color: #a78bfa;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+    .btn-absensi:hover { background: rgba(139, 92, 246, 0.25); }
 
     /* Filter Box */
     .filter-box {
@@ -711,15 +717,6 @@
           <span>Daftar akun baru (Membutuhkan Approval SuperUser)</span>
         </div>
       </div>
-
-      <!-- TOMBOL ABSENSI PDCA -->
-      <div class="menu-card" onclick="openAbsensiView()">
-        <div class="menu-icon icon-absensi">📊</div>
-        <div class="menu-info">
-          <h3>Absensi PDCA</h3>
-          <span>Monitoring rekapitulasi kehadiran login harian anggota</span>
-        </div>
-      </div>
       
       <!-- TOMBOL KE HALAMAN PERMINTAAN BANTUAN ASSET & SYSTEM -->
       <div class="menu-card" onclick="window.location.href='PBAS.html'">
@@ -748,6 +745,7 @@
       <input type="text" id="searchInput" class="search-input" placeholder="Cari..." oninput="renderTasks()">
       <div class="button-group">
         <button class="btn-action-base btn-refresh" onclick="loadTasks()" title="Muat Ulang">🔄</button>
+        <button class="btn-action-base btn-absensi" onclick="openAbsensiView()" title="Absensi PDCA">📊 Absensi</button>
         <button class="btn-action-base btn-open-add" onclick="openAddModal()">+ Tambah</button>
       </div>
     </div>
@@ -793,7 +791,7 @@
   <!-- ==================== HALAMAN 4: ABSENSI PDCA ==================== -->
   <div id="absensiView" class="app-view">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink: 0;">
-      <button class="back-nav" onclick="switchView('homeView')">← Menu Utama</button>
+      <button class="back-nav" onclick="switchView('workView')">← Kembali ke Web Kerja</button>
       <span style="font-size: 11.5px; color: var(--accent-cyan); font-weight: 600;">Monitor Kehadiran</span>
     </div>
 
@@ -808,17 +806,6 @@
     <div class="absensi-list-container" id="absensiListContainer">
       <div style='text-align:center; color:#9099a2; padding:20px;'>Memuat data absensi...</div>
     </div>
-  </div>
-
-
-  <!-- ==================== HALAMAN 3: PERMINTAAN BANTUAN ==================== -->
-  <div id="requestView" class="app-view" style="justify-content: center; align-items: center; text-align: center; padding: 20px;">
-    <button class="back-nav" onclick="switchView('homeView')" style="position: absolute; top: 16px; left: 16px;">← Menu Utama</button>
-    <div style="font-size: 48px; margin-bottom: 12px;">🚧</div>
-    <h2 style="font-size: 20px; margin-bottom: 8px;">Permintaan Bantuan Asset & System</h2>
-    <p style="color: var(--text-secondary); font-size: 13px; max-width: 320px; line-height: 1.5;">
-      Modul ini sedang dalam tahap pengembangan (*development*). Segera hadir untuk memfasilitasi pengajuan dan perbaikan asset Anda secara terintegrasi.
-    </p>
   </div>
 
 </div>
@@ -871,7 +858,7 @@
         Password:
         <input type="password" id="regPass" placeholder="Buat password...">
       </label>
-      <span style="font-size: 11px; color: #94a3b8; margin-top: 4px;">*Akun baru memerlukan persetujuan (Approved) oleh SuperUser melalui Google Sheet sebelum dapat digunakan untuk login.</span>
+      <span style="font-size: 11px; color: #94a3b8; margin-top: 4px;">*Akun baru memerlukan persetujuan (Approved) oleh SuperUser melalui Google Sheet dapat digunakan untuk login.</span>
     </div>
     <div class="modal-footer" style="justify-content: flex-end; gap: 6px;">
       <button onclick="closeRegisterModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Batal</button>
@@ -1076,7 +1063,6 @@
   function switchView(viewId) {
     document.getElementById('homeView').style.display = 'none';
     document.getElementById('workView').style.display = 'none';
-    document.getElementById('requestView').style.display = 'none';
     document.getElementById('absensiView').style.display = 'none';
     document.getElementById(viewId).style.display = 'flex';
   }
@@ -1348,7 +1334,6 @@
       opt.textContent = pic;
       filterPicSelect.appendChild(opt);
 
-      // Pencocokan ketat berdasarkan Nama Lengkap yang login (bukan angka/NIP)
       const cleanPic = pic.toLowerCase().trim();
       if (cleanUserNama && (cleanPic === cleanUserNama || cleanPic.includes(cleanUserNama))) {
         matchedUserPic = pic;
