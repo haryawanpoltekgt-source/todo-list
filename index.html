@@ -998,6 +998,7 @@
 
   let allTasks = [];
   let currentUserNama = "";
+  let currentUserNip = "";
   let currentUserRole = "Member";
 
   function showLoading(text = "Memproses data...") {
@@ -1069,6 +1070,7 @@
 
   function logout() {
     currentUserNama = "";
+    currentUserNip = "";
     currentUserRole = "Member";
     document.getElementById("loggedInUserLabel").textContent = "";
     switchView('homeView');
@@ -1178,6 +1180,7 @@
 
       if (res.status === "success") {
         currentUserNama = res.nama;
+        currentUserNip = nip;
         currentUserRole = res.role || "Member";
         document.getElementById("loggedInUserLabel").textContent = `👤 ${currentUserNama} (${currentUserRole}) - ${nip}`;
         closeLoginModal();
@@ -1327,6 +1330,7 @@
     
     let matchedUserPic = "";
     const cleanUserNama = currentUserNama ? currentUserNama.toLowerCase().trim() : "";
+    const cleanUserNip = currentUserNip ? currentUserNip.toLowerCase().trim() : "";
 
     pics.forEach(pic => {
       const opt = document.createElement("option");
@@ -1335,7 +1339,7 @@
       filterPicSelect.appendChild(opt);
 
       const cleanPic = pic.toLowerCase().trim();
-      if (cleanUserNama && (cleanPic === cleanUserNama || cleanPic.includes(cleanUserNama))) {
+      if ((cleanUserNama && cleanPic.includes(cleanUserNama)) || (cleanUserNip && cleanPic.includes(cleanUserNip))) {
         matchedUserPic = pic;
       }
     });
