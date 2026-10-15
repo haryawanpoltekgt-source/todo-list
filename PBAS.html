@@ -164,11 +164,11 @@
       flex-direction: column;
       gap: 6px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: transform 0.2s ease, border-color 0.2s ease;
     }
     .pbas-item-card:hover {
+      transform: translateY(-2px);
       border-color: var(--accent-cyan);
-      background: #1b2332;
     }
     .pbas-item-header {
       display: flex;
@@ -181,27 +181,15 @@
       font-size: 13.5px;
       font-weight: 700;
       color: #ffffff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    /* Bagian Detail yang tersembunyi secara default */
-    .pbas-detail-content {
-      display: none;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 6px;
-      padding-top: 8px;
-      border-top: 1px dashed var(--border-color);
-    }
-    .pbas-item-card.active .pbas-detail-content {
-      display: flex;
     }
     .pbas-desc {
       font-size: 12px;
       color: #cbd5e1;
       line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     .badge-cat {
       background: rgba(59, 130, 246, 0.15);
@@ -212,15 +200,99 @@
       font-size: 10.5px;
       font-weight: 600;
     }
-    .toggle-icon {
-      font-size: 12px;
+
+    /* --- MODAL DETAIL POP-UP --- */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      z-index: 3000;
+      padding: 16px;
+    }
+    .modal-content {
+      background: var(--card-bg);
+      color: var(--text-main);
+      width: 100%;
+      max-width: 450px;
+      padding: 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: alertPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes alertPop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+    .modal-header h3 { margin: 0; color: #ffffff; font-size: 16px; font-weight: 700; }
+    .btn-close-modal {
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
       color: var(--text-secondary);
-      transition: transform 0.2s;
+      line-height: 1;
     }
-    .pbas-item-card.active .toggle-icon {
-      transform: rotate(180deg);
-      color: var(--accent-cyan);
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
+    .modal-field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .modal-field label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .modal-field .field-value {
+      background: #161b26;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 13px;
+      color: #ffffff;
+      word-break: break-word;
+      line-height: 1.4;
+    }
+    .modal-footer {
+      border-top: 1px solid var(--border-color);
+      padding-top: 10px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-close-popup {
+      background: #2a3447;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12.5px;
+      cursor: pointer;
+    }
+    .btn-close-popup:hover { background: var(--card-hover); }
   </style>
 </head>
 <body>
@@ -231,6 +303,47 @@
   <div id="loadingOverlay">
     <div class="spinner"></div>
     <div class="loading-text" id="loadingText">Memproses data...</div>
+  </div>
+
+  <!-- MODAL DETAIL POP-UP -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Detail Permintaan Bantuan</h3>
+        <button class="btn-close-modal" onclick="closeDetailModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-field">
+          <label>ID Permintaan</label>
+          <div class="field-value" id="modalId">-</div>
+        </div>
+        <div class="modal-field">
+          <label>Kategori</label>
+          <div class="field-value" id="modalKategori">-</div>
+        </div>
+        <div class="modal-field">
+          <label>Judul / Perihal Kendala</label>
+          <div class="field-value" id="modalJudul">-</div>
+        </div>
+        <div class="modal-field">
+          <label>Detail Deskripsi Masalah</label>
+          <div class="field-value" id="modalDeskripsi" style="white-space: pre-wrap;">-</div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <div class="modal-field" style="flex: 1;">
+            <label>Pelapor</label>
+            <div class="field-value" id="modalNama">-</div>
+          </div>
+          <div class="modal-field" style="flex: 1;">
+            <label>Waktu Pengajuan</label>
+            <div class="field-value" id="modalWaktu">-</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-close-popup" onclick="closeDetailModal()">Tutup</button>
+      </div>
+    </div>
   </div>
 
   <div class="nav-header">
@@ -307,7 +420,7 @@
       listView.style.display = "flex";
       btnToggle.textContent = "✍️ Buat Permintaan Baru";
       pageTitle.textContent = "Daftar Permintaan Bantuan";
-      pageSubtitle.textContent = "Riwayat pengajuan perbaikan asset dan system (Klik kartu untuk melihat detail)";
+      pageSubtitle.textContent = "Riwayat pengajuan perbaikan asset dan system";
       loadPbasList();
     } else {
       formView.style.display = "flex";
@@ -339,26 +452,19 @@
         const card = document.createElement("div");
         card.className = "pbas-item-card";
         
-        // Event listener saat kartu diklik untuk membuka/menutup detail
-        card.onclick = () => {
-          card.classList.toggle("active");
-        };
+        // Event listener saat kartu diklik untuk membuka modal detail
+        card.onclick = () => openDetailModal(item);
 
         card.innerHTML = `
           <div class="pbas-item-header">
-            <span><b>Pelapor:</b> ${item.nama}</span>
+            <span><b>ID:</b> ${item.id}</span>
             <span class="badge-cat">${item.kategori}</span>
           </div>
-          <div class="pbas-title">
-            <span>${item.judul}</span>
-            <span class="toggle-icon">▼</span>
-          </div>
-          <div class="pbas-detail-content">
-            <div style="font-size: 11px; color: var(--accent-cyan);"><b>ID:</b> ${item.id}</div>
-            <div class="pbas-desc"><b>Deskripsi:</b><br>${item.deskripsi}</div>
-            <div style="font-size: 10.5px; color: #9099a2; margin-top: 2px;">
-              <span><b>Waktu Pengajuan:</b> ${item.waktu}</span>
-            </div>
+          <div class="pbas-title">${item.judul}</div>
+          <div class="pbas-desc">${item.deskripsi}</div>
+          <div style="font-size: 10.5px; color: #9099a2; display: flex; justify-content: space-between; margin-top: 4px;">
+            <span>Pelapor: <b>${item.nama}</b></span>
+            <span>${item.waktu}</span>
           </div>
         `;
         container.appendChild(card);
@@ -367,6 +473,21 @@
       hideLoading();
       container.innerHTML = "<div style='text-align:center; color:#f87171; padding:20px;'>Gagal memuat data dari server.</div>";
     }
+  }
+
+  function openDetailModal(item) {
+    document.getElementById("modalId").textContent = item.id || "-";
+    document.getElementById("modalKategori").textContent = item.kategori || "-";
+    document.getElementById("modalJudul").textContent = item.judul || "-";
+    document.getElementById("modalDeskripsi").textContent = item.deskripsi || "-";
+    document.getElementById("modalNama").textContent = item.nama || "-";
+    document.getElementById("modalWaktu").textContent = item.waktu || "-";
+    
+    document.getElementById("detailModal").style.display = "flex";
+  }
+
+  function closeDetailModal() {
+    document.getElementById("detailModal").style.display = "none";
   }
 
   async function kirimPermintaan() {
