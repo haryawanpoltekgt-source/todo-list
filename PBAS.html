@@ -348,7 +348,7 @@
       font-weight: 600;
       color: var(--text-secondary);
     }
-    .modal-body input, .modal-body textarea {
+    .modal-body input, .modal-body select, .modal-body textarea {
       padding: 9px 12px;
       font-size: 12.5px;
       font-family: inherit;
@@ -372,7 +372,7 @@
       padding-top: 10px;
     }
     .btn-save {
-      background: linear-gradient(135deg, var(--accent-red), #dc2626);
+      background: linear-gradient(135deg, var(--accent-green), #16a34a);
       color: white;
       border: none;
       padding: 9px 16px;
@@ -504,7 +504,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn-close-btn" onclick="closeAdminLoginModal()">Batal</button>
-      <button class="btn-save" onclick="submitAdminLogin()">Login Admin</button>
+      <button class="btn-save" style="background: linear-gradient(135deg, var(--accent-red), #dc2626);" onclick="submitAdminLogin()">Login Admin</button>
     </div>
   </div>
 </div>
@@ -517,6 +517,7 @@
       <button class="btn-close-modal" onclick="closeDetailModal()">&times;</button>
     </div>
     <div class="modal-body">
+      <input type="hidden" id="modalIdHidden">
       <label>
         ID Permintaan:
         <input type="text" id="modalId" disabled>
@@ -539,11 +540,30 @@
       </label>
       <label>
         Detail Deskripsi Masalah:
-        <textarea id="modalDeskripsi" rows="4" disabled></textarea>
+        <textarea id="modalDeskripsi" rows="3" disabled></textarea>
       </label>
+
+      <!-- FIELD KHUSUS ADMIN -->
+      <div id="adminActionSection" style="display: none; flex-direction: column; gap: 10px; border-top: 1px dashed var(--border-color); padding-top: 10px; margin-top: 4px;">
+        <label>
+          Status Pengajuan:
+          <select id="modalStatusPengajuan">
+            <option value="">-- Pilih Status --</option>
+            <option value="Disetujui - Menunggu antrian">Disetujui - Menunggu antrian</option>
+            <option value="Ditolak">Ditolak</option>
+          </select>
+        </label>
+        <label>
+          Tujukan ke PIC:
+          <select id="modalTujukanPic">
+            <option value="">-- Pilih PIC --</option>
+          </select>
+        </label>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-close-btn" onclick="closeDetailModal()">Tutup</button>
+      <button class="btn-save" id="btnSaveAdmin" style="display: none;" onclick="saveAdminAction()">Simpan Keputusan</button>
     </div>
   </div>
 </div>
@@ -553,6 +573,7 @@
   let isListView = false;
   let currentUserRole = "Tamu";
   let currentAdminNama = "";
+  let userListCache = [];
 
   function showLoading(text = "Memproses data...") {
     document.getElementById("loadingText").textContent = text;
@@ -560,6 +581,16 @@
   }
   function hideLoading() {
     document.getElementById("loadingOverlay").style.display = "none";
+  }
+
+  async function loadUserListCache() {
+    try {
+      const response = await fetch(`${API_URL}?action=getUsers`);
+      const res = await response.json();
+      userListCache = Array.isArray(res) ? res : [];
+    } catch (e) {
+      userListCache = [];
+    }
   }
 
   function selectRole(role, adminNama = "") {
@@ -578,20 +609,19 @@
       badgeEl.className = "user-badge badge-admin";
       pbasNamaEl.value = adminNama;
       
-      // Sembunyikan tombol "Buat Permintaan Baru", langsung aktifkan tampilan Daftar
       btnToggle.style.display = "none";
       isListView = false;
-      toggleView(); // Langsung pindah ke halaman Daftar Permintaan
+      toggleView(); 
+      loadUserListCache();
     } else {
       badgeEl.textContent = "Role: Tamu";
       badgeEl.className = "user-badge badge-tamu";
       pbasNamaEl.value = "";
       pbasNamaEl.disabled = false;
 
-      // Munculkan kembali tombol toggle untuk tamu
       btnToggle.style.display = "inline-block";
       isListView = true;
-      toggleView(); // Kembali ke form input untuk tamu
+      toggleView();
     }
   }
 
@@ -731,6 +761,7 @@
 
   function openDetailModal(item) {
     document.getElementById("modalIdTitle").textContent = `Detail Permintaan (${item.id})`;
+    document.getElementById("modalIdHidden").value = item.id || "";
     document.getElementById("modalId").value = item.id || "-";
     document.getElementById("modalWaktu").value = item.waktu || "-";
     document.getElementById("modalPelapor").value = item.nama || "-";
@@ -738,11 +769,73 @@
     document.getElementById("modalJudul").value = item.judul || "-";
     document.getElementById("modalDeskripsi").value = item.deskripsi || "-";
 
+    const adminSection = document.getElementById("adminActionSection");
+    const btnSaveAdmin = document.getElementById("btnSaveAdmin");
+    const statusSelect = document.getElementById("modalStatusPengajuan");
+    const picSelect = document.getElementById("modalTujukanPic");
+
+    // Populate dropdown PIC
+    picSelect.innerHTML = '<option value="">-- Pilih PIC --</option>';
+    userListCache.forEach(u => {
+      const optVal = `${u.nip} [${u.nama}]`;
+      const opt = document.createElement("option");
+      opt.value = optVal;
+      opt.textContent = optVal;
+      picSelect.appendChild(opt);
+    });
+
+    if (currentUserRole === "Admin") {
+      adminSection.style.display = "flex";
+      btnSaveAdmin.style.display = "inline-block";
+      statusSelect.value = item.statusPengajuan || "";
+      picSelect.value = item.tujukanPic || "";
+    } else {
+      adminSection.style.display = "none";
+      btnSaveAdmin.style.display = "none";
+    }
+
     document.getElementById("pbasDetailModal").style.display = "flex";
   }
 
   function closeDetailModal() {
     document.getElementById("pbasDetailModal").style.display = "none";
+  }
+
+  async function saveAdminAction() {
+    const id = document.getElementById("modalIdHidden").value;
+    const statusPengajuan = document.getElementById("modalStatusPengajuan").value;
+    const tujukanPic = document.getElementById("modalTujukanPic").value;
+
+    if (!statusPengajuan) {
+      alert("Silakan pilih status pengajuan terlebih dahulu!");
+      return;
+    }
+
+    if (statusPengajuan === "Disetujui - Menunggu antrian" && !tujukanPic) {
+      alert("Silakan pilih PIC tujuan jika permintaan disetujui!");
+      return;
+    }
+
+    showLoading("Menyimpan keputusan admin...");
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          action: "updatePbasAdmin",
+          id: id,
+          statusPengajuan: statusPengajuan,
+          tujukanPic: tujukanPic
+        })
+      });
+      hideLoading();
+      alert("Keputusan berhasil disimpan!");
+      closeDetailModal();
+      loadPbasList();
+    } catch (err) {
+      hideLoading();
+      alert("Gagal menyimpan keputusan. Periksa koneksi.");
+    }
   }
 
   async function kirimPermintaan() {
