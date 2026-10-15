@@ -13,8 +13,10 @@
       --text-secondary: #9099a2;
       --border-color: #2a3447;
       --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
       --accent-cyan: #06b6d4;
       --accent-green: #22c55e;
+      --accent-red: #ef4444;
     }
 
     * { box-sizing: border-box; }
@@ -71,6 +73,76 @@
     }
     .loading-text { font-size: 13px; font-weight: 600; color: var(--text-main); }
 
+    /* --- HALAMAN PILIH ROLE --- */
+    #roleSelectionView {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+      padding: 20px;
+    }
+    .role-header h1 {
+      color: #ffffff;
+      font-size: 22px;
+      margin: 0 0 6px 0;
+      font-weight: 800;
+    }
+    .role-header p {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin: 0;
+    }
+    .role-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 380px;
+    }
+    .role-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.25s ease;
+      text-align: left;
+    }
+    .role-card:hover {
+      background: var(--card-hover);
+      border-color: var(--accent-cyan);
+      transform: translateY(-2px);
+    }
+    .role-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .icon-tamu { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
+    .icon-admin { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    
+    .role-info h3 { margin: 0 0 2px 0; font-size: 15px; color: #ffffff; font-weight: 700; }
+    .role-info span { font-size: 11.5px; color: var(--text-secondary); }
+
+    /* --- HALAMAN FORM & LIST --- */
+    #mainAppView {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
     .nav-header {
       display: flex;
       justify-content: space-between;
@@ -108,9 +180,22 @@
     .header-area {
       margin-bottom: 14px;
       flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
     }
     h2 { color: #ffffff; margin: 0 0 4px 0; font-size: 18px; font-weight: 700; }
     p.subtitle { margin: 0; font-size: 12px; color: var(--text-secondary); }
+
+    .user-badge {
+      font-size: 10.5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .badge-tamu { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
+    .badge-admin { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
 
     /* Card / Container View */
     .content-card {
@@ -206,7 +291,7 @@
       white-space: nowrap;
     }
 
-    /* Modal Detail Styling */
+    /* Modal Styling Dark */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -223,14 +308,14 @@
       background: var(--card-bg);
       color: var(--text-main);
       width: 100%;
-      max-width: 450px;
+      max-width: 420px;
       padding: 18px;
       border-radius: 12px;
       border: 1px solid var(--border-color);
       box-shadow: 0 15px 35px rgba(0,0,0,0.5);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       max-height: 90vh;
       overflow-y: auto;
     }
@@ -253,18 +338,18 @@
     .modal-body {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
     .modal-body label {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 4px;
       font-size: 11.5px;
       font-weight: 600;
       color: var(--text-secondary);
     }
     .modal-body input, .modal-body textarea {
-      padding: 8px 10px;
+      padding: 9px 12px;
       font-size: 12.5px;
       font-family: inherit;
       border: 1px solid var(--border-color);
@@ -282,8 +367,19 @@
     .modal-footer {
       display: flex;
       justify-content: flex-end;
+      gap: 8px;
       border-top: 1px solid var(--border-color);
       padding-top: 10px;
+    }
+    .btn-save {
+      background: linear-gradient(135deg, var(--accent-red), #dc2626);
+      color: white;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12.5px;
     }
     .btn-close-btn {
       background: #2a3447;
@@ -295,7 +391,6 @@
       font-weight: 600;
       font-size: 12.5px;
     }
-    .btn-close-btn:hover { background: var(--card-hover); }
   </style>
 </head>
 <body>
@@ -308,56 +403,113 @@
     <div class="loading-text" id="loadingText">Memproses data...</div>
   </div>
 
-  <div class="nav-header">
-    <a href="index.html" class="back-nav">← Kembali ke Menu Utama</a>
-    <button class="btn-list-view" id="btnToggleView" onclick="toggleView()">📋 Lihat Daftar Permintaan</button>
+  <!-- ==================== TAMPILAN 1: PILIH ROLE ==================== -->
+  <div id="roleSelectionView">
+    <a href="index.html" class="back-nav" style="align-self: flex-start;">← Kembali ke Menu Utama</a>
+    <div class="role-header">
+      <h1>Permintaan Bantuan (PBAS)</h1>
+      <p>Silakan pilih role akses Anda terlebih dahulu</p>
+    </div>
+
+    <div class="role-grid">
+      <div class="role-card" onclick="selectRole('Tamu')">
+        <div class="role-icon icon-tamu">👤</div>
+        <div class="role-info">
+          <h3>Masuk Sebagai Tamu</h3>
+          <span>Pengajuan kendala langsung tanpa perlu login</span>
+        </div>
+      </div>
+
+      <div class="role-card" onclick="openAdminLoginModal()">
+        <div class="role-icon icon-admin">🛡️</div>
+        <div class="role-info">
+          <h3>Masuk Sebagai Admin</h3>
+          <span>Akses khusus Superuser (Memerlukan NIP & Password)</span>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="header-area">
-    <h2 id="pageTitle">Permintaan Bantuan Asset & System</h2>
-    <p class="subtitle" id="pageSubtitle">Isi formulir di bawah ini untuk mengajukan perbaikan atau kendala asset/sistem</p>
-  </div>
-
-  <!-- VIEW 1: FORMULIR INPUT -->
-  <div class="content-card" id="formView">
-    <div class="form-group">
-      <label>Nama Pemohon / Pelapor:</label>
-      <input type="text" id="pbasNama" placeholder="Masukkan nama lengkap...">
+  <!-- ==================== TAMPILAN 2: UTAMA (FORM & LIST) ==================== -->
+  <div id="mainAppView">
+    <div class="nav-header">
+      <button class="back-nav" onclick="changeRole()">← Ganti Role Akses</button>
+      <button class="btn-list-view" id="btnToggleView" onclick="toggleView()">📋 Lihat Daftar Permintaan</button>
     </div>
 
-    <div class="form-group">
-      <label>Kategori Kendala:</label>
-      <select id="pbasKategori">
-        <option value="Hardware">Hardware / Perangkat Keras</option>
-        <option value="Software">Software / Aplikasi / Sistem</option>
-        <option value="Jaringan">Jaringan / Internet</option>
-        <option value="Lainnya">Lainnya</option>
-      </select>
+    <div class="header-area">
+      <div>
+        <h2 id="pageTitle">Permintaan Bantuan Asset & System</h2>
+        <p class="subtitle" id="pageSubtitle">Isi formulir di bawah ini untuk mengajukan perbaikan atau kendala asset/sistem</p>
+      </div>
+      <span class="user-badge" id="userRoleBadge">Tamu</span>
     </div>
 
-    <div class="form-group">
-      <label>Judul / Perihal Kendala:</label>
-      <input type="text" id="pbasJudul" placeholder="Contoh: Printer Rusak / Aplikasi Error...">
+    <!-- VIEW FORMULIR INPUT -->
+    <div class="content-card" id="formView">
+      <div class="form-group">
+        <label>Nama Pemohon / Pelapor:</label>
+        <input type="text" id="pbasNama" placeholder="Masukkan nama lengkap...">
+      </div>
+
+      <div class="form-group">
+        <label>Kategori Kendala:</label>
+        <select id="pbasKategori">
+          <option value="Hardware">Hardware / Perangkat Keras</option>
+          <option value="Software">Software / Aplikasi / Sistem</option>
+          <option value="Jaringan">Jaringan / Internet</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Judul / Perihal Kendala:</label>
+        <input type="text" id="pbasJudul" placeholder="Contoh: Printer Rusak / Aplikasi Error...">
+      </div>
+
+      <div class="form-group">
+        <label>Detail Deskripsi Masalah:</label>
+        <textarea id="pbasDeskripsi" rows="4" placeholder="Jelaskan secara detail kendala yang dialami..."></textarea>
+      </div>
+
+      <button class="btn-submit" onclick="kirimPermintaan()">Kirim Permintaan Bantuan</button>
     </div>
 
-    <div class="form-group">
-      <label>Detail Deskripsi Masalah:</label>
-      <textarea id="pbasDeskripsi" rows="4" placeholder="Jelaskan secara detail kendala yang dialami..."></textarea>
-    </div>
-
-    <button class="btn-submit" onclick="kirimPermintaan()">Kirim Permintaan Bantuan</button>
-  </div>
-
-  <!-- VIEW 2: DAFTAR RIWAYAT PERMINTAAN -->
-  <div class="content-card" id="listView" style="display: none; gap: 8px;">
-    <div id="pbasListContainer" style="display: flex; flex-direction: column; gap: 8px; overflow-y: auto;">
-      <div style="text-align:center; color:#9099a2; padding:20px;">Memuat data...</div>
+    <!-- VIEW DAFTAR RIWAYAT PERMINTAAN -->
+    <div class="content-card" id="listView" style="display: none; gap: 8px;">
+      <div id="pbasListContainer" style="display: flex; flex-direction: column; gap: 8px; overflow-y: auto;">
+        <div style="text-align:center; color:#9099a2; padding:20px;">Memuat data...</div>
+      </div>
     </div>
   </div>
 
 </div>
 
-<!-- MODAL DETAIL PERMINTAAN -->
+<!-- ==================== MODAL LOGIN ADMIN ==================== -->
+<div class="modal-overlay" id="adminLoginModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Login Admin (Superuser)</h3>
+      <button class="btn-close-modal" onclick="closeAdminLoginModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <label>
+        NIP (Nomor Induk Pegawai):
+        <input type="text" id="adminNip" placeholder="Masukkan NIP Superuser...">
+      </label>
+      <label>
+        Password:
+        <input type="password" id="adminPass" placeholder="Masukkan password...">
+      </label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-close-btn" onclick="closeAdminLoginModal()">Batal</button>
+      <button class="btn-save" onclick="submitAdminLogin()">Login Admin</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL DETAIL PERMINTAAN ==================== -->
 <div class="modal-overlay" id="pbasDetailModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -399,6 +551,8 @@
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbw3AD9zzKrjxp9stU-nbBrPS3jSv8O9oDLp6O51_Absp6OTBq9yWah4J8q_DnRrhkPt/exec";
   let isListView = false;
+  let currentUserRole = "Tamu"; // "Tamu" atau "Admin"
+  let currentAdminNama = "";
 
   function showLoading(text = "Memproses data...") {
     document.getElementById("loadingText").textContent = text;
@@ -406,6 +560,83 @@
   }
   function hideLoading() {
     document.getElementById("loadingOverlay").style.display = "none";
+  }
+
+  function selectRole(role, adminNama = "") {
+    currentUserRole = role;
+    currentAdminNama = adminNama;
+
+    document.getElementById("roleSelectionView").style.display = "none";
+    document.getElementById("mainAppView").style.display = "flex";
+
+    const badgeEl = document.getElementById("userRoleBadge");
+    const pbasNamaEl = document.getElementById("pbasNama");
+
+    if (role === "Admin") {
+      badgeEl.textContent = `Admin (${adminNama})`;
+      badgeEl.className = "user-badge badge-admin";
+      pbasNamaEl.value = adminNama;
+      pbasNamaEl.disabled = true; // Otomatis terisi nama Admin
+    } else {
+      badgeEl.textContent = "Role: Tamu";
+      badgeEl.className = "user-badge badge-tamu";
+      pbasNamaEl.value = "";
+      pbasNamaEl.disabled = false;
+    }
+  }
+
+  function changeRole() {
+    document.getElementById("mainAppView").style.display = "none";
+    document.getElementById("roleSelectionView").style.display = "flex";
+  }
+
+  function openAdminLoginModal() {
+    document.getElementById("adminNip").value = "";
+    document.getElementById("adminPass").value = "";
+    document.getElementById("adminLoginModal").style.display = "flex";
+  }
+  function closeAdminLoginModal() {
+    document.getElementById("adminLoginModal").style.display = "none";
+  }
+
+  async function submitAdminLogin() {
+    const nip = document.getElementById("adminNip").value.trim();
+    const password = document.getElementById("adminPass").value.trim();
+
+    if (!nip || !password) {
+      alert("NIP dan Password wajib diisi!");
+      return;
+    }
+
+    showLoading("Verifikasi hak akses Admin...");
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ action: "login", nip: nip, password: password })
+      });
+      const res = await response.json();
+      hideLoading();
+
+      if (res.status === "success") {
+        // Cek apakah Role adalah Superuser
+        if (res.role && res.role.toLowerCase() === "superuser") {
+          closeAdminLoginModal();
+          selectRole("Admin", res.nama);
+        } else {
+          alert("Akses Ditolak! Akun Anda bukan berstatus Superuser (Admin).");
+        }
+      } else if (res.status === "wrong_password") {
+        alert("Password salah. Silakan coba lagi.");
+      } else if (res.status === "pending") {
+        alert("Akun masih dalam status PENDING (Belum disetujui).");
+      } else {
+        alert("NIP tidak ditemukan dalam sistem UserID.");
+      }
+    } catch (err) {
+      hideLoading();
+      alert("Gagal terhubung ke server. Coba lagi nanti.");
+    }
   }
 
   function toggleView() {
@@ -530,8 +761,10 @@
       hideLoading();
       alert("Permintaan bantuan berhasil dikirim dan tercatat di sistem!");
       
-      // Reset form
-      document.getElementById("pbasNama").value = "";
+      // Reset form (jika Tamu, bersihkan nama)
+      if (currentUserRole === "Tamu") {
+        document.getElementById("pbasNama").value = "";
+      }
       document.getElementById("pbasJudul").value = "";
       document.getElementById("pbasDeskripsi").value = "";
 
