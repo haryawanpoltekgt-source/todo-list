@@ -1,7 +1,8 @@
 {
   "name": "Portal Asset & System",
   "short_name": "Portal Asset",
-  "start_url": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#12161f",
   "theme_color": "#12161f",
