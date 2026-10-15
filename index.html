@@ -19,726 +19,182 @@
       --accent-red: #ef4444;
       --accent-warn: #f59e0b;
     }
-
     * { box-sizing: border-box; }
     html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
+      height: 100%; margin: 0; padding: 0; overflow: hidden;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-app);
-      color: var(--text-main);
-    }
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background-color: var(--bg-app); color: var(--text-main);
+      display: flex; justify-content: center; align-items: center;
     }
     .container {
-      width: 100%;
-      max-width: 700px;
-      height: 100%;
-      max-height: 100vh;
-      background: var(--bg-app);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
+      width: 100%; max-width: 700px; height: 100%; max-height: 100vh;
+      background: var(--bg-app); padding: 16px; display: flex; flex-direction: column; overflow: hidden; position: relative;
     }
-
-    /* --- LOADING OVERLAY ANIMATION --- */
     #loadingOverlay {
-      display: none;
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(18, 22, 31, 0.85);
-      backdrop-filter: blur(5px);
-      z-index: 2000;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      gap: 12px;
+      display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(18, 22, 31, 0.85); backdrop-filter: blur(5px); z-index: 2000;
+      justify-content: center; align-items: center; flex-direction: column; gap: 12px;
     }
     .spinner {
-      width: 45px;
-      height: 45px;
-      border: 4px solid var(--border-color);
-      border-top: 4px solid var(--accent-blue);
-      border-radius: 50%;
+      width: 45px; height: 45px; border: 4px solid var(--border-color);
+      border-top: 4px solid var(--accent-blue); border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .loading-text {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-main);
-      letter-spacing: 0.5px;
-    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .loading-text { font-size: 13px; font-weight: 600; color: var(--text-main); letter-spacing: 0.5px; }
 
-    /* --- CUSTOM ALERT & CONFIRM MODAL --- */
     .custom-alert-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(4px);
-      z-index: 3000;
-      justify-content: center;
-      align-items: center;
-      padding: 16px;
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(4px); z-index: 3000;
+      justify-content: center; align-items: center; padding: 16px;
     }
     .custom-alert-box {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      width: 100%;
-      max-width: 360px;
-      border-radius: 14px;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      animation: alertPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      background: var(--card-bg); border: 1px solid var(--border-color); width: 100%; max-width: 360px;
+      border-radius: 14px; padding: 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      display: flex; flex-direction: column; gap: 14px;
     }
-    @keyframes alertPop {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .alert-icon-wrapper {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      margin: 0 auto;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 22px;
-    }
+    .alert-icon-wrapper { width: 48px; height: 48px; border-radius: 50%; margin: 0 auto; display: flex; justify-content: center; align-items: center; font-size: 22px; }
     .alert-icon-warning { background: rgba(245, 158, 11, 0.15); color: var(--accent-warn); border: 1px solid rgba(245, 158, 11, 0.3); }
     .alert-icon-success { background: rgba(34, 197, 94, 0.15); color: var(--accent-green); border: 1px solid rgba(34, 197, 94, 0.3); }
     .alert-icon-danger { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); }
-    .alert-icon-info { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); border: 1px solid rgba(59, 130, 246, 0.3); }
-    
     .custom-alert-box h4 { margin: 0; font-size: 16px; color: #ffffff; font-weight: 700; }
     .custom-alert-box p { margin: 0; font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
-    
-    .alert-actions {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
+    .alert-actions { display: flex; gap: 8px; justify-content: center; }
+    .btn-alert-ok, .btn-alert-cancel, .btn-alert-danger-confirm {
+      flex: 1; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; border: none;
     }
-    .btn-alert-ok {
-      flex: 1;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-      transition: opacity 0.2s;
-    }
-    .btn-alert-cancel {
-      flex: 1;
-      background: #2a3447;
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
-    }
-    .btn-alert-danger-confirm {
-      flex: 1;
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-    }
+    .btn-alert-ok { background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); color: white; }
+    .btn-alert-cancel { background: #2a3447; color: var(--text-main); border: 1px solid var(--border-color); }
+    .btn-alert-danger-confirm { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
 
-    /* --- PORTAL MENU UTAMA --- */
     #homeView {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      gap: 16px;
-      padding: 20px;
-      overflow-y: auto;
+      display: flex; flex-direction: column; height: 100%; justify-content: center; align-items: center; text-align: center; gap: 16px; padding: 20px; overflow-y: auto;
     }
-    .portal-header h1 {
-      color: #ffffff;
-      font-size: 24px;
-      margin: 0 0 4px 0;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-    .portal-header p {
-      color: var(--text-secondary);
-      font-size: 13px;
-      margin: 0;
-    }
-    .menu-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 100%;
-      max-width: 400px;
-    }
+    .portal-header h1 { color: #ffffff; font-size: 24px; margin: 0 0 4px 0; font-weight: 800; }
+    .portal-header p { color: var(--text-secondary); font-size: 13px; margin: 0; }
+    .menu-grid { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 400px; }
     .menu-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      padding: 14px 16px;
-      border-radius: 12px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      transition: all 0.25s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      text-align: left;
+      background: var(--card-bg); border: 1px solid var(--border-color); padding: 14px 16px; border-radius: 12px;
+      cursor: pointer; display: flex; align-items: center; gap: 14px; transition: all 0.25s ease; text-align: left;
     }
-    .menu-card:hover {
-      background: var(--card-hover);
-      border-color: var(--accent-blue);
-      transform: translateY(-2px);
-    }
-    .menu-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 9px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-    .icon-work { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
-    .icon-request { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
-    .icon-register { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
-    .icon-absensi { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
-    
+    .menu-card:hover { background: var(--card-hover); border-color: var(--accent-blue); transform: translateY(-2px); }
+    .menu-icon { width: 38px; height: 38px; border-radius: 9px; display: flex; justify-content: center; align-items: center; font-size: 18px; flex-shrink: 0; }
+    .icon-work { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .icon-request { background: rgba(6, 182, 212, 0.15); color: #22d3ee; }
+    .icon-register { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+    .icon-absensi { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
     .menu-info h3 { margin: 0 0 2px 0; font-size: 14px; color: #ffffff; font-weight: 700; }
     .menu-info span { font-size: 11px; color: var(--text-secondary); }
 
-    /* --- HALAMAN KONTEN UTAMA --- */
-    .app-view {
-      display: none;
-      flex-direction: column;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    .back-nav {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--accent-blue);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-bottom: 10px;
-      background: none;
-      border: none;
-      padding: 0;
-      flex-shrink: 0;
-    }
-    .back-nav:hover { text-decoration: underline; }
-
-    .header-action-area {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      flex-shrink: 0;
-      gap: 6px;
-    }
-    .brand-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      white-space: nowrap;
-    }
-    h2 { 
-      color: #ffffff; 
-      margin: 0; 
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-    }
-    .live-clock {
-      font-size: 10.5px;
-      color: #94a3b8;
-      font-weight: 500;
-      letter-spacing: 0.2px;
-    }
+    .app-view { display: none; flex-direction: column; height: 100%; overflow: hidden; }
+    .back-nav { display: inline-flex; align-items: center; gap: 6px; color: var(--accent-blue); font-size: 12px; font-weight: 600; cursor: pointer; margin-bottom: 10px; background: none; border: none; padding: 0; flex-shrink: 0; }
     
-    /* Search Bar */
-    .search-input {
-      flex: 1;
-      padding: 8px 10px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 12px;
-      outline: none;
-      background: var(--card-bg);
-      color: var(--text-main);
-      min-width: 0;
-    }
-    .search-input::placeholder { color: #6b7280; }
-    .search-input:focus { border-color: var(--accent-blue); }
+    .header-action-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-shrink: 0; gap: 6px; }
+    .brand-wrapper { display: flex; flex-direction: column; gap: 1px; white-space: nowrap; }
+    h2 { color: #ffffff; margin: 0; font-size: 18px; font-weight: 700; }
+    .live-clock { font-size: 10.5px; color: #94a3b8; font-weight: 500; }
+    .search-input { flex: 1; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 12px; outline: none; background: var(--card-bg); color: var(--text-main); }
+    .button-group { display: flex; gap: 5px; flex-shrink: 0; }
+    .btn-action-base { border: none; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; display: flex; align-items: center; gap: 4px; }
+    .btn-open-add { background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); color: white; }
+    .btn-refresh { background-color: var(--card-bg); color: var(--text-secondary); border: 1px solid var(--border-color); }
 
-    .button-group {
-      display: flex;
-      gap: 5px;
-      flex-shrink: 0;
-    }
-    .btn-action-base {
-      border: none;
-      padding: 8px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 12px;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .btn-open-add {
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-      color: white;
-      box-shadow: 0 3px 10px rgba(59, 130, 246, 0.25);
-    }
-    .btn-open-add:hover { opacity: 0.9; }
+    .filter-box { display: flex; gap: 8px; margin-bottom: 10px; flex-shrink: 0; background: var(--card-bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); }
+    .filter-box label { font-size: 10px; font-weight: 700; color: var(--text-secondary); display: flex; flex-direction: column; gap: 4px; flex: 1; text-transform: uppercase; }
+    .filter-box select { width: 100%; padding: 7px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 12px; outline: none; background: #161b26; color: var(--text-main); }
 
-    .btn-refresh {
-      background-color: var(--card-bg);
-      color: var(--text-secondary);
-      border: 1px solid var(--border-color);
-    }
-    .btn-refresh:hover { background-color: var(--card-hover); color: var(--text-main); }
+    .summary-area { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 12px; margin-bottom: 12px; flex-shrink: 0; }
+    .summary-title { font-size: 11px; font-weight: 700; color: var(--text-secondary); }
+    .summary-badges { display: flex; gap: 6px; }
+    .count-chip { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; }
+    .count-open { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .count-progress { background-color: rgba(234, 179, 8, 0.15); color: #facc15; }
+    .count-closed { background-color: rgba(34, 197, 94, 0.15); color: #4ade80; }
 
-    /* Filter Box */
-    .filter-box {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
-      flex-shrink: 0;
-      background: var(--card-bg);
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid var(--border-color);
-    }
-    .filter-box label {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--text-secondary);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      flex: 1;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .filter-box select {
-      width: 100%;
-      padding: 7px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      font-size: 12px;
-      outline: none;
-      background: #161b26;
-      color: var(--text-main);
-      font-weight: 500;
-    }
-
-    /* Summary Counting Area */
-    .summary-area {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 8px 12px;
-      margin-bottom: 12px;
-      flex-shrink: 0;
-    }
-    .summary-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-secondary);
-    }
-    .summary-badges {
-      display: flex;
-      gap: 6px;
-    }
-    .count-chip {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .count-open { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
-    .count-progress { background-color: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
-    .count-closed { background-color: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
-
-    /* Daftar List Tugas */
-    .task-scroll-area {
-      flex: 1;
-      overflow-y: auto;
-      padding-right: 2px;
-      -webkit-overflow-scrolling: touch;
-    }
+    .task-scroll-area { flex: 1; overflow-y: auto; padding-right: 2px; }
     ul { list-style: none; padding: 0; margin: 0; }
-    
     li.task-item {
-      padding: 12px 14px;
-      border-radius: 10px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      transition: transform 0.2s ease, opacity 0.2s ease;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 14px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.08);
     }
-    li.task-item:hover {
-      transform: translateY(-2px);
-      opacity: 0.95;
-    }
+    li.task-item.status-Open { background: linear-gradient(135deg, #1e293b 0%, #1e3a8a 100%); border-left: 4px solid #60a5fa; }
+    li.task-item.status-Progress { background: linear-gradient(135deg, #1e293b 0%, #78350f 100%); border-left: 4px solid #facc15; }
+    li.task-item.status-Closed { background: linear-gradient(135deg, #1e293b 0%, #064e3b 100%); border-left: 4px solid #4ade80; }
+    .task-preview-info { display: flex; flex-direction: column; gap: 4px; overflow: hidden; flex: 1; padding-right: 10px; }
+    .task-plan-text { font-weight: 600; color: #ffffff; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .task-meta-preview { font-size: 11px; color: #cbd5e1; display: flex; gap: 6px; align-items: center; }
+    .pic-tag-badge { padding: 2px 8px; border-radius: 5px; font-weight: 700; font-size: 11px; }
 
-    li.task-item.status-Open {
-      background: linear-gradient(135deg, #1e293b 0%, #1e3a8a 100%);
-      border-left: 4px solid #60a5fa;
-    }
-    li.task-item.status-Progress {
-      background: linear-gradient(135deg, #1e293b 0%, #78350f 100%);
-      border-left: 4px solid #facc15;
-    }
-    li.task-item.status-Closed {
-      background: linear-gradient(135deg, #1e293b 0%, #064e3b 100%);
-      border-left: 4px solid #4ade80;
-    }
+    .absensi-header-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-shrink: 0; }
+    .absensi-date-picker { background: #161b26; border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; outline: none; }
+    .absensi-list-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+    .absensi-item-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+    .absensi-name { font-size: 13.5px; font-weight: 700; color: #ffffff; }
+    .absensi-status-badge { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
 
-    .task-preview-info {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      overflow: hidden;
-      flex: 1;
-      padding-right: 10px;
-    }
-    .task-plan-text {
-      font-weight: 600;
-      color: #ffffff;
-      font-size: 13.5px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .task-meta-preview {
-      font-size: 11px;
-      color: #cbd5e1;
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .pic-tag-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 5px;
-      font-weight: 700;
-      font-size: 11px;
-      letter-spacing: 0.3px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    }
-
-    .closed-date-tag {
-      color: #4ade80;
-      font-weight: 500;
-    }
-    .badge-status {
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .status-Open .badge-status { background-color: rgba(96, 165, 250, 0.2); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.4); }
-    .status-Progress .badge-status { background-color: rgba(250, 204, 21, 0.2); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.4); }
-    .status-Closed .badge-status { background-color: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.4); }
-
-    /* --- HALAMAN ABSENSI PDCA --- */
-    .absensi-header-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      padding: 14px;
-      border-radius: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      flex-shrink: 0;
-    }
-    .absensi-date-picker {
-      background: #161b26;
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      outline: none;
-    }
-    .absensi-list-container {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding-right: 2px;
-    }
-    .absensi-item-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 12px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-    }
-    .absensi-user-info {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .absensi-name {
-      font-size: 13.5px;
-      font-weight: 700;
-      color: #ffffff;
-    }
-    .absensi-submeta {
-      font-size: 11px;
-      color: var(--text-secondary);
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-    .absensi-status-badge {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .badge-hadir { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
-
-    /* Modal Styling Dark */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      padding: 12px;
-      box-sizing: border-box;
-    }
-    .modal-content {
-      background: var(--card-bg);
-      color: var(--text-main);
-      width: 100%;
-      max-width: 450px;
-      padding: 18px;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 8px;
-    }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 1000; padding: 12px; }
+    .modal-content { background: var(--card-bg); color: var(--text-main); width: 100%; max-width: 450px; padding: 18px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 10px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
     .modal-header h3 { margin: 0; color: #ffffff; font-size: 16px; }
-    .btn-close-modal {
-      background: transparent;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      color: var(--text-secondary);
-      line-height: 1;
-    }
-    .modal-body {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .modal-body label {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      font-size: 11.5px;
-      font-weight: 600;
-      color: var(--text-secondary);
-    }
-    .modal-body input, .modal-body select, .modal-body textarea {
-      padding: 8px 10px;
-      font-size: 12.5px;
-      font-family: inherit;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      outline: none;
-      width: 100%;
-      background: #161b26;
-      color: var(--text-main);
-    }
-    .modal-body input:focus, .modal-body select:focus, .modal-body textarea:focus {
-      border-color: var(--accent-blue);
-    }
-    .modal-body input:disabled, .modal-body select:disabled, .modal-body textarea:disabled {
-      background-color: #1a202c;
-      color: #94a3b8;
-      cursor: not-allowed;
-    }
-    .modal-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-top: 1px solid var(--border-color);
-      padding-top: 10px;
-    }
-    .btn-delete {
-      background: transparent;
-      color: #f87171;
-      border: none;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .btn-delete:hover { text-decoration: underline; }
-    .btn-save {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 12.5px;
-      width: 100%;
-    }
-    .btn-save:hover { opacity: 0.9; }
+    .btn-close-modal { background: transparent; border: none; font-size: 20px; cursor: pointer; color: var(--text-secondary); }
+    .modal-body { display: flex; flex-direction: column; gap: 8px; }
+    .modal-body label { display: flex; flex-direction: column; gap: 3px; font-size: 11.5px; font-weight: 600; color: var(--text-secondary); }
+    .modal-body input, .modal-body select, .modal-body textarea { padding: 8px 10px; font-size: 12.5px; border: 1px solid var(--border-color); border-radius: 6px; background: #161b26; color: var(--text-main); outline: none; width: 100%; }
+    .modal-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; }
+    .btn-delete { background: transparent; color: #f87171; border: none; cursor: pointer; font-size: 12px; font-weight: 600; }
+    .btn-save { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; }
   </style>
 </head>
 <body>
 
 <div class="container">
-
-  <!-- LOADING OVERLAY -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
     <div class="loading-text" id="loadingText">Memproses data...</div>
   </div>
 
-  <!-- CUSTOM ALERT & CONFIRMATION MODAL -->
   <div class="custom-alert-overlay" id="customAlertOverlay">
     <div class="custom-alert-box">
       <div class="alert-icon-wrapper" id="alertIcon">⚠️</div>
       <h4 id="alertTitle">Informasi Sistem</h4>
       <p id="alertMessage">Pesan pemberitahuan...</p>
       <div class="alert-actions" id="alertActions">
-        <button class="btn-alert-ok" id="btnAlertOk" onclick="closeCustomAlert()">Mengerti</button>
+        <button class="btn-alert-ok" onclick="closeCustomAlert()">Mengerti</button>
       </div>
     </div>
   </div>
 
-  <!-- ==================== HALAMAN 1: PORTAL MENU UTAMA ==================== -->
+  <!-- PORTAL UTAMA -->
   <div id="homeView">
     <div class="portal-header">
       <h1>Portal Asset & System</h1>
       <p>Pilih menu sistem operasional kerja harian</p>
     </div>
-    
     <div class="menu-grid">
       <div class="menu-card" onclick="openLoginModal()">
         <div class="menu-icon icon-work">📋</div>
-        <div class="menu-info">
-          <h3>Web Kerja</h3>
-          <span>Kelola daftar tugas & progress operasional</span>
-        </div>
+        <div class="menu-info"><h3>Web Kerja</h3><span>Kelola daftar tugas & progress operasional</span></div>
       </div>
-
       <div class="menu-card" onclick="openRegisterModal()">
         <div class="menu-icon icon-register">👤</div>
-        <div class="menu-info">
-          <h3>Buat Akun</h3>
-          <span>Daftar akun baru (Membutuhkan Approval SuperUser)</span>
-        </div>
+        <div class="menu-info"><h3>Buat Akun</h3><span>Daftar akun baru (Approval SuperUser)</span></div>
       </div>
-
-      <!-- TOMBOL ABSENSI PDCA -->
       <div class="menu-card" onclick="openAbsensiView()">
         <div class="menu-icon icon-absensi">📊</div>
-        <div class="menu-info">
-          <h3>Absensi PDCA</h3>
-          <span>Monitoring rekapitulasi kehadiran login harian anggota</span>
-        </div>
+        <div class="menu-info"><h3>Absensi PDCA</h3><span>Rekapitulasi kehadiran login harian anggota</span></div>
       </div>
-
       <div class="menu-card" onclick="switchView('requestView')">
         <div class="menu-icon icon-request">🛠️</div>
-        <div class="menu-info">
-          <h3>Permintaan Bantuan Asset & System</h3>
-          <span>Formulir pengajuan & perbaikan (Segera Hadir)</span>
-        </div>
+        <div class="menu-info"><h3>Permintaan Bantuan</h3><span>Formulir pengajuan & perbaikan (Segera Hadir)</span></div>
       </div>
     </div>
   </div>
 
-
-  <!-- ==================== HALAMAN 2: WEB KERJA ==================== -->
+  <!-- WEB KERJA -->
   <div id="workView" class="app-view">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink: 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
       <button class="back-nav" onclick="logout()">← Keluar / Menu Utama</button>
       <span id="loggedInUserLabel" style="font-size: 11.5px; color: #4ade80; font-weight: 600;"></span>
     </div>
-    
     <div class="header-action-area">
       <div class="brand-wrapper">
         <h2>Web Kerja</h2>
@@ -750,256 +206,112 @@
         <button class="btn-action-base btn-open-add" onclick="openAddModal()">+ Tambah</button>
       </div>
     </div>
-
     <div class="filter-box">
-      <label>
-        Filter PIC:
-        <select id="filterPic" onchange="renderTasks()">
-          <option value="ALL">Semua PIC</option>
-        </select>
-      </label>
-      <label>
-        Filter Status:
-        <select id="filterStatus" onchange="renderTasks()">
-          <option value="ACTIVE" selected>Tugas Aktif</option>
-          <option value="ALL">Semua Status</option>
-          <option value="Open">Open</option>
-          <option value="Progress">Progress</option>
-          <option value="Closed">Closed</option>
-        </select>
-      </label>
+      <label>Filter PIC: <select id="filterPic" onchange="renderTasks()"><option value="ALL">Semua PIC</option></select></label>
+      <label>Filter Status: <select id="filterStatus" onchange="renderTasks()">
+        <option value="ACTIVE" selected>Tugas Aktif</option>
+        <option value="ALL">Semua Status</option>
+        <option value="Open">Open</option>
+        <option value="Progress">Progress</option>
+        <option value="Closed">Closed</option>
+      </select></label>
     </div>
-
-    <!-- Area Ringkasan Counting Data -->
     <div class="summary-area">
-      <span class="summary-title" id="summaryPicLabel">Total Tugas (Semua PIC):</span>
+      <span class="summary-title" id="summaryPicLabel">Total Tugas:</span>
       <div class="summary-badges">
         <span class="count-chip count-open">Open: <b id="countOpen">0</b></span>
-        <span class="count-chip count-progress">Progress: <b id="countProgress">0</b></span>
-        <span class="count-chip count-closed">Closed: <b id="countClosed">0</b></span>
+        <span class="count-chip count-progress">Prog: <b id="countProgress">0</b></span>
+        <span class="count-chip count-closed">Close: <b id="countClosed">0</b></span>
       </div>
     </div>
-
-    <!-- Daftar List Tugas -->
-    <div class="task-scroll-area">
-      <ul id="taskList">
-        <li style='text-align:center; color:#9099a2; padding:20px;'>Memuat data...</li>
-      </ul>
-    </div>
+    <div class="task-scroll-area"><ul id="taskList"><li style='text-align:center; color:#9099a2; padding:20px;'>Memuat data...</li></ul></div>
   </div>
 
-
-  <!-- ==================== HALAMAN 4: ABSENSI PDCA ==================== -->
+  <!-- ABSENSI PDCA -->
   <div id="absensiView" class="app-view">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink: 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
       <button class="back-nav" onclick="switchView('homeView')">← Menu Utama</button>
       <span style="font-size: 11.5px; color: var(--accent-cyan); font-weight: 600;">Monitor Kehadiran</span>
     </div>
-
     <div class="absensi-header-card">
       <div>
         <h2 style="font-size: 16px; margin-bottom: 2px;">Absensi PDCA</h2>
         <span style="font-size: 11px; color: var(--text-secondary);">Rekapitulasi login harian anggota</span>
       </div>
+      <!-- Tanggal otomatis terisi tanggal hari ini -->
       <input type="date" id="absensiDatePicker" class="absensi-date-picker" onchange="renderAbsensiList()">
     </div>
-
     <div class="absensi-list-container" id="absensiListContainer">
       <div style='text-align:center; color:#9099a2; padding:20px;'>Memuat data absensi...</div>
     </div>
   </div>
 
-
-  <!-- ==================== HALAMAN 3: PERMINTAAN BANTUAN ==================== -->
+  <!-- REQUEST VIEW -->
   <div id="requestView" class="app-view" style="justify-content: center; align-items: center; text-align: center; padding: 20px;">
     <button class="back-nav" onclick="switchView('homeView')" style="position: absolute; top: 16px; left: 16px;">← Menu Utama</button>
     <div style="font-size: 48px; margin-bottom: 12px;">🚧</div>
-    <h2 style="font-size: 20px; margin-bottom: 8px;">Permintaan Bantuan Asset & System</h2>
-    <p style="color: var(--text-secondary); font-size: 13px; max-width: 320px; line-height: 1.5;">
-      Modul ini sedang dalam tahap pengembangan (*development*). Segera hadir untuk memfasilitasi pengajuan dan perbaikan asset Anda secara terintegrasi.
-    </p>
+    <h2 style="font-size: 20px; margin-bottom: 8px;">Permintaan Bantuan</h2>
+    <p style="color: var(--text-secondary); font-size: 13px; max-width: 320px;">Modul ini sedang dalam tahap pengembangan.</p>
   </div>
-
 </div>
 
-<datalist id="picListOptions"></datalist>
-
-
-<!-- ==================== MODAL LOGIN WEB KERJA ==================== -->
+<!-- MODALS -->
 <div class="modal-overlay" id="loginModal">
   <div class="modal-content">
-    <div class="modal-header">
-      <h3>Login Web Kerja</h3>
-      <button class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
-    </div>
+    <div class="modal-header"><h3>Login Web Kerja</h3><button class="btn-close-modal" onclick="closeLoginModal()">&times;</button></div>
     <div class="modal-body">
-      <label>
-        Nomor Induk Pegawai (NIP):
-        <input type="text" id="loginNip" placeholder="Masukkan NIP...">
-      </label>
-      <label>
-        Password:
-        <input type="password" id="loginPass" placeholder="Masukkan password...">
-      </label>
+      <label>NIP: <input type="text" id="loginNip" placeholder="NIP..."></label>
+      <label>Password: <input type="password" id="loginPass" placeholder="Password..."></label>
     </div>
-    <div class="modal-footer" style="justify-content: flex-end; gap: 6px;">
-      <button onclick="closeLoginModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Batal</button>
-      <button class="btn-save" style="width: auto;" onclick="submitLogin()">Masuk</button>
-    </div>
+    <div class="modal-footer"><button onclick="closeLoginModal()" class="btn-alert-cancel">Batal</button><button class="btn-save" style="width:auto;" onclick="submitLogin()">Masuk</button></div>
   </div>
 </div>
 
-
-<!-- ==================== MODAL BUAT AKUN (REGISTRASI) ==================== -->
 <div class="modal-overlay" id="registerModal">
   <div class="modal-content">
-    <div class="modal-header">
-      <h3>Pendaftaran Akun Baru</h3>
-      <button class="btn-close-modal" onclick="closeRegisterModal()">&times;</button>
-    </div>
+    <div class="modal-header"><h3>Pendaftaran Akun</h3><button class="btn-close-modal" onclick="closeRegisterModal()">&times;</button></div>
     <div class="modal-body">
-      <label>
-        NIP (Nomor Induk Pegawai):
-        <input type="text" id="regNip" placeholder="Masukkan NIP unik...">
-      </label>
-      <label>
-        Nama Lengkap:
-        <input type="text" id="regNama" placeholder="Masukkan nama lengkap...">
-      </label>
-      <label>
-        Password:
-        <input type="password" id="regPass" placeholder="Buat password...">
-      </label>
-      <span style="font-size: 11px; color: #94a3b8; margin-top: 4px;">*Akun baru memerlukan persetujuan (Approved) oleh SuperUser melalui Google Sheet sebelum dapat digunakan untuk login.</span>
+      <label>NIP: <input type="text" id="regNip" placeholder="NIP unik..."></label>
+      <label>Nama Lengkap: <input type="text" id="regNama" placeholder="Nama..."></label>
+      <label>Password: <input type="password" id="regPass" placeholder="Password..."></label>
     </div>
-    <div class="modal-footer" style="justify-content: flex-end; gap: 6px;">
-      <button onclick="closeRegisterModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Batal</button>
-      <button class="btn-save" style="width: auto; background: linear-gradient(135deg, #10b981, #059669);" onclick="submitRegister()">Daftar Akun</button>
-    </div>
+    <div class="modal-footer"><button onclick="closeRegisterModal()" class="btn-alert-cancel">Batal</button><button class="btn-save" style="width:auto; background:linear-gradient(135deg, #10b981, #059669);" onclick="submitRegister()">Daftar</button></div>
   </div>
 </div>
 
-
-<!-- ==================== MODAL TAMBAH TUGAS UTAMA ==================== -->
 <div class="modal-overlay" id="addModal">
   <div class="modal-content">
-    <div class="modal-header">
-      <h3>Tambah Tugas Baru</h3>
-      <button class="btn-close-modal" onclick="closeAddModal()">&times;</button>
-    </div>
+    <div class="modal-header"><h3>Tambah Tugas Baru</h3><button class="btn-close-modal" onclick="closeAddModal()">&times;</button></div>
     <div class="modal-body">
-      <label>
-        Tugas Saya (Plan):
-        <input type="text" id="taskInput" placeholder="Nama tugas..." onkeypress="handleAddKeyPress(event)">
-      </label>
-      <label>
-        PIC (Otomatis sesuai Login):
-        <input type="text" id="picInput" readonly disabled style="background-color: #1a202c; color: #38bdf8; font-weight: bold;">
-      </label>
-      <label>
-        Update Rencana Awalan (Do):
-        <input type="text" id="updateDoInput" placeholder="Rencana awal...">
-      </label>
-      <label>
-        Status (Check):
-        <select id="statusInput" onchange="handleStatusChange('add')">
-          <option value="Open">Open</option>
-          <option value="Progress">Progress</option>
-          <option value="Closed">Closed</option>
-        </select>
-      </label>
-      <label>
-        % Status:
-        <select id="percentInput" onchange="handlePercentChange('add')">
-          <option value="0%">0%</option>
-          <option value="10%">10%</option>
-          <option value="20%">20%</option>
-          <option value="30%">30%</option>
-          <option value="40%">40%</option>
-          <option value="50%">50%</option>
-          <option value="60%">60%</option>
-          <option value="70%">70%</option>
-          <option value="80%">80%</option>
-          <option value="90%">90%</option>
-          <option value="100%">100%</option>
-        </select>
-      </label>
-      <label>
-        Update Tindakan Terakhir (Action):
-        <textarea id="updateActionInput" rows="3" placeholder="Tindakan terakhir..."></textarea>
-      </label>
+      <label>Tugas (Plan): <input type="text" id="taskInput" placeholder="Nama tugas..."></label>
+      <label>PIC: <input type="text" id="picInput" readonly disabled style="color: #38bdf8; font-weight: bold;"></label>
+      <label>Rencana Awalan (Do): <input type="text" id="updateDoInput" placeholder="Rencana..."></label>
+      <label>Status (Check): <select id="statusInput" onchange="handleStatusChange('add')"><option value="Open">Open</option><option value="Progress">Progress</option><option value="Closed">Closed</option></select></label>
+      <label>% Status: <select id="percentInput" onchange="handlePercentChange('add')"><option value="0%">0%</option><option value="50%">50%</option><option value="100%">100%</option></select></label>
+      <label>Tindakan Terakhir (Action): <textarea id="updateActionInput" rows="2"></textarea></label>
     </div>
-    <div class="modal-footer">
-      <button onclick="closeAddModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Batal</button>
-      <button class="btn-save" onclick="addTask()">Simpan Tugas</button>
-    </div>
+    <div class="modal-footer"><button onclick="closeAddModal()" class="btn-alert-cancel">Batal</button><button class="btn-save" style="width:auto;" onclick="addTask()">Simpan</button></div>
   </div>
 </div>
 
-
-<!-- ==================== MODAL DETAIL & EDIT TUGAS ==================== -->
 <div class="modal-overlay" id="taskModal">
   <div class="modal-content">
-    <div class="modal-header">
-      <h3 id="modalTitleID">Detail Tugas</h3>
-      <button class="btn-close-modal" onclick="closeModal()">&times;</button>
-    </div>
+    <div class="modal-header"><h3 id="modalTitleID">Detail Tugas</h3><button class="btn-close-modal" onclick="closeModal()">&times;</button></div>
     <div class="modal-body">
       <input type="hidden" id="modalTaskId">
-      <label>
-        Tgl Dibuat:
-        <input type="text" id="modalCreatedAt" readonly>
-      </label>
-      <label id="closedAtWrapper" style="display: none;">
-        Tgl Ditutup (Closed):
-        <input type="text" id="modalClosedAt" readonly style="background-color: rgba(34, 197, 94, 0.15); color: #4ade80;">
-      </label>
-      <label>
-        Tugas Saya (Plan):
-        <input type="text" id="modalTaskText">
-      </label>
-      <label>
-        PIC:
-        <input type="text" id="modalPicText" readonly disabled style="background-color: #1a202c; color: #cbd5e1;">
-      </label>
-      <label>
-        Update Rencana Awalan (Do):
-        <input type="text" id="modalUpdateDoText">
-      </label>
-      <label>
-        Status (Check):
-        <select id="modalStatusSelect" onchange="handleStatusChange('edit')">
-          <option value="Open">Open</option>
-          <option value="Progress">Progress</option>
-          <option value="Closed">Closed</option>
-        </select>
-      </label>
-      <label>
-        % Status:
-        <select id="modalPercentSelect" onchange="handlePercentSelect('edit')">
-          <option value="0%">0%</option>
-          <option value="10%">10%</option>
-          <option value="20%">20%</option>
-          <option value="30%">30%</option>
-          <option value="40%">40%</option>
-          <option value="50%">50%</option>
-          <option value="60%">60%</option>
-          <option value="70%">70%</option>
-          <option value="80%">80%</option>
-          <option value="90%">90%</option>
-          <option value="100%">100%</option>
-        </select>
-      </label>
-      <label>
-        Update Tindakan Terakhir (Action):
-        <textarea id="modalUpdateActionText" rows="3"></textarea>
-      </label>
+      <label>Tgl Dibuat: <input type="text" id="modalCreatedAt" readonly></label>
+      <label>Tugas (Plan): <input type="text" id="modalTaskText"></label>
+      <label>PIC: <input type="text" id="modalPicText" readonly disabled></label>
+      <label>Update Rencana (Do): <input type="text" id="modalUpdateDoText"></label>
+      <label>Status (Check): <select id="modalStatusSelect"><option value="Open">Open</option><option value="Progress">Progress</option><option value="Closed">Closed</option></select></label>
+      <label>% Status: <select id="modalPercentSelect"><option value="0%">0%</option><option value="50%">50%</option><option value="100%">100%</option></select></label>
+      <label>Tindakan (Action): <textarea id="modalUpdateActionText" rows="2"></textarea></label>
     </div>
     <div class="modal-footer">
       <button class="btn-delete" id="modalDeleteBtn" onclick="requestDeleteTask()">Hapus</button>
-      <div style="display: flex; gap: 6px;">
-        <button onclick="closeModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Tutup</button>
-        <button class="btn-save" id="modalSaveBtn" onclick="saveTaskDetails()">Simpan</button>
+      <div style="display:flex; gap:6px;">
+        <button onclick="closeModal()" class="btn-alert-cancel">Tutup</button>
+        <button class="btn-save" id="modalSaveBtn" style="width:auto;" onclick="saveTaskDetails()">Simpan</button>
       </div>
     </div>
   </div>
@@ -1007,103 +319,41 @@
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbw_QjZNmV4QeWw-228JbT24_zYlu51hxwECGGIQ6u2iFzZlS06msz96GeNXg3Z2dK23/exec";
+  let allTasks = [], currentUserNama = "", currentUserRole = "Member", absensiCache = [];
 
-  let allTasks = [];
-  let currentUserNama = "";
-  let currentUserRole = "Member";
-
-  function showLoading(text = "Memproses data...") {
+  function showLoading(text = "Memproses...") {
     document.getElementById("loadingText").textContent = text;
     document.getElementById("loadingOverlay").style.display = "flex";
   }
-  function hideLoading() {
-    document.getElementById("loadingOverlay").style.display = "none";
-  }
+  function hideLoading() { document.getElementById("loadingOverlay").style.display = "none"; }
 
   function showCustomAlert(title, message, type = "warning") {
     document.getElementById("alertTitle").textContent = title;
     document.getElementById("alertMessage").textContent = message;
-    
-    const iconEl = document.getElementById("alertIcon");
-    iconEl.className = "alert-icon-wrapper";
-    if (type === "warning") {
-      iconEl.textContent = "⚠️";
-      iconEl.classList.add("alert-icon-warning");
-    } else if (type === "success") {
-      iconEl.textContent = "✅";
-      iconEl.classList.add("alert-icon-success");
-    } else if (type === "danger") {
-      iconEl.textContent = "🗑️";
-      iconEl.classList.add("alert-icon-danger");
-    } else {
-      iconEl.textContent = "ℹ️";
-      iconEl.classList.add("alert-icon-info");
-    }
-
-    document.getElementById("alertActions").innerHTML = `
-      <button class="btn-alert-ok" onclick="closeCustomAlert()">Mengerti</button>
-    `;
     document.getElementById("customAlertOverlay").style.display = "flex";
   }
+  function closeCustomAlert() { document.getElementById("customAlertOverlay").style.display = "none"; }
 
-  function showCustomConfirm(title, message, onConfirmCallback) {
-    document.getElementById("alertTitle").textContent = title;
-    document.getElementById("alertMessage").textContent = message;
-    
-    const iconEl = document.getElementById("alertIcon");
-    iconEl.className = "alert-icon-wrapper alert-icon-danger";
-    iconEl.textContent = "⚠️";
-
-    const actionsContainer = document.getElementById("alertActions");
-    actionsContainer.innerHTML = `
-      <button class="btn-alert-cancel" onclick="closeCustomAlert()">Batal</button>
-      <button class="btn-alert-danger-confirm" id="btnConfirmDanger">Hapus Tugas</button>
-    `;
-
-    document.getElementById("btnConfirmDanger").onclick = () => {
-      closeCustomAlert();
-      onConfirmCallback();
-    };
-
-    document.getElementById("customAlertOverlay").style.display = "flex";
-  }
-
-  function closeCustomAlert() {
-    document.getElementById("customAlertOverlay").style.display = "none";
-  }
-
-  function switchView(viewId) {
-    document.getElementById('homeView').style.display = 'none';
-    document.getElementById('workView').style.display = 'none';
-    document.getElementById('requestView').style.display = 'none';
-    document.getElementById('absensiView').style.display = 'none';
-    document.getElementById(viewId).style.display = 'flex';
+  function switchView(id) {
+    ['homeView', 'workView', 'requestView', 'absensiView'].forEach(v => document.getElementById(v).style.display = 'none');
+    document.getElementById(id).style.display = 'flex';
   }
 
   function logout() {
-    currentUserNama = "";
-    currentUserRole = "Member";
+    currentUserNama = ""; currentUserRole = "Member";
     document.getElementById("loggedInUserLabel").textContent = "";
     switchView('homeView');
   }
 
-  function openLoginModal() { 
-    if (currentUserNama) {
-      switchView('workView');
-      loadTasks();
-    } else {
-      document.getElementById("loginModal").style.display = "flex"; 
-    }
-  }
+  function openLoginModal() { currentUserNama ? (switchView('workView'), loadTasks()) : (document.getElementById("loginModal").style.display = "flex"); }
   function closeLoginModal() { document.getElementById("loginModal").style.display = "none"; }
-
   function openRegisterModal() { document.getElementById("registerModal").style.display = "flex"; }
   function closeRegisterModal() { document.getElementById("registerModal").style.display = "none"; }
 
   function openAbsensiView() {
     switchView('absensiView');
-    // Set otomatis tanggal hari ini pada date picker
-    const today = new Date().toISOString().split('T')[0];
+    // Set tanggal date picker otomatis ke hari ini
+    const today = new Date().toLocaleDateString('en-CA'); // format YYYY-MM-DD lokal
     document.getElementById("absensiDatePicker").value = today;
     loadAbsensiData();
   }
@@ -1111,536 +361,183 @@
   async function loadAbsensiData() {
     showLoading("Memuat data absensi...");
     try {
-      const response = await fetch(`${API_URL}?action=getAbsensi`);
-      const result = await response.json();
-      hideLoading();
-      window.absensiCache = Array.isArray(result) ? result : [];
-      renderAbsensiList();
-    } catch (err) {
-      hideLoading();
-      showCustomAlert("Kesalahan", "Gagal memuat data absensi.", "warning");
-      window.absensiCache = [];
-      renderAbsensiList();
-    }
+      const res = await fetch(`${API_URL}?action=getAbsensi`);
+      absensiCache = await res.json() || [];
+    } catch { absensiCache = []; }
+    hideLoading();
+    renderAbsensiList();
   }
 
   function renderAbsensiList() {
     const container = document.getElementById("absensiListContainer");
     const selectedDate = document.getElementById("absensiDatePicker").value;
-    container.innerHTML = "<div style='text-align:center; color:#9099a2; padding:20px;'>Memproses data...</div>";
+    const filtered = absensiCache.filter(a => a.tanggal === selectedDate);
 
-    const absensiRecords = window.absensiCache || [];
-    const filteredAbsensi = absensiRecords.filter(a => a.tanggal === selectedDate);
-
-    if (filteredAbsensi.length === 0) {
-      container.innerHTML = `
-        <div style='text-align:center; color:#9099a2; padding:30px; display:flex; flex-direction:column; gap:6px;'>
-          <span style='font-size:28px;'>📭</span>
-          <span style='font-weight:600; font-size:13px;'>Belum ada anggota yang login/absen pada tanggal ini.</span>
-        </div>`;
+    if (filtered.length === 0) {
+      container.innerHTML = `<div style='text-align:center; color:#9099a2; padding:30px;'>📭 Belum ada anggota yang login/absen pada tanggal ini.</div>`;
       return;
     }
 
-    container.innerHTML = "";
-    filteredAbsensi.forEach(item => {
-      const card = document.createElement("div");
-      card.className = "absensi-item-card";
-
-      const isSuper = item.role && item.role.toLowerCase() === "superuser";
-      const roleBadgeColor = isSuper ? "background: #ef4444; color:#fff;" : "background: #3b82f6; color:#fff;";
-
-      card.innerHTML = `
-        <div class="absensi-user-info">
-          <span class="absensi-name">${item.nama}</span>
-          <div class="absensi-submeta">
-            <span>NIP: ${item.nip}</span>
-            <span>•</span>
-            <span style="padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; ${roleBadgeColor}">${item.role || 'Member'}</span>
-          </div>
-        </div>
+    container.innerHTML = filtered.map(item => `
+      <div class="absensi-item-card">
         <div>
-          <span class="absensi-status-badge badge-hadir">
-            ✅ Hadir <small style="opacity: 0.8; font-weight: normal;">(${item.jamMasuk})</small>
-          </span>
+          <div class="absensi-name">${item.nama}</div>
+          <div style="font-size:11px; color:#9099a2;">NIP: ${item.nip} • <b>${item.role}</b></div>
         </div>
-      `;
-      container.appendChild(card);
-    });
+        <span class="absensi-status-badge">✅ Hadir (${item.jamMasuk})</span>
+      </div>
+    `).join('');
   }
 
   async function submitLogin() {
     const nip = document.getElementById("loginNip").value.trim();
     const password = document.getElementById("loginPass").value.trim();
+    if (!nip || !password) return showCustomAlert("Peringatan", "NIP dan Password wajib diisi.");
 
-    if (!nip || !password) {
-      showCustomAlert("Form Belum Lengkap", "Nomor Induk Pegawai (NIP) dan Password wajib diisi.", "warning");
-      return;
-    }
-
-    showLoading("Memverifikasi akun & mencatat absensi...");
+    showLoading("Masuk...");
     try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ action: "login", nip: nip, password: password })
-      });
-      const res = await response.json();
+      const res = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ action: "login", nip, password }) });
+      const data = await res.json();
       hideLoading();
 
-      if (res.status === "success") {
-        currentUserNama = res.nama;
-        currentUserRole = res.role || "Member";
+      if (data.status === "success") {
+        currentUserNama = data.nama; currentUserRole = data.role || "Member";
         document.getElementById("loggedInUserLabel").textContent = `👤 ${currentUserNama} (${currentUserRole}) - ${nip}`;
-        closeLoginModal();
-        switchView('workView');
-        loadTasks();
-      } else if (res.status === "wrong_password") {
-        showCustomAlert("Gagal Masuk", "Password yang Anda masukkan salah.", "warning");
-      } else if (res.status === "pending") {
-        showCustomAlert("Akses Tertunda", "Akun Anda masih berstatus PENDING. Menunggu persetujuan SuperUser.", "warning");
+        closeLoginModal(); switchView('workView'); loadTasks();
+      } else if (data.status === "wrong_password") {
+        showCustomAlert("Gagal", "Password salah.");
+      } else if (data.status === "pending") {
+        showCustomAlert("Tertunda", "Akun Anda masih menunggu persetujuan (Pending).");
       } else {
-        showCustomAlert("Akun Tidak Ditemukan", "NIP belum terdaftar. Silakan buat akun terlebih dahulu.", "warning");
+        showCustomAlert("Tidak Ditemukan", "NIP tidak terdaftar.");
       }
-    } catch (err) {
-      hideLoading();
-      showCustomAlert("Kesalahan Jaringan", "Gagal terhubung ke server. Periksa koneksi internet Anda.", "warning");
-    }
+    } catch { hideLoading(); showCustomAlert("Error", "Gagal terhubung."); }
   }
 
   async function submitRegister() {
     const nip = document.getElementById("regNip").value.trim();
     const nama = document.getElementById("regNama").value.trim();
     const password = document.getElementById("regPass").value.trim();
+    if (!nip || !nama || !password) return showCustomAlert("Peringatan", "Semua kolom wajib diisi.");
 
-    if (!nip || !nama || !password) {
-      showCustomAlert("Form Belum Lengkap", "Semua kolom pendaftaran wajib diisi dengan benar.", "warning");
-      return;
-    }
-
-    showLoading("Mendaftarkan akun baru...");
+    showLoading("Mendaftarkan...");
     try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ action: "register", nip: nip, nama: nama, password: password })
-      });
-      const res = await response.json();
+      const res = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ action: "register", nip, nama, password }) });
+      const data = await res.json();
       hideLoading();
-
-      if (res.status === "success") {
-        showCustomAlert("Pendaftaran Berhasil", "Akun berhasil didaftarkan! Silakan menunggu persetujuan (Approved) dari SuperUser.", "success");
-        document.getElementById("regNip").value = "";
-        document.getElementById("regNama").value = "";
-        document.getElementById("regPass").value = "";
+      if (data.status === "success") {
+        showCustomAlert("Berhasil", "Akun terdaftar, menunggu approval SuperUser.", "success");
         closeRegisterModal();
-      } else if (res.status === "registered") {
-        showCustomAlert("NIP Terdaftar", "Nomor Induk Pegawai tersebut sudah terdaftar sebelumnya.", "warning");
       } else {
-        showCustomAlert("Pendaftaran Gagal", "Terjadi kendala saat mendaftarkan akun.", "warning");
+        showCustomAlert("Gagal", data.message || "NIP sudah terdaftar.");
       }
-    } catch (err) {
-      hideLoading();
-      showCustomAlert("Kesalahan Jaringan", "Gagal terhubung ke server.", "warning");
-    }
+    } catch { hideLoading(); showCustomAlert("Error", "Koneksi gagal."); }
   }
 
-  function updateClock() {
-    const now = new Date();
-    const options = { day: '2-digit', month: 'short', year: 'numeric' };
-    const dateStr = now.toLocaleDateString('id-ID', options);
-    const timeStr = now.toTimeString().split(' ')[0];
-    const clockEl = document.getElementById("liveClock");
-    if (clockEl) clockEl.textContent = `${dateStr}, ${timeStr}`;
-  }
-  setInterval(updateClock, 1000);
-  updateClock();
-
-  function getPicBadgeStyle(picName) {
-    if (!picName || picName === "-") {
-      return { bg: "rgba(255,255,255,0.1)", text: "#cbd5e1" };
-    }
-    const p = picName.toLowerCase().trim();
-
-    if (p.includes("saripudin")) return { bg: "#ffffff", text: "#0f172a" };
-    if (p.includes("yossandy")) return { bg: "#ef4444", text: "#ffffff" };
-    if (p.includes("test1")) return { bg: "#3b82f6", text: "#ffffff" };
-    if (p.includes("test2")) return { bg: "#8b5cf6", text: "#ffffff" };
-    if (p.includes("nursandi")) return { bg: "#06b6d4", text: "#ffffff" };
-    if (p.includes("nedi")) return { bg: "#ec4899", text: "#ffffff" };
-    if (p.includes("harits")) return { bg: "#f97316", text: "#ffffff" };
-    if (p.includes("febry")) return { bg: "#10b981", text: "#ffffff" };
-    if (p.includes("trengginas")) return { bg: "#eab308", text: "#0f172a" };
-
-    let hash = 0;
-    for (let i = 0; i < p.length; i++) {
-      hash = p.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const hue = Math.abs(hash) % 360;
-    return { bg: `hsl(${hue}, 80%, 50%)`, text: "#ffffff" };
-  }
-
-  function formatDateCustom(dateString) {
-    if (!dateString) return "-";
-    const d = new Date(dateString);
-    if (isNaN(d.getTime())) return dateString;
-
-    const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = months[d.getMonth()];
-    const year = d.getFullYear();
-    const hours = String(d.getHours()).padStart(2, '0');
-    const minutes = String(d.getMinutes()).padStart(2, '0');
-
-    return `${day} ${month} ${year} ${hours}:${minutes}`;
-  }
-
-  function formatShortDate(dateString) {
-    if (!dateString) return "";
-    const d = new Date(dateString);
-    if (isNaN(d.getTime())) return dateString;
-    const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = months[d.getMonth()];
-    const hours = String(d.getHours()).padStart(2, '0');
-    const minutes = String(d.getMinutes()).padStart(2, '0');
-    return `${day} ${month}, ${hours}:${minutes}`;
-  }
+  setInterval(() => {
+    const clock = document.getElementById("liveClock");
+    if (clock) clock.textContent = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'medium' });
+  }, 1000);
 
   async function loadTasks() {
-    showLoading("Memuat data tugas...");
+    showLoading("Memuat tugas...");
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-      const response = await fetch(API_URL, { signal: controller.signal });
-      clearTimeout(timeoutId);
-      hideLoading();
-
-      if (!response.ok) throw new Error("Network response was not ok");
-      
-      const result = await response.json();
-      allTasks = Array.isArray(result) ? result : [];
-      
+      const res = await fetch(API_URL);
+      allTasks = await res.json() || [];
       updatePicOptions();
       renderTasks();
-    } catch (err) {
-      hideLoading();
-      console.error(err);
-      document.getElementById("taskList").innerHTML = "<li style='padding:20px; text-align:center; color:#f87171;'>Gagal memuat tugas. Silakan klik tombol Refresh.</li>";
-    }
+    } catch { document.getElementById("taskList").innerHTML = "<li style='text-align:center; color:#f87171;'>Gagal memuat tugas.</li>"; }
+    hideLoading();
   }
 
   function updatePicOptions() {
-    const filterPicSelect = document.getElementById("filterPic");
+    const select = document.getElementById("filterPic");
     const pics = [...new Set(allTasks.map(t => t.pic).filter(p => p && p !== "-"))];
-
-    filterPicSelect.innerHTML = `<option value="ALL">Semua PIC</option>`;
-    
-    let matchedUserPic = "";
-
-    pics.forEach(pic => {
-      const opt = document.createElement("option");
-      opt.value = pic;
-      opt.textContent = pic;
-      filterPicSelect.appendChild(opt);
-
-      if (currentUserNama && pic.toLowerCase().trim().includes(currentUserNama.toLowerCase().trim().split(' ')[0])) {
-        matchedUserPic = pic;
-      }
-    });
-
-    if (matchedUserPic) {
-      filterPicSelect.value = matchedUserPic;
-    } else {
-      filterPicSelect.value = "ALL";
-    }
+    select.innerHTML = `<option value="ALL">Semua PIC</option>` + pics.map(p => `<option value="${p}">${p}</option>`).join('');
   }
 
   function renderTasks() {
-    const list = document.getElementById("taskList");
     const selectedPic = document.getElementById("filterPic").value;
     const selectedStatus = document.getElementById("filterStatus").value;
     const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
 
-    list.innerHTML = "";
-
-    const scopeForCounting = allTasks.filter(t => {
-      const matchPic = (selectedPic === "ALL") || (t.pic === selectedPic);
-      const matchSearch = !keyword || 
-        (t.task && t.task.toLowerCase().includes(keyword)) ||
-        (t.pic && t.pic.toLowerCase().includes(keyword)) ||
-        (t.updateDo && t.updateDo.toLowerCase().includes(keyword)) ||
-        (t.updateAction && t.updateAction.toLowerCase().includes(keyword));
-      return matchPic && matchSearch;
+    const filtered = allTasks.filter(t => {
+      const matchPic = (selectedPic === "ALL" || t.pic === selectedPic);
+      const matchSearch = (!keyword || t.task.toLowerCase().includes(keyword) || t.pic.toLowerCase().includes(keyword));
+      const matchStatus = (selectedStatus === "ALL" || (selectedStatus === "ACTIVE" ? t.status !== "Closed" : t.status === selectedStatus));
+      return matchPic && matchSearch && matchStatus;
     });
 
-    let openCount = 0;
-    let progressCount = 0;
-    let closedCount = 0;
-
-    scopeForCounting.forEach(t => {
-      if (t.status === "Open") openCount++;
-      else if (t.status === "Progress") progressCount++;
-      else if (t.status === "Closed") closedCount++;
+    let open = 0, prog = 0, close = 0;
+    allTasks.filter(t => selectedPic === "ALL" || t.pic === selectedPic).forEach(t => {
+      if (t.status === "Open") open++; else if (t.status === "Progress") prog++; else if (t.status === "Closed") close++;
     });
 
-    document.getElementById("summaryPicLabel").textContent = (selectedPic === "ALL") 
-      ? "Total Tugas (Semua PIC):" 
-      : `Total Tugas (${selectedPic}):`;
+    document.getElementById("countOpen").textContent = open;
+    document.getElementById("countProgress").textContent = prog;
+    document.getElementById("countClosed").textContent = close;
 
-    document.getElementById("countOpen").textContent = openCount;
-    document.getElementById("countProgress").textContent = progressCount;
-    document.getElementById("countClosed").textContent = closedCount;
-
-    const filtered = scopeForCounting.filter(t => {
-      if (selectedStatus === "ACTIVE") {
-        return (t.status === "Open" || t.status === "Progress");
-      } else if (selectedStatus === "ALL") {
-        return true;
-      } else {
-        return (t.status === selectedStatus);
-      }
-    });
-
+    const list = document.getElementById("taskList");
     if (filtered.length === 0) {
-      list.innerHTML = "<li style='text-align:center; color:#9099a2; display:block; padding:20px;'>Tidak ada tugas yang sesuai.</li>";
+      list.innerHTML = "<li style='text-align:center; color:#9099a2; padding:20px;'>Tidak ada tugas.</li>";
       return;
     }
 
-    const reversedFiltered = filtered.slice().reverse();
-
-    reversedFiltered.forEach(t => {
-      const li = document.createElement("li");
-      li.className = `task-item status-${t.status}`;
-      li.onclick = () => openModal(t);
-
-      let closedDateHtml = "";
-      if (t.status === "Closed" && t.closedAt) {
-        closedDateHtml = `<span>•</span> <span class="closed-date-tag">Closed: ${formatShortDate(t.closedAt)}</span>`;
-      }
-
-      const picStyle = getPicBadgeStyle(t.pic);
-      const picBadgeHtml = `<span class="pic-tag-badge" style="background-color: ${picStyle.bg}; color: ${picStyle.text};">${t.pic || "-"}</span>`;
-
-      li.innerHTML = `
+    list.innerHTML = filtered.slice().reverse().map(t => `
+      <li class="task-item status-${t.status}" onclick='openModal(${JSON.stringify(t)})'>
         <div class="task-preview-info">
-          <span class="task-plan-text">${t.task || "(Tanpa Nama Tugas)"}</span>
+          <span class="task-plan-text">${t.task}</span>
           <div class="task-meta-preview">
-            <span><b>PIC:</b> ${picBadgeHtml}</span>
-            <span>•</span>
-            <span><b>% Status:</b> ${t.percentStatus || "0%"}</span>
-            ${closedDateHtml}
+            <span><b>PIC:</b> <span class="pic-tag-badge" style="background:#3b82f6; color:#fff;">${t.pic}</span></span>
+            <span>•</span><span><b>%:</b> ${t.percentStatus}</span>
           </div>
         </div>
-        <div>
-          <span class="badge-status">${t.status}</span>
-        </div>
-      `;
-      list.appendChild(li);
-    });
+        <span style="font-size:11px; padding:3px 8px; border-radius:6px; background:rgba(255,255,255,0.1);">${t.status}</span>
+      </li>
+    `).join('');
   }
 
-  function handlePercentChange(mode) {
-    let percentVal, statusSelect;
-    if (mode === 'add') {
-      percentVal = document.getElementById("percentInput").value;
-      statusSelect = document.getElementById("statusInput");
-    } else {
-      percentVal = document.getElementById("modalPercentSelect").value;
-      statusSelect = document.getElementById("modalStatusSelect");
-    }
-
-    const num = parseInt(percentVal);
-
-    if (num >= 10 && num <= 90) {
-      statusSelect.value = "Progress";
-    } else if (num === 100) {
-      statusSelect.value = "Closed";
-    } else if (num === 0) {
-      statusSelect.value = "Open";
-    }
-  }
-
-  function handleStatusChange(mode) {
-    let statusVal, percentSelect;
-    if (mode === 'add') {
-      statusVal = document.getElementById("statusInput").value;
-      percentSelect = document.getElementById("percentInput");
-    } else {
-      statusVal = document.getElementById("modalStatusSelect").value;
-      percentSelect = document.getElementById("modalPercentSelect");
-    }
-
-    if (statusVal === "Closed") {
-      percentSelect.value = "100%";
-    } else if (statusVal === "Open") {
-      percentSelect.value = "0%";
-    } else if (statusVal === "Progress") {
-      if (percentSelect.value === "0%" || percentSelect.value === "100%") {
-        percentSelect.value = "50%";
-      }
-    }
-  }
-
-  function openAddModal() { 
-    document.getElementById("picInput").value = currentUserNama || "-";
-    document.getElementById("addModal").style.display = "flex"; 
-  }
+  function openAddModal() { document.getElementById("picInput").value = currentUserNama || "-"; document.getElementById("addModal").style.display = "flex"; }
   function closeAddModal() { document.getElementById("addModal").style.display = "none"; }
 
-  function openModal(task) {
-    document.getElementById("modalTaskId").value = task.id;
-    document.getElementById("modalTitleID").textContent = `Detail Tugas (${task.id})`;
-    document.getElementById("modalCreatedAt").value = formatDateCustom(task.createdAt);
-    
-    const isClosed = (task.status === "Closed");
-    
-    const closedAtWrapper = document.getElementById("closedAtWrapper");
-    if (isClosed && task.closedAt) {
-      closedAtWrapper.style.display = "flex";
-      document.getElementById("modalClosedAt").value = formatDateCustom(task.closedAt);
-    } else {
-      closedAtWrapper.style.display = "none";
-    }
-
-    document.getElementById("modalTaskText").value = task.task || "";
-    document.getElementById("modalPicText").value = task.pic || "-";
-    document.getElementById("modalUpdateDoText").value = task.updateDo || "";
-    document.getElementById("modalStatusSelect").value = task.status || "Open";
-    document.getElementById("modalPercentSelect").value = task.percentStatus || "0%";
-    document.getElementById("modalUpdateActionText").value = task.updateAction || "";
-
-    const isSuperUser = (currentUserRole.toLowerCase() === "superuser");
-    const isOwner = (task.pic.trim().toLowerCase().includes(currentUserNama.trim().toLowerCase().split(' ')[0]));
-    const canEdit = isSuperUser || isOwner;
-
-    const inputs = [
-      document.getElementById("modalTaskText"),
-      document.getElementById("modalUpdateDoText"),
-      document.getElementById("modalStatusSelect"),
-      document.getElementById("modalPercentSelect"),
-      document.getElementById("modalUpdateActionText")
-    ];
-
-    inputs.forEach(el => el.disabled = (isClosed || !canEdit));
-
-    document.getElementById("modalSaveBtn").style.display = (isClosed || !canEdit) ? "none" : "inline-block";
-    document.getElementById("modalDeleteBtn").style.display = (isClosed || !canEdit) ? "none" : "inline-block";
-
-    document.getElementById("taskModal").style.display = "flex";
+  async function addTask() {
+    const task = document.getElementById("taskInput").value.trim();
+    if (!task) return showCustomAlert("Peringatan", "Nama tugas kosong.");
+    showLoading("Menyimpan...");
+    try {
+      await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ action: "add", task, pic: currentUserNama || "-", updateDo: document.getElementById("updateDoInput").value, status: document.getElementById("statusInput").value, percentStatus: document.getElementById("percentInput").value, updateAction: document.getElementById("updateActionInput").value }) });
+      closeAddModal(); loadTasks();
+    } catch { hideLoading(); showCustomAlert("Error", "Gagal menyimpan."); }
   }
 
+  function openModal(t) {
+    document.getElementById("modalTaskId").value = t.id;
+    document.getElementById("modalCreatedAt").value = t.createdAt;
+    document.getElementById("modalTaskText").value = t.task;
+    document.getElementById("modalPicText").value = t.pic;
+    document.getElementById("modalUpdateDoText").value = t.updateDo;
+    document.getElementById("modalStatusSelect").value = t.status;
+    document.getElementById("modalPercentSelect").value = t.percentStatus;
+    document.getElementById("modalUpdateActionText").value = t.updateAction;
+    document.getElementById("taskModal").style.display = "flex";
+  }
   function closeModal() { document.getElementById("taskModal").style.display = "none"; }
 
   async function saveTaskDetails() {
-    const id = document.getElementById("modalTaskId").value;
-    const task = document.getElementById("modalTaskText").value.trim();
-    const pic = document.getElementById("modalPicText").value.trim();
-    const updateDo = document.getElementById("modalUpdateDoText").value.trim();
-    const status = document.getElementById("modalStatusSelect").value;
-    const percentStatus = document.getElementById("modalPercentSelect").value;
-    const updateAction = document.getElementById("modalUpdateActionText").value.trim();
-
-    if (!task) {
-      showCustomAlert("Peringatan", "Nama tugas (Plan) tidak boleh kosong!", "warning");
-      return;
-    }
-
-    showLoading("Menyimpan perubahan...");
+    showLoading("Menyimpan...");
     try {
-      await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          action: "update",
-          id: id,
-          task: task,
-          pic: pic,
-          updateDo: updateDo,
-          status: status,
-          percentStatus: percentStatus,
-          updateAction: updateAction
-        })
-      });
-      hideLoading();
-      closeModal();
-      loadTasks();
-    } catch (err) {
-      hideLoading();
-      showCustomAlert("Kesalahan", "Gagal menyimpan perubahan. Silakan coba lagi.", "warning");
-    }
+      await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ action: "update", id: document.getElementById("modalTaskId").value, task: document.getElementById("modalTaskText").value, updateDo: document.getElementById("modalUpdateDoText").value, status: document.getElementById("modalStatusSelect").value, percentStatus: document.getElementById("modalPercentSelect").value, updateAction: document.getElementById("modalUpdateActionText").value }) });
+      closeModal(); loadTasks();
+    } catch { hideLoading(); showCustomAlert("Error", "Gagal memperbarui."); }
   }
 
-  async function addTask() {
-    const taskInput = document.getElementById("taskInput");
-    const updateDoInput = document.getElementById("updateDoInput");
-    const statusInput = document.getElementById("statusInput");
-    const percentInput = document.getElementById("percentInput");
-    const updateActionInput = document.getElementById("updateActionInput");
-
-    const taskText = taskInput.value.trim();
-    if (!taskText) {
-      showCustomAlert("Peringatan", "Silakan isi nama tugas terlebih dahulu!", "warning");
-      return;
-    }
-
-    showLoading("Menyimpan tugas baru...");
+  async function requestDeleteTask() {
+    showLoading("Menghapus...");
     try {
-      await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          action: "add",
-          task: taskText,
-          pic: currentUserNama || "-",
-          updateDo: updateDoInput.value.trim(),
-          status: statusInput.value,
-          percentStatus: percentInput.value,
-          updateAction: updateActionInput.value.trim()
-        })
-      });
-      hideLoading();
-
-      taskInput.value = "";
-      updateDoInput.value = "";
-      updateActionInput.value = "";
-      statusInput.value = "Open";
-      percentInput.value = "0%";
-
-      closeAddModal();
-      loadTasks();
-    } catch (err) {
-      hideLoading();
-      showCustomAlert("Kesalahan", "Gagal menambahkan tugas. Silakan coba lagi.", "warning");
-    }
-  }
-
-  function requestDeleteTask() {
-    showCustomConfirm("Konfirmasi Hapus", "Apakah Anda yakin ingin menghapus tugas ini secara permanen?", deleteExecute);
-  }
-
-  async function deleteExecute() {
-    const id = document.getElementById("modalTaskId").value;
-    showLoading("Menghapus tugas...");
-    try {
-      await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ action: "delete", id: id })
-      });
-      hideLoading();
-      closeModal();
-      loadTasks();
-    } catch (err) {
-      hideLoading();
-      showCustomAlert("Kesalahan", "Gagal menghapus tugas dari database.", "warning");
-    }
-  }
-
-  function handleAddKeyPress(e) {
-    if (e.key === "Enter") addTask();
+      await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ action: "delete", id: document.getElementById("modalTaskId").value }) });
+      closeModal(); loadTasks();
+    } catch { hideLoading(); showCustomAlert("Error", "Gagal menghapus."); }
   }
 </script>
-
 </body>
 </html>
