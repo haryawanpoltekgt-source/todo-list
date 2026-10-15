@@ -821,14 +821,34 @@
     const statusSelect = document.getElementById("modalStatusPengajuan");
     const picSelect = document.getElementById("modalTujukanPic");
 
-    // Populate dropdown PIC
+    // Populate dropdown PIC (Format FLEKSIBEL untuk cegah undefined)
     picSelect.innerHTML = '<option value="">-- Pilih PIC --</option>';
     userListCache.forEach(u => {
-      const optVal = `${u.nip} [${u.nama}]`;
-      const opt = document.createElement("option");
-      opt.value = optVal;
-      opt.textContent = optVal;
-      picSelect.appendChild(opt);
+      let nipStr = "";
+      let namaStr = "";
+
+      if (typeof u === "object" && u !== null) {
+        nipStr = u.nip || u.NIP || u[0] || "";
+        namaStr = u.nama || u.Nama || u.namaPegawai || u[1] || "";
+      } else if (typeof u === "string") {
+        namaStr = u;
+      }
+
+      let optVal = "";
+      if (nipStr && namaStr) {
+        optVal = `${nipStr} [${namaStr}]`;
+      } else if (namaStr) {
+        optVal = namaStr;
+      } else if (nipStr) {
+        optVal = nipStr;
+      }
+
+      if (optVal) {
+        const opt = document.createElement("option");
+        opt.value = optVal;
+        opt.textContent = optVal;
+        picSelect.appendChild(opt);
+      }
     });
 
     if (currentUserRole === "Admin") {
