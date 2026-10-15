@@ -44,6 +44,33 @@
       position: relative;
     }
 
+    /* --- LOADING OVERLAY --- */
+    #loadingOverlay {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(18, 22, 31, 0.85);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .spinner {
+      width: 45px;
+      height: 45px;
+      border: 4px solid var(--border-color);
+      border-top: 4px solid var(--accent-cyan);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .loading-text { font-size: 13px; font-weight: 600; color: var(--text-main); }
+
     .back-nav {
       display: inline-flex;
       align-items: center;
@@ -65,19 +92,9 @@
       margin-bottom: 16px;
       flex-shrink: 0;
     }
-    h2 { 
-      color: #ffffff; 
-      margin: 0 0 4px 0; 
-      font-size: 18px;
-      font-weight: 700;
-    }
-    p.subtitle {
-      margin: 0;
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
+    h2 { color: #ffffff; margin: 0 0 4px 0; font-size: 18px; font-weight: 700; }
+    p.subtitle { margin: 0; font-size: 12px; color: var(--text-secondary); }
 
-    /* Form Card Styling */
     .form-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -90,20 +107,9 @@
       gap: 12px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .form-group label {
-      font-size: 11.5px;
-      font-weight: 600;
-      color: var(--text-secondary);
-    }
-    .form-group input, 
-    .form-group select, 
-    .form-group textarea {
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group label { font-size: 11.5px; font-weight: 600; color: var(--text-secondary); }
+    .form-group input, .form-group select, .form-group textarea {
       padding: 9px 12px;
       font-size: 13px;
       font-family: inherit;
@@ -113,11 +119,7 @@
       background: #161b26;
       color: var(--text-main);
     }
-    .form-group input:focus, 
-    .form-group select:focus, 
-    .form-group textarea:focus {
-      border-color: var(--accent-cyan);
-    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-cyan); }
 
     .btn-submit {
       background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
@@ -130,7 +132,6 @@
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
       margin-top: 6px;
-      transition: opacity 0.2s;
     }
     .btn-submit:hover { opacity: 0.9; }
   </style>
@@ -138,7 +139,13 @@
 <body>
 
 <div class="container">
-  <!-- Tombol Kembali ke Halaman Utama -->
+
+  <!-- LOADING OVERLAY -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text">Mengirim permintaan ke server...</div>
+  </div>
+
   <a href="index.html" class="back-nav">← Kembali ke Menu Utama</a>
 
   <div class="header-area">
@@ -177,8 +184,18 @@
 </div>
 
 <script>
-  function kirimPermintaan() {
+  const API_URL = "https://script.google.com/macros/s/AKfycbw_QjZNmV4QeWw-228JbT24_zYlu51hxwECGGIQ6u2iFzZlS06msz96GeNXg3Z2dK23/exec";
+
+  function showLoading() {
+    document.getElementById("loadingOverlay").style.display = "flex";
+  }
+  function hideLoading() {
+    document.getElementById("loadingOverlay").style.display = "none";
+  }
+
+  async function kirimPermintaan() {
     const nama = document.getElementById("pbasNama").value.trim();
+    const kategori = document.getElementById("pbasKategori").value;
     const judul = document.getElementById("pbasJudul").value.trim();
     const deskripsi = document.getElementById("pbasDeskripsi").value.trim();
 
@@ -187,9 +204,26 @@
       return;
     }
 
-    alert("Terima kasih, " + nama + "! Formulir permintaan bantuan berhasil dikirim.");
-    // Di sini nanti Anda bisa mengarahkan atau menghubungkannya ke Google Apps Script / Telegram Bot jika diinginkan.
-    window.location.href = "index.html";
+    showLoading();
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          action: "pbas",
+          nama: nama,
+          kategori: kategori,
+          judul: judul,
+          deskripsi: deskripsi
+        })
+      });
+      hideLoading();
+      alert("Permintaan bantuan berhasil dikirim dan tercatat di sistem!");
+      window.location.href = "index.html";
+    } catch (err) {
+      hideLoading();
+      alert("Gagal mengirim permintaan. Periksa koneksi internet Anda.");
+    }
   }
 </script>
 
