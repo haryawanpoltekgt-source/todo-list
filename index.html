@@ -1509,18 +1509,43 @@
     const isOwner = (task.pic.trim().toLowerCase().includes(currentUserNama.trim().toLowerCase().split(' ')[0]));
     const canEdit = isSuperUser || isOwner;
 
-    const inputs = [
-      document.getElementById("modalTaskText"),
-      document.getElementById("modalUpdateDoText"),
-      document.getElementById("modalStatusSelect"),
-      document.getElementById("modalPercentSelect"),
-      document.getElementById("modalUpdateActionText")
-    ];
+    // --- LOGIKA PEMBATASAN JIKA JUDUL BERAWALAN [PBAS] DAN ROLE MEMBER ---
+    const isPbasTask = task.task && task.task.trim().toUpperCase().startsWith("[PBAS]");
+    const isMemberRole = currentUserRole.toLowerCase() === "member";
 
-    inputs.forEach(el => el.disabled = (isClosed || !canEdit));
+    const taskTextEl = document.getElementById("modalTaskText");
+    const updateDoEl = document.getElementById("modalUpdateDoText");
+    const statusSelectEl = document.getElementById("modalStatusSelect");
+    const percentSelectEl = document.getElementById("modalPercentSelect");
+    const updateActionEl = document.getElementById("modalUpdateActionText");
+    const deleteBtnEl = document.getElementById("modalDeleteBtn");
+    const saveBtnEl = document.getElementById("modalSaveBtn");
 
-    document.getElementById("modalSaveBtn").style.display = (isClosed || !canEdit) ? "none" : "inline-block";
-    document.getElementById("modalDeleteBtn").style.display = (isClosed || !canEdit) ? "none" : "inline-block";
+    if (isClosed || !canEdit) {
+      taskTextEl.disabled = true;
+      updateDoEl.disabled = true;
+      statusSelectEl.disabled = true;
+      percentSelectEl.disabled = true;
+      updateActionEl.disabled = true;
+      saveBtnEl.style.display = "none";
+      deleteBtnEl.style.display = "none";
+    } else {
+      // Aktifkan dahulu secara default
+      taskTextEl.disabled = false;
+      updateDoEl.disabled = false;
+      statusSelectEl.disabled = false;
+      percentSelectEl.disabled = false;
+      updateActionEl.disabled = false;
+      saveBtnEl.style.display = "inline-block";
+      deleteBtnEl.style.display = "inline-block";
+
+      // Jika role Member dan judul berawalan [PBAS], batasi fungsi hapus, plan, dan do
+      if (isMemberRole && isPbasTask) {
+        taskTextEl.disabled = true;
+        updateDoEl.disabled = true;
+        deleteBtnEl.style.display = "none";
+      }
+    }
 
     document.getElementById("taskModal").style.display = "flex";
   }
