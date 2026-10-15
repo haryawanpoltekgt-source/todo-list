@@ -1102,7 +1102,6 @@
 
   function openAbsensiView() {
     switchView('absensiView');
-    // Set otomatis tanggal hari ini pada date picker (format YYYY-MM-DD)
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("absensiDatePicker").value = today;
     loadAbsensiData();
@@ -1130,8 +1129,6 @@
     container.innerHTML = "<div style='text-align:center; color:#9099a2; padding:20px;'>Memproses data...</div>";
 
     const absensiRecords = window.absensiCache || [];
-    
-    // Pencocokan tanggal secara fleksibel (membandingkan substring YYYY-MM-DD)
     const filteredAbsensi = absensiRecords.filter(a => {
       if (!a.tanggal) return false;
       return a.tanggal.trim() === selectedDate.trim();
@@ -1342,6 +1339,7 @@
     filterPicSelect.innerHTML = `<option value="ALL">Semua PIC</option>`;
     
     let matchedUserPic = "";
+    const cleanUserNama = currentUserNama ? currentUserNama.toLowerCase().trim() : "";
 
     pics.forEach(pic => {
       const opt = document.createElement("option");
@@ -1349,7 +1347,9 @@
       opt.textContent = pic;
       filterPicSelect.appendChild(opt);
 
-      if (currentUserNama && pic.toLowerCase().trim().includes(currentUserNama.toLowerCase().trim().split(' ')[0])) {
+      // Pencocokan ketat berdasarkan Nama Lengkap yang login (bukan angka/NIP)
+      const cleanPic = pic.toLowerCase().trim();
+      if (cleanUserNama && (cleanPic === cleanUserNama || cleanPic.includes(cleanUserNama))) {
         matchedUserPic = pic;
       }
     });
