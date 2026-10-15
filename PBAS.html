@@ -551,7 +551,7 @@
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbw3AD9zzKrjxp9stU-nbBrPS3jSv8O9oDLp6O51_Absp6OTBq9yWah4J8q_DnRrhkPt/exec";
   let isListView = false;
-  let currentUserRole = "Tamu"; // "Tamu" atau "Admin"
+  let currentUserRole = "Tamu";
   let currentAdminNama = "";
 
   function showLoading(text = "Memproses data...") {
@@ -571,17 +571,27 @@
 
     const badgeEl = document.getElementById("userRoleBadge");
     const pbasNamaEl = document.getElementById("pbasNama");
+    const btnToggle = document.getElementById("btnToggleView");
 
     if (role === "Admin") {
       badgeEl.textContent = `Admin (${adminNama})`;
       badgeEl.className = "user-badge badge-admin";
       pbasNamaEl.value = adminNama;
-      pbasNamaEl.disabled = true; // Otomatis terisi nama Admin
+      
+      // Sembunyikan tombol "Buat Permintaan Baru", langsung aktifkan tampilan Daftar
+      btnToggle.style.display = "none";
+      isListView = false;
+      toggleView(); // Langsung pindah ke halaman Daftar Permintaan
     } else {
       badgeEl.textContent = "Role: Tamu";
       badgeEl.className = "user-badge badge-tamu";
       pbasNamaEl.value = "";
       pbasNamaEl.disabled = false;
+
+      // Munculkan kembali tombol toggle untuk tamu
+      btnToggle.style.display = "inline-block";
+      isListView = true;
+      toggleView(); // Kembali ke form input untuk tamu
     }
   }
 
@@ -619,7 +629,6 @@
       hideLoading();
 
       if (res.status === "success") {
-        // Cek apakah Role adalah Superuser
         if (res.role && res.role.toLowerCase() === "superuser") {
           closeAdminLoginModal();
           selectRole("Admin", res.nama);
@@ -650,7 +659,9 @@
     if (isListView) {
       formView.style.display = "none";
       listView.style.display = "flex";
-      btnToggle.textContent = "✍️ Buat Permintaan Baru";
+      if (currentUserRole !== "Admin") {
+        btnToggle.textContent = "✍️ Buat Permintaan Baru";
+      }
       pageTitle.textContent = "Daftar Permintaan Bantuan";
       pageSubtitle.textContent = "Ketuk salah satu daftar untuk melihat detail lengkap";
       loadPbasList();
@@ -761,14 +772,12 @@
       hideLoading();
       alert("Permintaan bantuan berhasil dikirim dan tercatat di sistem!");
       
-      // Reset form (jika Tamu, bersihkan nama)
       if (currentUserRole === "Tamu") {
         document.getElementById("pbasNama").value = "";
       }
       document.getElementById("pbasJudul").value = "";
       document.getElementById("pbasDeskripsi").value = "";
 
-      // Pindah ke view daftar
       toggleView();
     } catch (err) {
       hideLoading();
