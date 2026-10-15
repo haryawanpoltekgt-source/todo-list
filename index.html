@@ -1006,7 +1006,7 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwqXtJDJz-KYdJAebnhSgmCbDhbiizRluPtREhKUDcq1SeHf2O9F5S_kb1w2_ozDHZI/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbx3yFeVnmFSo8r9ULaltSLUHcJnUeK46s3mWrYirCWYeF0LZ1yc6bqD1JFgw0dfLhQe/exec";
 
   let allTasks = [];
   let currentUserNama = "";
@@ -1102,7 +1102,7 @@
 
   function openAbsensiView() {
     switchView('absensiView');
-    // Set otomatis tanggal hari ini pada date picker
+    // Set otomatis tanggal hari ini pada date picker (format YYYY-MM-DD)
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("absensiDatePicker").value = today;
     loadAbsensiData();
@@ -1130,7 +1130,12 @@
     container.innerHTML = "<div style='text-align:center; color:#9099a2; padding:20px;'>Memproses data...</div>";
 
     const absensiRecords = window.absensiCache || [];
-    const filteredAbsensi = absensiRecords.filter(a => a.tanggal === selectedDate);
+    
+    // Pencocokan tanggal secara fleksibel (membandingkan substring YYYY-MM-DD)
+    const filteredAbsensi = absensiRecords.filter(a => {
+      if (!a.tanggal) return false;
+      return a.tanggal.trim() === selectedDate.trim();
+    });
 
     if (filteredAbsensi.length === 0) {
       container.innerHTML = `
