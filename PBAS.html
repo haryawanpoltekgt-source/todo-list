@@ -163,6 +163,12 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .pbas-item-card:hover {
+      border-color: var(--accent-cyan);
+      background: #1b2332;
     }
     .pbas-item-header {
       display: flex;
@@ -175,6 +181,22 @@
       font-size: 13.5px;
       font-weight: 700;
       color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    /* Bagian Detail yang tersembunyi secara default */
+    .pbas-detail-content {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 6px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border-color);
+    }
+    .pbas-item-card.active .pbas-detail-content {
+      display: flex;
     }
     .pbas-desc {
       font-size: 12px;
@@ -189,6 +211,15 @@
       border-radius: 4px;
       font-size: 10.5px;
       font-weight: 600;
+    }
+    .toggle-icon {
+      font-size: 12px;
+      color: var(--text-secondary);
+      transition: transform 0.2s;
+    }
+    .pbas-item-card.active .toggle-icon {
+      transform: rotate(180deg);
+      color: var(--accent-cyan);
     }
   </style>
 </head>
@@ -276,7 +307,7 @@
       listView.style.display = "flex";
       btnToggle.textContent = "✍️ Buat Permintaan Baru";
       pageTitle.textContent = "Daftar Permintaan Bantuan";
-      pageSubtitle.textContent = "Riwayat pengajuan perbaikan asset dan system";
+      pageSubtitle.textContent = "Riwayat pengajuan perbaikan asset dan system (Klik kartu untuk melihat detail)";
       loadPbasList();
     } else {
       formView.style.display = "flex";
@@ -307,16 +338,27 @@
       list.reverse().forEach(item => {
         const card = document.createElement("div");
         card.className = "pbas-item-card";
+        
+        // Event listener saat kartu diklik untuk membuka/menutup detail
+        card.onclick = () => {
+          card.classList.toggle("active");
+        };
+
         card.innerHTML = `
           <div class="pbas-item-header">
-            <span><b>ID:</b> ${item.id}</span>
+            <span><b>Pelapor:</b> ${item.nama}</span>
             <span class="badge-cat">${item.kategori}</span>
           </div>
-          <div class="pbas-title">${item.judul}</div>
-          <div class="pbas-desc">${item.deskripsi}</div>
-          <div style="font-size: 10.5px; color: #9099a2; display: flex; justify-content: space-between; margin-top: 4px;">
-            <span>Pelapor: <b>${item.nama}</b></span>
-            <span>${item.waktu}</span>
+          <div class="pbas-title">
+            <span>${item.judul}</span>
+            <span class="toggle-icon">▼</span>
+          </div>
+          <div class="pbas-detail-content">
+            <div style="font-size: 11px; color: var(--accent-cyan);"><b>ID:</b> ${item.id}</div>
+            <div class="pbas-desc"><b>Deskripsi:</b><br>${item.deskripsi}</div>
+            <div style="font-size: 10.5px; color: #9099a2; margin-top: 2px;">
+              <span><b>Waktu Pengajuan:</b> ${item.waktu}</span>
+            </div>
           </div>
         `;
         container.appendChild(card);
@@ -370,4 +412,3 @@
 
 </body>
 </html>
-
