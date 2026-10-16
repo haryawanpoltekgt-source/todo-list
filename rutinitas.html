@@ -542,11 +542,18 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwa0GQYRx1VTOMgFRfogCyb9yxWElE2ctgYlvPMrRtZEzWNApITeVwJ7l7XHHRUC48/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbxaM24GBhpKaTtseDCnOLAgF22yM-7sl2e2LvEC2xh8W7Rn9FeKw66xMZ3ALNMp37ON/exec";
   
   let allRutinitas = [];
   let userListCache = [];
   let currentUserNama = localStorage.getItem("pbas_nama") || "";
+
+  // Fitur Auto-Refresh saat HP kembali membuka aplikasi
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      loadRutinitas(true);
+    }
+  });
 
   function showLoading(text = "Memproses data...") {
     document.getElementById("loadingText").textContent = text;
@@ -627,7 +634,6 @@
     renderRutinitas();
   }
 
-  // --- LOAD RUTINITAS DENGAN LOCALSTORAGE CACHE INSTAN ---
   async function loadRutinitas(forceRefresh = false) {
     const cachedRutinitas = localStorage.getItem("local_rutinitas_cache");
 
