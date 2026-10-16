@@ -264,7 +264,7 @@
     }
     .back-nav:hover { text-decoration: underline; }
 
-    /* --- HEADER WEB KERJA (DESAIN BARU DIPROPORSIONALSAN) --- */
+    /* --- HEADER WEB KERJA --- */
     .header-action-area {
       display: flex;
       flex-direction: column;
@@ -1034,6 +1034,25 @@
   let currentUserNip = "";
   let currentUserRole = "Member";
 
+  // CEK SESI LOGIN DI LOCALSTORAGE SAAT HALAMAN DIMUAT
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedNama = localStorage.getItem("pbas_nama");
+    const savedNip = localStorage.getItem("pbas_nip");
+    const savedRole = localStorage.getItem("pbas_role");
+
+    if (savedNama) {
+      currentUserNama = savedNama;
+      currentUserNip = savedNip;
+      currentUserRole = savedRole || "Member";
+      document.getElementById("loggedInUserLabel").textContent = `👤 ${currentUserNama} (${currentUserRole}) - ${savedNip}`;
+      
+      if (window.location.hash === "#workView" || savedNama) {
+        switchView('workView');
+        loadTasks();
+      }
+    }
+  });
+
   function showLoading(text = "Memproses data...") {
     document.getElementById("loadingText").textContent = text;
     document.getElementById("loadingOverlay").style.display = "flex";
@@ -1105,6 +1124,9 @@
     currentUserNama = "";
     currentUserNip = "";
     currentUserRole = "Member";
+    localStorage.removeItem("pbas_nama");
+    localStorage.removeItem("pbas_nip");
+    localStorage.removeItem("pbas_role");
     document.getElementById("loggedInUserLabel").textContent = "";
     switchView('homeView');
   }
@@ -1225,6 +1247,12 @@
         currentUserNama = res.nama;
         currentUserNip = nip;
         currentUserRole = res.role || "Member";
+        
+        // SIMPAN KE LOCALSTORAGE
+        localStorage.setItem("pbas_nama", currentUserNama);
+        localStorage.setItem("pbas_nip", currentUserNip);
+        localStorage.setItem("pbas_role", currentUserRole);
+
         document.getElementById("loggedInUserLabel").textContent = `👤 ${currentUserNama} (${currentUserRole}) - ${nip}`;
         closeLoginModal();
         switchView('workView');
