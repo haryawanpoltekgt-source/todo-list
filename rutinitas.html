@@ -155,8 +155,9 @@
 
     .filter-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr 1fr 1fr auto;
       gap: 6px;
+      align-items: flex-end;
       margin-bottom: 8px;
       flex-shrink: 0;
       background: var(--card-bg);
@@ -185,6 +186,18 @@
       color: var(--text-main);
       font-weight: 500;
     }
+    .btn-reset-filter {
+      background: #2a3447;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 5px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      height: 27px;
+    }
+    .btn-reset-filter:hover { background: var(--card-hover); color: var(--accent-cyan); }
 
     /* SUMMARY AREA */
     .summary-area {
@@ -434,7 +447,7 @@
     <input type="text" id="searchInput" class="search-input" placeholder="Cari kegiatan rutin..." oninput="renderRutinitas()">
   </div>
 
-  <!-- FILTER GRID (3 KOLOM MIRIP WEB KERJA) -->
+  <!-- FILTER GRID (3 KOLOM + TOMBOL RESET) -->
   <div class="filter-grid">
     <label>
       Filter PIC:
@@ -462,6 +475,8 @@
       Filter Terjadwal:
       <input type="date" id="filterTanggal" onchange="renderRutinitas()">
     </label>
+
+    <button class="btn-reset-filter" onclick="resetFilterTanggal()" title="Reset Tanggal">Reset</button>
   </div>
 
   <!-- SUMMARY AREA -->
@@ -482,7 +497,7 @@
 
 </div>
 
-<!-- MODAL TAMBAH RUTINITAS -->
+<!-- MODAL DETAIL / EDIT RUTINITAS -->
 <div class="modal-overlay" id="rutinitasModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -490,6 +505,7 @@
       <button class="btn-close-modal" onclick="closeModal()">&times;</button>
     </div>
     <div class="modal-body">
+      <input type="hidden" id="modalActionType" value="add">
       <label>
         Judul Kegiatan Rutin:
         <input type="text" id="inputJudul" placeholder="Contoh: Piket Area Smoking / Backup Server...">
@@ -588,6 +604,8 @@
   }
 
   function openAddModal() {
+    document.getElementById("modalActionType").value = "add";
+    document.getElementById("modalTitle").textContent = "Tambah Rutinitas Baru";
     document.getElementById("inputJudul").value = "";
     document.getElementById("selectPic").value = currentUserNama || "";
     document.querySelector('input[value="hari"]').checked = true;
@@ -596,8 +614,35 @@
     document.getElementById("rutinitasModal").style.display = "flex";
   }
 
+  function openDetailModal(item) {
+    document.getElementById("modalActionType").value = "edit";
+    document.getElementById("modalTitle").textContent = `Detail Rutinitas (${item.id || ''})`;
+    document.getElementById("inputJudul").value = item.judul || "";
+    document.getElementById("selectPic").value = item.pic || "";
+
+    if (item.tanggal) {
+      document.querySelector('input[name="scheduleType"][value="tanggal"]').checked = true;
+      toggleScheduleMode();
+      // Format datetime-local: YYYY-MM-DDTHH:mm
+      document.getElementById("inputTanggalWaktu").value = item.tanggal.replace(' ', 'T').substring(0, 16);
+    } else {
+      document.querySelector('input[name="scheduleType"][value="hari"]').checked = true;
+      toggleScheduleMode();
+      if (item.hari) {
+        document.getElementById("selectHari").value = item.hari;
+      }
+    }
+
+    document.getElementById("rutinitasModal").style.display = "flex";
+  }
+
   function closeModal() {
     document.getElementById("rutinitasModal").style.display = "none";
+  }
+
+  function resetFilterTanggal() {
+    document.getElementById("filterTanggal").value = "";
+    renderRutinitas();
   }
 
   // Muat Daftar Rutinitas
@@ -682,14 +727,78 @@
     document.getElementById("countTerjadwal").textContent = countJadwal;
 
     if (filtered.length === 0) {
-      listEl.innerHTML = `<li style="text-align:center; color:#9099a2; padding:30px;">Belum ada daftar kegiatan rutin yang sesuai.</li>`;
+      listEl.innerHTML = `<div style="text-align:center; color:#9099a2; padding:30px;">Belum ada daftar kegiatan rutin yang sesuai.</div>`;
       return;
     }
 
-    filtered.slice().reverse().forEach(item => {
+    // --- SORTING BERDASARKAN PERMINTAAN: Hari Ini -> Besok -> Kemarin -> Hari Lainnya ---
+    const daysNameInID = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    const todayIndex = new Date().getDay(); // 0 = Minggu, 1 = Senin, dst.
+    const todayName = daysNameInID[todayIndex];
+    
+    // Cari hari besok & kemarin
+    const tomorrowIndex = (todayIndex + 1) % 7;
+    const yesterdayIndex = (todayIndex + 6) % 7;
+    const tomorrowName = daysNameInID[tomorrowIndex];
+    const yesterdayName = daysNameInID[yesterdayIndex];
+
+    function getDayRank(hariStr) {
+      if (!hariStr) return 99;
+      const h = hariStr.trim();
+      if (h.toLowerCase() === "setiap hari") return 0; // Prioritas tinggi
+      if (h.toLowerCase() === todayName.toLowerCase()) return 1;     // Sort 1: Hari Ini
+      if (h.toLowerCase() === tomorrowName.toLowerCase()) return 2;  // Sort 2: Besok
+      if (h.toLowerCase() === yesterdayName.toLowerCase()) return 3; // Sort 3: Kemarin
+      return 10; // Hari lainnya
+    }
+
+    filtered.sort((a, b) => {
+      const rankA = getDayRank(a.hari);
+      const rankB = getDayRank(b.hari);
+      return rankA - rankB;
+    });
+
+    // --- RENDER DENGAN PEMBERIAN JEDA (SECTION DIVIDER) ---
+    let lastRank = -99;
+
+    filtered.forEach((item, index) => {
+      const currentRank = getDayRank(item.hari);
+
+      // Berikan pembatas/jeda jika kelompok hari berubah
+      if (index > 0 && currentRank !== lastRank) {
+        const divider = document.createElement("div");
+        divider.style.cssText = "font-size: 10.5px; font-weight: 700; color: var(--accent-cyan); margin: 12px 0 6px 4px; text-transform: uppercase; letter-spacing: 0.5px;";
+        
+        let labelGroup = "Jadwal Lainnya";
+        if (currentRank === 1) labelGroup = `⚡ Hari Ini (${todayName})`;
+        else if (currentRank === 2) labelGroup = `📅 Besok (${tomorrowName})`;
+        else if (currentRank === 3) labelGroup = `⏪ Kemarin (${yesterdayName})`;
+        else if (currentRank === 0) labelGroup = `🔄 Setiap Hari`;
+
+        divider.textContent = `── ${labelGroup} ──`;
+        listEl.appendChild(divider);
+      } else if (index === 0) {
+        const divider = document.createElement("div");
+        divider.style.cssText = "font-size: 10.5px; font-weight: 700; color: var(--accent-cyan); margin: 4px 0 6px 4px; text-transform: uppercase; letter-spacing: 0.5px;";
+        
+        let labelGroup = "Jadwal Utama";
+        if (currentRank === 1) labelGroup = `⚡ Hari Ini (${todayName})`;
+        else if (currentRank === 2) labelGroup = `📅 Besok (${tomorrowName})`;
+        else if (currentRank === 3) labelGroup = `⏪ Kemarin (${yesterdayName})`;
+        else if (currentRank === 0) labelGroup = `🔄 Setiap Hari`;
+
+        divider.textContent = `── ${labelGroup} ──`;
+        listEl.appendChild(divider);
+      }
+
+      lastRank = currentRank;
+
       const li = document.createElement("li");
       const isTanggalType = !!item.tanggal;
       li.className = `rutinitas-item-card ${isTanggalType ? 'type-tanggal' : ''}`;
+      
+      // Event klik card untuk membuka detail (seperti Web Kerja)
+      li.onclick = () => openDetailModal(item);
 
       let jadwalText = item.hari || (item.tanggal ? formatTanggalKalender(item.tanggal) : "Tidak ditentukan");
 
