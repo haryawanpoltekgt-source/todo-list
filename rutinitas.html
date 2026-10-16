@@ -47,7 +47,6 @@
       position: relative;
     }
 
-    /* LOADING OVERLAY */
     #loadingOverlay {
       display: none;
       position: absolute;
@@ -74,7 +73,6 @@
     }
     .loading-text { font-size: 13px; font-weight: 600; color: var(--text-main); }
 
-    /* HEADER & NAV */
     .back-nav {
       display: inline-flex;
       align-items: center;
@@ -122,7 +120,6 @@
       color: var(--text-secondary);
     }
 
-    /* TOMBOL TAMBAH RUTINITAS */
     .btn-add-rutinitas {
       background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
       color: white;
@@ -140,7 +137,6 @@
     }
     .btn-add-rutinitas:hover { opacity: 0.9; }
 
-    /* SEARCH BAR & FILTER GRID */
     .search-input {
       width: 100%;
       padding: 7px 10px;
@@ -199,7 +195,6 @@
     }
     .btn-reset-filter:hover { background: var(--card-hover); color: var(--accent-cyan); }
 
-    /* SUMMARY AREA */
     .summary-area {
       display: flex;
       justify-content: space-between;
@@ -225,7 +220,6 @@
     .count-rutin { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
     .count-jadwal { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
 
-    /* LIST CONTAINER / SCROLL AREA */
     .rutinitas-scroll-area {
       flex: 1;
       overflow-y: auto;
@@ -234,7 +228,6 @@
     }
     ul { list-style: none; padding: 0; margin: 0; }
 
-    /* ITEM CARD RUTINITAS */
     .rutinitas-item-card {
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -307,7 +300,6 @@
       border: 1px solid rgba(139, 92, 246, 0.3);
     }
 
-    /* MODAL STYLING */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -422,16 +414,13 @@
 
 <div class="container">
 
-  <!-- LOADING OVERLAY -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
     <div class="loading-text" id="loadingText">Memproses data...</div>
   </div>
 
-  <!-- NAVIGASI ATAS -->
   <a href="index.html#workView" class="back-nav">← Kembali ke Web Kerja</a>
 
-  <!-- HEADER & SEARCH -->
   <div class="header-action-area">
     <div class="header-top-row">
       <div class="brand-wrapper">
@@ -443,11 +432,9 @@
       </button>
     </div>
 
-    <!-- SEARCH BAR -->
     <input type="text" id="searchInput" class="search-input" placeholder="Cari kegiatan rutin..." oninput="renderRutinitas()">
   </div>
 
-  <!-- FILTER GRID (3 KOLOM + TOMBOL RESET) -->
   <div class="filter-grid">
     <label>
       Filter PIC:
@@ -479,7 +466,6 @@
     <button class="btn-reset-filter" onclick="resetFilterTanggal()" title="Reset Tanggal">Reset</button>
   </div>
 
-  <!-- SUMMARY AREA -->
   <div class="summary-area">
     <span class="summary-title" id="summaryPicLabel">Total Rutinitas:</span>
     <div class="summary-badges">
@@ -488,7 +474,6 @@
     </div>
   </div>
 
-  <!-- CONTAINER DAFTAR LIST RUTINITAS -->
   <div class="rutinitas-scroll-area">
     <ul id="rutinitasList">
       <div style="text-align:center; color:#9099a2; padding:30px;">Memuat data rutinitas...</div>
@@ -497,7 +482,6 @@
 
 </div>
 
-<!-- MODAL DETAIL / EDIT RUTINITAS -->
 <div class="modal-overlay" id="rutinitasModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -526,7 +510,6 @@
         </div>
       </label>
 
-      <!-- OPSI 1: PER HARI -->
       <div id="modeHariGroup">
         <label>
           Ingatkan Setiap Hari:
@@ -543,7 +526,6 @@
         </label>
       </div>
 
-      <!-- OPSI 2: SPESIFIK TANGGAL -->
       <div id="modeTanggalGroup" style="display: none;">
         <label>
           Ingatkan di Tanggal & Waktu:
@@ -560,7 +542,7 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbzql1kUFjP3MYxfpUisEs5BrUwZ-nSAjbI8zs5VCGvPqAnr2XOJvjyExNb7DNNlCYux/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbxkm9s2srnSzKjXDl8uZ5JqJ51QvbuXPMcRcb8fCjdXbIorA3En_HUSZACyAfvR91AJ/exec";
   
   let allRutinitas = [];
   let userListCache = [];
@@ -574,7 +556,6 @@
     document.getElementById("loadingOverlay").style.display = "none";
   }
 
-  // Load User ID untuk Dropdown PIC
   async function loadUserList() {
     try {
       const response = await fetch(`${API_URL}?action=getUsers`);
@@ -646,20 +627,21 @@
     renderRutinitas();
   }
 
-  // Muat Daftar Rutinitas
   async function loadRutinitas() {
     showLoading("Memuat daftar rutinitas...");
     try {
       const response = await fetch(`${API_URL}?action=getRutinitas`);
       const result = await response.json();
-      hideLoading();
 
       allRutinitas = Array.isArray(result) ? result : [];
       updatePicOptions();
       renderRutinitas();
     } catch (err) {
-      hideLoading();
+      console.error(err);
       document.getElementById("rutinitasList").innerHTML = `<li style="text-align:center; color:#f87171; padding:20px;">Gagal memuat data dari server.</li>`;
+      allRutinitas = [];
+    } finally {
+      hideLoading();
     }
   }
 
@@ -737,7 +719,6 @@
       return;
     }
 
-    // --- SORTING BERDASARKAN HARI INI -> BESOK -> KEMARIN -> LAINNYA ---
     const daysNameInID = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
     const todayIndex = new Date().getDay();
     const todayName = daysNameInID[todayIndex];
@@ -749,13 +730,13 @@
 
     function getDayRank(item) {
       const hasValidHari = item.hari && item.hari.trim() !== "" && !item.hari.toLowerCase().includes("tidak bisa dipilih");
-      if (!hasValidHari) return 50; // Untuk tipe tanggal kalender
+      if (!hasValidHari) return 50;
 
       const h = item.hari.trim();
       if (h.toLowerCase() === "setiap hari") return 0;
-      if (h.toLowerCase() === todayName.toLowerCase()) return 1;     // Hari Ini
-      if (h.toLowerCase() === tomorrowName.toLowerCase()) return 2;  // Besok
-      if (h.toLowerCase() === yesterdayName.toLowerCase()) return 3; // Kemarin
+      if (h.toLowerCase() === todayName.toLowerCase()) return 1;
+      if (h.toLowerCase() === tomorrowName.toLowerCase()) return 2;
+      if (h.toLowerCase() === yesterdayName.toLowerCase()) return 3;
       return 10;
     }
 
@@ -763,7 +744,6 @@
       return getDayRank(a) - getDayRank(b);
     });
 
-    // --- RENDER DENGAN PEMBATAS KELOMPOK HARI ---
     let lastRank = -99;
 
     filtered.forEach((item, index) => {
@@ -805,7 +785,6 @@
       li.className = `rutinitas-item-card ${hasValidTanggal ? 'type-tanggal' : ''}`;
       li.onclick = () => openDetailModal(item);
 
-      // Logika Penentuan Badge Jadwal (Jika hari kosong/tidak bisa dipilih, tampilkan tanggal kalender)
       let jadwalText = "";
       const hasValidHari = item.hari && item.hari.trim() !== "" && !item.hari.toLowerCase().includes("tidak bisa dipilih");
 
@@ -846,7 +825,6 @@
     return `${day} ${month}, ${hours}:${mins}`;
   }
 
-  // Simpan Rutinitas Baru
   async function simpanRutinitas() {
     const judul = document.getElementById("inputJudul").value.trim();
     const pic = document.getElementById("selectPic").value;
@@ -879,16 +857,16 @@
           tanggal: tanggal
         })
       });
-      hideLoading();
       closeModal();
       loadRutinitas();
     } catch (err) {
-      hideLoading();
+      console.error(err);
       alert("Gagal menyimpan rutinitas.");
+    } finally {
+      hideLoading();
     }
   }
 
-  // Inisialisasi awal saat halaman dibuka
   window.onload = () => {
     loadUserList();
     loadRutinitas();
