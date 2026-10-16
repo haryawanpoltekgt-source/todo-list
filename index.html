@@ -993,7 +993,7 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwa0GQYRx1VTOMgFRfogCyb9yxWElE2ctgYlvPMrRtZEzWNApITeVwJ7l7XHHRUC48/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbxaM24GBhpKaTtseDCnOLAgF22yM-7sl2e2LvEC2xh8W7Rn9FeKw66xMZ3ALNMp37ON/exec";
 
   let allTasks = [];
   let currentUserNama = "";
@@ -1013,7 +1013,16 @@
       
       if (window.location.hash === "#workView" || savedNama) {
         switchView('workView');
-        loadTasks(); // Memuat data dengan LocalStorage Cache Instan
+        loadTasks(); 
+      }
+    }
+  });
+
+  // Fitur Auto-Refresh saat HP kembali membuka aplikasi
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      if (currentUserNama && document.getElementById("workView").style.display === "flex") {
+        loadTasks(true);
       }
     }
   });
@@ -1336,11 +1345,9 @@
     return `${day} ${month}, ${hours}:${minutes}`;
   }
 
-  // --- FUNGSI LOAD TUGAS DENGAN LOCALSTORAGE CACHE INSTAN ---
   async function loadTasks(forceRefresh = false) {
     const cachedTasks = localStorage.getItem("local_tasks_cache");
 
-    // Jika ada cache lokal & bukan sedang refresh paksa, tampilkan instan (0 detik)
     if (cachedTasks && !forceRefresh) {
       try {
         allTasks = JSON.parse(cachedTasks);
@@ -1365,7 +1372,6 @@
       const result = await response.json();
       allTasks = Array.isArray(result) ? result : [];
       
-      // Simpan ke LocalStorage browser untuk instan load berikutnya
       localStorage.setItem("local_tasks_cache", JSON.stringify(allTasks));
 
       updatePicOptions();
@@ -1638,7 +1644,7 @@
         })
       });
       closeModal();
-      loadTasks(true); // Ambil data baru setelah update
+      loadTasks(true); 
     } catch (err) {
       console.error(err);
       showCustomAlert("Kesalahan", "Gagal menyimpan perubahan. Silakan coba lagi.", "warning");
@@ -1683,7 +1689,7 @@
       percentInput.value = "0%";
 
       closeAddModal();
-      loadTasks(true); // Ambil data baru setelah tambah
+      loadTasks(true); 
     } catch (err) {
       console.error(err);
       showCustomAlert("Kesalahan", "Gagal menambahkan tugas. Silakan coba lagi.", "warning");
@@ -1706,7 +1712,7 @@
         body: new URLSearchParams({ action: "delete", id: id })
       });
       closeModal();
-      loadTasks(true); // Ambil data baru setelah hapus
+      loadTasks(true); 
     } catch (err) {
       console.error(err);
       showCustomAlert("Kesalahan", "Gagal menghapus tugas dari database.", "warning");
