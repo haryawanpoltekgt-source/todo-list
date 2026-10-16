@@ -605,11 +605,20 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwa0GQYRx1VTOMgFRfogCyb9yxWElE2ctgYlvPMrRtZEzWNApITeVwJ7l7XHHRUC48/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbxaM24GBhpKaTtseDCnOLAgF22yM-7sl2e2LvEC2xh8W7Rn9FeKw66xMZ3ALNMp37ON/exec";
   let isListView = false;
   let currentUserRole = "Tamu";
   let currentAdminNama = "";
   let userListCache = [];
+
+  // Fitur Auto-Refresh saat HP kembali membuka aplikasi
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      if (isListView) {
+        loadPbasList(true);
+      }
+    }
+  });
 
   function showLoading(text = "Memproses data...") {
     document.getElementById("loadingText").textContent = text;
@@ -761,7 +770,6 @@
     }
   }
 
-  // --- LOAD LIST PBAS DENGAN LOCALSTORAGE CACHE INSTAN ---
   async function loadPbasList(forceRefresh = false) {
     const container = document.getElementById("pbasListContainer");
     const cachedPbas = localStorage.getItem("local_pbas_cache");
