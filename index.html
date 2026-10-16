@@ -743,7 +743,7 @@
         </div>
 
         <div class="button-group">
-          <button class="btn-action-base btn-refresh" onclick="loadTasks()" title="Muat Ulang">🔄</button>
+          <button class="btn-action-base btn-refresh" onclick="loadTasks(true)" title="Muat Ulang">🔄</button>
           <button class="btn-action-base btn-rutinitas" onclick="window.location.href='rutinitas.html'" title="Rutinitas Harian">⚡ Rutinitas</button>
           <button class="btn-action-base btn-absensi" onclick="openAbsensiView()" title="Absensi PDCA">📊 Absensi</button>
           <button class="btn-action-base btn-open-add" onclick="openAddModal()">+ Tambah</button>
@@ -993,7 +993,7 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbxkm9s2srnSzKjXDl8uZ5JqJ51QvbuXPMcRcb8fCjdXbIorA3En_HUSZACyAfvR91AJ/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwa0GQYRx1VTOMgFRfogCyb9yxWElE2ctgYlvPMrRtZEzWNApITeVwJ7l7XHHRUC48/exec";
 
   let allTasks = [];
   let currentUserNama = "";
@@ -1013,7 +1013,7 @@
       
       if (window.location.hash === "#workView" || savedNama) {
         switchView('workView');
-        loadTasks();
+        loadTasks(); // Memuat data dengan LocalStorage Cache Instan
       }
     }
   });
@@ -1220,7 +1220,7 @@
         document.getElementById("loggedInUserLabel").textContent = `👤 ${currentUserNama} (${currentUserRole}) - ${nip}`;
         closeLoginModal();
         switchView('workView');
-        loadTasks();
+        loadTasks(true);
       } else if (res.status === "wrong_password") {
         showCustomAlert("Gagal Masuk", "Password yang Anda masukkan salah.", "warning");
       } else if (res.status === "pending") {
@@ -1336,8 +1336,23 @@
     return `${day} ${month}, ${hours}:${minutes}`;
   }
 
-  async function loadTasks() {
-    showLoading("Memuat data tugas...");
+  // --- FUNGSI LOAD TUGAS DENGAN LOCALSTORAGE CACHE INSTAN ---
+  async function loadTasks(forceRefresh = false) {
+    const cachedTasks = localStorage.getItem("local_tasks_cache");
+
+    // Jika ada cache lokal & bukan sedang refresh paksa, tampilkan instan (0 detik)
+    if (cachedTasks && !forceRefresh) {
+      try {
+        allTasks = JSON.parse(cachedTasks);
+        updatePicOptions();
+        renderTasks();
+      } catch (e) {
+        console.error("Gagal parse cache lokal");
+      }
+    } else {
+      showLoading("Memuat data tugas...");
+    }
+
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
@@ -1350,12 +1365,16 @@
       const result = await response.json();
       allTasks = Array.isArray(result) ? result : [];
       
+      // Simpan ke LocalStorage browser untuk instan load berikutnya
+      localStorage.setItem("local_tasks_cache", JSON.stringify(allTasks));
+
       updatePicOptions();
       renderTasks();
     } catch (err) {
       console.error(err);
-      document.getElementById("taskList").innerHTML = "<li style='padding:20px; text-align:center; color:#f87171;'>Gagal memuat tugas. Silakan klik tombol Refresh.</li>";
-      allTasks = [];
+      if (!allTasks || allTasks.length === 0) {
+        document.getElementById("taskList").innerHTML = "<li style='padding:20px; text-align:center; color:#f87171;'>Gagal memuat tugas. Silakan klik tombol Refresh.</li>";
+      }
     } finally {
       hideLoading();
     }
@@ -1619,7 +1638,7 @@
         })
       });
       closeModal();
-      loadTasks();
+      loadTasks(true); // Ambil data baru setelah update
     } catch (err) {
       console.error(err);
       showCustomAlert("Kesalahan", "Gagal menyimpan perubahan. Silakan coba lagi.", "warning");
@@ -1664,7 +1683,7 @@
       percentInput.value = "0%";
 
       closeAddModal();
-      loadTasks();
+      loadTasks(true); // Ambil data baru setelah tambah
     } catch (err) {
       console.error(err);
       showCustomAlert("Kesalahan", "Gagal menambahkan tugas. Silakan coba lagi.", "warning");
@@ -1687,7 +1706,7 @@
         body: new URLSearchParams({ action: "delete", id: id })
       });
       closeModal();
-      loadTasks();
+      loadTasks(true); // Ambil data baru setelah hapus
     } catch (err) {
       console.error(err);
       showCustomAlert("Kesalahan", "Gagal menghapus tugas dari database.", "warning");
