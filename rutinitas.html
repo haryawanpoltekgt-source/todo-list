@@ -542,7 +542,7 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbxkm9s2srnSzKjXDl8uZ5JqJ51QvbuXPMcRcb8fCjdXbIorA3En_HUSZACyAfvR91AJ/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwa0GQYRx1VTOMgFRfogCyb9yxWElE2ctgYlvPMrRtZEzWNApITeVwJ7l7XHHRUC48/exec";
   
   let allRutinitas = [];
   let userListCache = [];
@@ -627,19 +627,36 @@
     renderRutinitas();
   }
 
-  async function loadRutinitas() {
-    showLoading("Memuat daftar rutinitas...");
+  // --- LOAD RUTINITAS DENGAN LOCALSTORAGE CACHE INSTAN ---
+  async function loadRutinitas(forceRefresh = false) {
+    const cachedRutinitas = localStorage.getItem("local_rutinitas_cache");
+
+    if (cachedRutinitas && !forceRefresh) {
+      try {
+        allRutinitas = JSON.parse(cachedRutinitas);
+        updatePicOptions();
+        renderRutinitas();
+      } catch (e) {
+        console.error("Gagal parse cache lokal rutinitas");
+      }
+    } else {
+      showLoading("Memuat daftar rutinitas...");
+    }
+
     try {
       const response = await fetch(`${API_URL}?action=getRutinitas`);
       const result = await response.json();
 
       allRutinitas = Array.isArray(result) ? result : [];
+      localStorage.setItem("local_rutinitas_cache", JSON.stringify(allRutinitas));
+
       updatePicOptions();
       renderRutinitas();
     } catch (err) {
       console.error(err);
-      document.getElementById("rutinitasList").innerHTML = `<li style="text-align:center; color:#f87171; padding:20px;">Gagal memuat data dari server.</li>`;
-      allRutinitas = [];
+      if (!cachedRutinitas) {
+        document.getElementById("rutinitasList").innerHTML = `<li style="text-align:center; color:#f87171; padding:20px;">Gagal memuat data dari server.</li>`;
+      }
     } finally {
       hideLoading();
     }
@@ -858,7 +875,7 @@
         })
       });
       closeModal();
-      loadRutinitas();
+      loadRutinitas(true);
     } catch (err) {
       console.error(err);
       alert("Gagal menyimpan rutinitas.");
