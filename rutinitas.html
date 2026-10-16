@@ -620,15 +620,16 @@
     document.getElementById("inputJudul").value = item.judul || "";
     document.getElementById("selectPic").value = item.pic || "";
 
-    if (item.tanggal) {
+    const hasValidTanggal = item.tanggal && item.tanggal.trim() !== "" && !item.tanggal.toLowerCase().includes("tidak bisa dipilih");
+
+    if (hasValidTanggal) {
       document.querySelector('input[name="scheduleType"][value="tanggal"]').checked = true;
       toggleScheduleMode();
-      // Format datetime-local: YYYY-MM-DDTHH:mm
       document.getElementById("inputTanggalWaktu").value = item.tanggal.replace(' ', 'T').substring(0, 16);
     } else {
       document.querySelector('input[name="scheduleType"][value="hari"]').checked = true;
       toggleScheduleMode();
-      if (item.hari) {
+      if (item.hari && !item.hari.toLowerCase().includes("tidak bisa dipilih")) {
         document.getElementById("selectHari").value = item.hari;
       }
     }
@@ -704,11 +705,13 @@
     const filtered = allRutinitas.filter(item => {
       const matchSearch = !keyword || (item.judul && item.judul.toLowerCase().includes(keyword)) || (item.pic && item.pic.toLowerCase().includes(keyword));
       const matchPic = (selectedPic === "ALL") || (item.pic === selectedPic);
-      const matchHari = (selectedHari === "ALL") || (item.hari && item.hari.toLowerCase() === selectedHari.toLowerCase());
+      
+      const hasValidHari = item.hari && item.hari.trim() !== "" && !item.hari.toLowerCase().includes("tidak bisa dipilih");
+      const matchHari = (selectedHari === "ALL") || (hasValidHari && item.hari.toLowerCase() === selectedHari.toLowerCase());
 
       let matchTanggal = true;
       if (selectedTanggal) {
-        if (item.tanggal) {
+        if (item.tanggal && !item.tanggal.toLowerCase().includes("tidak bisa dipilih")) {
           matchTanggal = item.tanggal.startsWith(selectedTanggal);
         } else {
           matchTanggal = false;
@@ -719,8 +722,11 @@
     });
 
     filtered.forEach(item => {
-      if (item.hari) countHari++;
-      else if (item.tanggal) countJadwal++;
+      const hasValidHari = item.hari && item.hari.trim() !== "" && !item.hari.toLowerCase().includes("tidak bisa dipilih");
+      const hasValidTanggal = item.tanggal && item.tanggal.trim() !== "" && !item.tanggal.toLowerCase().includes("tidak bisa dipilih");
+
+      if (hasValidHari) countHari++;
+      else if (hasValidTanggal) countJadwal++;
     });
 
     document.getElementById("countHari").textContent = countHari;
@@ -731,49 +737,48 @@
       return;
     }
 
-    // --- SORTING BERDASARKAN PERMINTAAN: Hari Ini -> Besok -> Kemarin -> Hari Lainnya ---
+    // --- SORTING BERDASARKAN HARI INI -> BESOK -> KEMARIN -> LAINNYA ---
     const daysNameInID = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-    const todayIndex = new Date().getDay(); // 0 = Minggu, 1 = Senin, dst.
+    const todayIndex = new Date().getDay();
     const todayName = daysNameInID[todayIndex];
     
-    // Cari hari besok & kemarin
     const tomorrowIndex = (todayIndex + 1) % 7;
     const yesterdayIndex = (todayIndex + 6) % 7;
     const tomorrowName = daysNameInID[tomorrowIndex];
     const yesterdayName = daysNameInID[yesterdayIndex];
 
-    function getDayRank(hariStr) {
-      if (!hariStr) return 99;
-      const h = hariStr.trim();
-      if (h.toLowerCase() === "setiap hari") return 0; // Prioritas tinggi
-      if (h.toLowerCase() === todayName.toLowerCase()) return 1;     // Sort 1: Hari Ini
-      if (h.toLowerCase() === tomorrowName.toLowerCase()) return 2;  // Sort 2: Besok
-      if (h.toLowerCase() === yesterdayName.toLowerCase()) return 3; // Sort 3: Kemarin
-      return 10; // Hari lainnya
+    function getDayRank(item) {
+      const hasValidHari = item.hari && item.hari.trim() !== "" && !item.hari.toLowerCase().includes("tidak bisa dipilih");
+      if (!hasValidHari) return 50; // Untuk tipe tanggal kalender
+
+      const h = item.hari.trim();
+      if (h.toLowerCase() === "setiap hari") return 0;
+      if (h.toLowerCase() === todayName.toLowerCase()) return 1;     // Hari Ini
+      if (h.toLowerCase() === tomorrowName.toLowerCase()) return 2;  // Besok
+      if (h.toLowerCase() === yesterdayName.toLowerCase()) return 3; // Kemarin
+      return 10;
     }
 
     filtered.sort((a, b) => {
-      const rankA = getDayRank(a.hari);
-      const rankB = getDayRank(b.hari);
-      return rankA - rankB;
+      return getDayRank(a) - getDayRank(b);
     });
 
-    // --- RENDER DENGAN PEMBERIAN JEDA (SECTION DIVIDER) ---
+    // --- RENDER DENGAN PEMBATAS KELOMPOK HARI ---
     let lastRank = -99;
 
     filtered.forEach((item, index) => {
-      const currentRank = getDayRank(item.hari);
+      const currentRank = getDayRank(item);
 
-      // Berikan pembatas/jeda jika kelompok hari berubah
       if (index > 0 && currentRank !== lastRank) {
         const divider = document.createElement("div");
         divider.style.cssText = "font-size: 10.5px; font-weight: 700; color: var(--accent-cyan); margin: 12px 0 6px 4px; text-transform: uppercase; letter-spacing: 0.5px;";
         
-        let labelGroup = "Jadwal Lainnya";
+        let labelGroup = "Jadwal Lainnya / Kalender";
         if (currentRank === 1) labelGroup = `⚡ Hari Ini (${todayName})`;
         else if (currentRank === 2) labelGroup = `📅 Besok (${tomorrowName})`;
         else if (currentRank === 3) labelGroup = `⏪ Kemarin (${yesterdayName})`;
         else if (currentRank === 0) labelGroup = `🔄 Setiap Hari`;
+        else if (currentRank === 50) labelGroup = `📆 Terjadwal (Kalender)`;
 
         divider.textContent = `── ${labelGroup} ──`;
         listEl.appendChild(divider);
@@ -786,6 +791,7 @@
         else if (currentRank === 2) labelGroup = `📅 Besok (${tomorrowName})`;
         else if (currentRank === 3) labelGroup = `⏪ Kemarin (${yesterdayName})`;
         else if (currentRank === 0) labelGroup = `🔄 Setiap Hari`;
+        else if (currentRank === 50) labelGroup = `📆 Terjadwal (Kalender)`;
 
         divider.textContent = `── ${labelGroup} ──`;
         listEl.appendChild(divider);
@@ -794,13 +800,22 @@
       lastRank = currentRank;
 
       const li = document.createElement("li");
-      const isTanggalType = !!item.tanggal;
-      li.className = `rutinitas-item-card ${isTanggalType ? 'type-tanggal' : ''}`;
+      const hasValidTanggal = item.tanggal && item.tanggal.trim() !== "" && !item.tanggal.toLowerCase().includes("tidak bisa dipilih");
       
-      // Event klik card untuk membuka detail (seperti Web Kerja)
+      li.className = `rutinitas-item-card ${hasValidTanggal ? 'type-tanggal' : ''}`;
       li.onclick = () => openDetailModal(item);
 
-      let jadwalText = item.hari || (item.tanggal ? formatTanggalKalender(item.tanggal) : "Tidak ditentukan");
+      // Logika Penentuan Badge Jadwal (Jika hari kosong/tidak bisa dipilih, tampilkan tanggal kalender)
+      let jadwalText = "";
+      const hasValidHari = item.hari && item.hari.trim() !== "" && !item.hari.toLowerCase().includes("tidak bisa dipilih");
+
+      if (hasValidHari) {
+        jadwalText = item.hari;
+      } else if (hasValidTanggal) {
+        jadwalText = formatTanggalKalender(item.tanggal);
+      } else {
+        jadwalText = "Jadwal Fleksibel";
+      }
 
       li.innerHTML = `
         <div class="item-left">
