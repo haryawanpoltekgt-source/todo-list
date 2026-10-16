@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Portal Asset & System</title>
 
-  <!-- Menghubungkan Manifest ke File HTML -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#12161f">
   
@@ -53,7 +52,6 @@
       position: relative;
     }
 
-    /* --- LOADING OVERLAY ANIMATION --- */
     #loadingOverlay {
       display: none;
       position: absolute;
@@ -85,7 +83,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* --- CUSTOM ALERT & CONFIRM MODAL --- */
     .custom-alert-overlay {
       display: none;
       position: fixed;
@@ -149,7 +146,6 @@
       font-size: 13px;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-      transition: opacity 0.2s;
     }
     .btn-alert-cancel {
       flex: 1;
@@ -175,7 +171,6 @@
       box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
 
-    /* --- PORTAL MENU UTAMA --- */
     #homeView {
       display: flex;
       flex-direction: column;
@@ -240,7 +235,6 @@
     .menu-info h3 { margin: 0 0 2px 0; font-size: 14px; color: #ffffff; font-weight: 700; }
     .menu-info span { font-size: 11px; color: var(--text-secondary); }
 
-    /* --- HALAMAN KONTEN UTAMA --- */
     .app-view {
       display: none;
       flex-direction: column;
@@ -264,7 +258,6 @@
     }
     .back-nav:hover { text-decoration: underline; }
 
-    /* --- HEADER WEB KERJA --- */
     .header-action-area {
       display: flex;
       flex-direction: column;
@@ -304,7 +297,6 @@
       letter-spacing: 0.2px;
     }
     
-    /* Search Bar */
     .search-input {
       width: 100%;
       padding: 7px 10px;
@@ -366,7 +358,6 @@
     }
     .btn-rutinitas:hover { background: rgba(6, 182, 212, 0.25); }
 
-    /* Filter Box */
     .filter-box {
       display: flex;
       gap: 8px;
@@ -400,7 +391,6 @@
       font-weight: 500;
     }
 
-    /* Summary Counting Area */
     .summary-area {
       display: flex;
       justify-content: space-between;
@@ -434,7 +424,6 @@
     .count-progress { background-color: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
     .count-closed { background-color: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
 
-    /* Daftar List Tugas */
     .task-scroll-area {
       flex: 1;
       overflow-y: auto;
@@ -523,7 +512,6 @@
     .status-Progress .badge-status { background-color: rgba(250, 204, 21, 0.2); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.4); }
     .status-Closed .badge-status { background-color: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.4); }
 
-    /* --- HALAMAN ABSENSI PDCA --- */
     .absensi-header-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -591,7 +579,6 @@
     }
     .badge-hadir { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
 
-    /* Modal Styling Dark */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -701,13 +688,11 @@
 
 <div class="container">
 
-  <!-- LOADING OVERLAY -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
     <div class="loading-text" id="loadingText">Memproses data...</div>
   </div>
 
-  <!-- CUSTOM ALERT & CONFIRM MODAL -->
   <div class="custom-alert-overlay" id="customAlertOverlay">
     <div class="custom-alert-box">
       <div class="alert-icon-wrapper" id="alertIcon">⚠️</div>
@@ -719,7 +704,6 @@
     </div>
   </div>
 
-  <!-- ==================== HALAMAN 1: PORTAL MENU UTAMA ==================== -->
   <div id="homeView">
     <div class="portal-header">
       <h1>Portal Asset & System</h1>
@@ -735,7 +719,6 @@
         </div>
       </div>
       
-      <!-- TOMBOL KE HALAMAN PERMINTAAN BANTUAN ASSET & SYSTEM -->
       <div class="menu-card" onclick="window.location.href='PBAS.html'">
         <div class="menu-icon icon-request">🛠️</div>
         <div class="menu-info">
@@ -746,7 +729,6 @@
     </div>
   </div>
 
-  <!-- ==================== HALAMAN 2: WEB KERJA ==================== -->
   <div id="workView" class="app-view">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0;">
       <button class="back-nav" onclick="logout()">← Keluar / Menu Utama</button>
@@ -754,7 +736,6 @@
     </div>
     
     <div class="header-action-area">
-      <!-- BARIS ATAS: JUDUL & DERETAN TOMBOL AKSI -->
       <div class="header-top-row">
         <div class="brand-wrapper">
           <h2>Web Kerja</h2>
@@ -769,7 +750,6 @@
         </div>
       </div>
 
-      <!-- BARIS BAWAH: SEARCH BAR -->
       <div class="header-bottom-row">
         <input type="text" id="searchInput" class="search-input" placeholder="Cari tugas..." oninput="renderTasks()">
       </div>
@@ -794,7 +774,6 @@
       </label>
     </div>
 
-    <!-- Area Ringkasan Counting Data -->
     <div class="summary-area">
       <span class="summary-title" id="summaryPicLabel">Total Tugas (Semua PIC):</span>
       <div class="summary-badges">
@@ -804,7 +783,6 @@
       </div>
     </div>
 
-    <!-- Daftar List Tugas -->
     <div class="task-scroll-area">
       <ul id="taskList">
         <li style='text-align:center; color:#9099a2; padding:20px;'>Memuat data...</li>
@@ -812,8 +790,6 @@
     </div>
   </div>
 
-
-  <!-- ==================== HALAMAN 4: ABSENSI PDCA ==================== -->
   <div id="absensiView" class="app-view">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink: 0;">
       <button class="back-nav" onclick="switchView('workView')">← Kembali ke Web Kerja</button>
@@ -835,10 +811,6 @@
 
 </div>
 
-<datalist id="picListOptions"></datalist>
-
-
-<!-- ==================== MODAL LOGIN WEB KERJA ==================== -->
 <div class="modal-overlay" id="loginModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -866,8 +838,6 @@
   </div>
 </div>
 
-
-<!-- ==================== MODAL BUAT AKUN (REGISTRASI) ==================== -->
 <div class="modal-overlay" id="registerModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -900,8 +870,6 @@
   </div>
 </div>
 
-
-<!-- ==================== MODAL TAMBAH TUGAS UTAMA ==================== -->
 <div class="modal-overlay" id="addModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -957,8 +925,6 @@
   </div>
 </div>
 
-
-<!-- ==================== MODAL DETAIL & EDIT TUGAS ==================== -->
 <div class="modal-overlay" id="taskModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -1027,14 +993,13 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbzql1kUFjP3MYxfpUisEs5BrUwZ-nSAjbI8zs5VCGvPqAnr2XOJvjyExNb7DNNlCYux/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbxkm9s2srnSzKjXDl8uZ5JqJ51QvbuXPMcRcb8fCjdXbIorA3En_HUSZACyAfvR91AJ/exec";
 
   let allTasks = [];
   let currentUserNama = "";
   let currentUserNip = "";
   let currentUserRole = "Member";
 
-  // CEK SESI LOGIN DI LOCALSTORAGE SAAT HALAMAN DIMUAT
   window.addEventListener('DOMContentLoaded', () => {
     const savedNama = localStorage.getItem("pbas_nama");
     const savedNip = localStorage.getItem("pbas_nip");
@@ -1166,14 +1131,15 @@
     try {
       const response = await fetch(`${API_URL}?action=getAbsensi`);
       const result = await response.json();
-      hideLoading();
       window.absensiCache = Array.isArray(result) ? result : [];
       renderAbsensiList();
     } catch (err) {
-      hideLoading();
+      console.error(err);
       showCustomAlert("Kesalahan", "Gagal memuat data absensi.", "warning");
       window.absensiCache = [];
       renderAbsensiList();
+    } finally {
+      hideLoading();
     }
   }
 
@@ -1241,14 +1207,12 @@
         body: new URLSearchParams({ action: "login", nip: nip, password: password })
       });
       const res = await response.json();
-      hideLoading();
 
       if (res.status === "success") {
         currentUserNama = res.nama;
         currentUserNip = nip;
         currentUserRole = res.role || "Member";
         
-        // SIMPAN KE LOCALSTORAGE
         localStorage.setItem("pbas_nama", currentUserNama);
         localStorage.setItem("pbas_nip", currentUserNip);
         localStorage.setItem("pbas_role", currentUserRole);
@@ -1265,8 +1229,10 @@
         showCustomAlert("Akun Tidak Ditemukan", "NIP belum terdaftar. Silakan buat akun terlebih dahulu.", "warning");
       }
     } catch (err) {
-      hideLoading();
+      console.error(err);
       showCustomAlert("Kesalahan Jaringan", "Gagal terhubung ke server. Periksa koneksi internet Anda.", "warning");
+    } finally {
+      hideLoading();
     }
   }
 
@@ -1288,7 +1254,6 @@
         body: new URLSearchParams({ action: "register", nip: nip, nama: nama, password: password })
       });
       const res = await response.json();
-      hideLoading();
 
       if (res.status === "success") {
         showCustomAlert("Pendaftaran Berhasil", "Akun berhasil didaftarkan! Silakan menunggu persetujuan (Approved) dari SuperUser.", "success");
@@ -1302,8 +1267,10 @@
         showCustomAlert("Pendaftaran Gagal", "Terjadi kendala saat mendaftarkan akun.", "warning");
       }
     } catch (err) {
-      hideLoading();
+      console.error(err);
       showCustomAlert("Kesalahan Jaringan", "Gagal terhubung ke server.", "warning");
+    } finally {
+      hideLoading();
     }
   }
 
@@ -1377,7 +1344,6 @@
 
       const response = await fetch(API_URL, { signal: controller.signal });
       clearTimeout(timeoutId);
-      hideLoading();
 
       if (!response.ok) throw new Error("Network response was not ok");
       
@@ -1387,9 +1353,11 @@
       updatePicOptions();
       renderTasks();
     } catch (err) {
-      hideLoading();
       console.error(err);
       document.getElementById("taskList").innerHTML = "<li style='padding:20px; text-align:center; color:#f87171;'>Gagal memuat tugas. Silakan klik tombol Refresh.</li>";
+      allTasks = [];
+    } finally {
+      hideLoading();
     }
   }
 
@@ -1580,7 +1548,6 @@
     const isOwner = (task.pic.trim().toLowerCase().includes(currentUserNama.trim().toLowerCase().split(' ')[0]));
     const canEdit = isSuperUser || isOwner;
 
-    // --- LOGIKA PEMBATASAN JIKA JUDUL BERAWALAN [PBAS] DAN ROLE MEMBER ---
     const isPbasTask = task.task && task.task.trim().toUpperCase().startsWith("[PBAS]");
     const isMemberRole = currentUserRole.toLowerCase() === "member";
 
@@ -1651,12 +1618,13 @@
           updateAction: updateAction
         })
       });
-      hideLoading();
       closeModal();
       loadTasks();
     } catch (err) {
-      hideLoading();
+      console.error(err);
       showCustomAlert("Kesalahan", "Gagal menyimpan perubahan. Silakan coba lagi.", "warning");
+    } finally {
+      hideLoading();
     }
   }
 
@@ -1688,7 +1656,6 @@
           updateAction: updateActionInput.value.trim()
         })
       });
-      hideLoading();
 
       taskInput.value = "";
       updateDoInput.value = "";
@@ -1699,8 +1666,10 @@
       closeAddModal();
       loadTasks();
     } catch (err) {
-      hideLoading();
+      console.error(err);
       showCustomAlert("Kesalahan", "Gagal menambahkan tugas. Silakan coba lagi.", "warning");
+    } finally {
+      hideLoading();
     }
   }
 
@@ -1717,12 +1686,13 @@
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ action: "delete", id: id })
       });
-      hideLoading();
       closeModal();
       loadTasks();
     } catch (err) {
-      hideLoading();
+      console.error(err);
       showCustomAlert("Kesalahan", "Gagal menghapus tugas dari database.", "warning");
+    } finally {
+      hideLoading();
     }
   }
 
