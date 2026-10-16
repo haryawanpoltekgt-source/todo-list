@@ -74,7 +74,6 @@
     }
     .loading-text { font-size: 13px; font-weight: 600; color: var(--text-main); }
 
-    /* CUSTOM ALERT STYLES */
     .custom-alert-overlay {
       display: none;
       position: fixed;
@@ -537,7 +536,6 @@
     <div class="loading-text" id="loadingText">Memproses data...</div>
   </div>
 
-  <!-- CUSTOM ALERT OVERLAY -->
   <div class="custom-alert-overlay" id="customAlertOverlay">
     <div class="custom-alert-box">
       <div class="alert-icon-wrapper" id="alertIcon">⚠️</div>
@@ -558,7 +556,6 @@
         <span class="sub-title">Jadwal & checklist operasional rutin pegawai</span>
       </div>
       
-      <!-- TOMBOL REFRESH DAN TAMBAH RUTINITAS -->
       <div class="header-buttons-group">
         <button class="btn-action-base btn-refresh" onclick="loadRutinitas(true)" title="Muat Ulang & Perbarui Cache">🔄</button>
         <button class="btn-action-base btn-add-rutinitas" onclick="openAddModal()">
@@ -689,7 +686,6 @@
   let currentUserNama = localStorage.getItem("pbas_nama") || "";
   let currentUserRole = localStorage.getItem("pbas_role") || "Member";
 
-  // Fitur Auto-Refresh saat HP kembali membuka aplikasi
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
       loadRutinitas(true);
@@ -1113,6 +1109,8 @@
   }
 
   async function simpanRutinitas() {
+    const actionType = document.getElementById("modalActionType").value;
+    const rutinitasId = document.getElementById("modalRutinitasId").value;
     const judul = document.getElementById("inputJudul").value.trim();
     const pic = document.getElementById("selectPic").value;
     const scheduleType = document.querySelector('input[name="scheduleType"]:checked').value;
@@ -1133,19 +1131,26 @@
 
     showLoading("Menyimpan rutinitas...");
     try {
+      const endpointAction = (actionType === "edit") ? "updateRutinitas" : "addRutinitas";
+      const payload = {
+        action: endpointAction,
+        judul: judul,
+        pic: pic,
+        hari: hari,
+        tanggal: tanggal
+      };
+
+      if (actionType === "edit") {
+        payload.id = rutinitasId;
+      }
+
       await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          action: "addRutinitas",
-          judul: judul,
-          pic: pic,
-          hari: hari,
-          tanggal: tanggal
-        })
+        body: new URLSearchParams(payload)
       });
       closeModal();
-      showCustomAlert("Berhasil", "Data rutinitas berhasil disimpan.", "success");
+      showCustomAlert("Berhasil", actionType === "edit" ? "Rutinitas berhasil diperbarui." : "Data rutinitas berhasil disimpan.", "success");
       loadRutinitas(true);
     } catch (err) {
       console.error(err);
@@ -1177,7 +1182,7 @@
     } catch (err) {
       console.error(err);
       closeModal();
-      showCustomAlert("Informasi", "Penghapusan diproses atau silakan cek backend endpoint.", "info");
+      showCustomAlert("Kesalahan", "Gagal menghapus rutinitas dari database.", "danger");
       loadRutinitas(true);
     } finally {
       hideLoading();
