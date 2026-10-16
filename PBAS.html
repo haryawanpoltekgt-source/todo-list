@@ -580,7 +580,7 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbxkm9s2srnSzKjXDl8uZ5JqJ51QvbuXPMcRcb8fCjdXbIorA3En_HUSZACyAfvR91AJ/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwa0GQYRx1VTOMgFRfogCyb9yxWElE2ctgYlvPMrRtZEzWNApITeVwJ7l7XHHRUC48/exec";
   let isListView = false;
   let currentUserRole = "Tamu";
   let currentAdminNama = "";
@@ -728,72 +728,91 @@
     return `${day} ${month}, ${hours}:${minutes}`;
   }
 
-  async function loadPbasList() {
-    showLoading("Memuat daftar permintaan...");
+  // --- LOAD LIST PBAS DENGAN LOCALSTORAGE CACHE INSTAN ---
+  async function loadPbasList(forceRefresh = false) {
     const container = document.getElementById("pbasListContainer");
-    container.innerHTML = "<div style='text-align:center; color:#9099a2; padding:20px;'>Memuat data...</div>";
+    const cachedPbas = localStorage.getItem("local_pbas_cache");
+
+    if (cachedPbas && !forceRefresh) {
+      try {
+        renderPbasData(JSON.parse(cachedPbas), container);
+      } catch (e) {
+        console.error("Gagal parse cache lokal PBAS");
+      }
+    } else {
+      showLoading("Memuat daftar permintaan...");
+      container.innerHTML = "<div style='text-align:center; color:#9099a2; padding:20px;'>Memuat data...</div>";
+    }
 
     try {
       const response = await fetch(`${API_URL}?action=getPbas`);
       const result = await response.json();
 
       const list = Array.isArray(result) ? result : [];
-      if (list.length === 0) {
-        container.innerHTML = "<div style='text-align:center; color:#9099a2; padding:30px;'>Belum ada data permintaan bantuan.</div>";
-        return;
-      }
+      localStorage.setItem("local_pbas_cache", JSON.stringify(list));
 
-      container.innerHTML = "";
-      list.reverse().forEach(item => {
-        const card = document.createElement("div");
-        card.className = "pbas-item-card";
-        card.onclick = () => openDetailModal(item);
-
-        let statusBadgeHtml = "";
-        const statusVal = item.statusPengajuan ? item.statusPengajuan.trim() : "";
-
-        if (statusVal === "Disetujui - Menunggu antrian") {
-          statusBadgeHtml = `<span class="badge-status-pbas badge-status-approved">⏳ Disetujui (Antrian)</span>`;
-        } else if (statusVal === "Ditolak") {
-          statusBadgeHtml = `<span class="badge-status-pbas badge-status-rejected">❌ Ditolak</span>`;
-        } else {
-          statusBadgeHtml = `<span class="badge-status-pbas badge-status-pending">🟡 Menunggu Menanggapi</span>`;
-        }
-
-        let picText = "";
-        if (item.tujukanPic) {
-          let cleanPic = item.tujukanPic;
-          if (cleanPic.includes("[") && cleanPic.includes("]")) {
-            cleanPic = cleanPic.split("[")[1].replace("]", "").trim();
-          }
-          picText = `<span>•</span> <span>PIC: <b>${cleanPic}</b></span>`;
-        }
-
-        card.innerHTML = `
-          <div class="pbas-item-left">
-            <span class="pbas-title">${item.judul || "(Tanpa Judul)"}</span>
-            <div class="pbas-meta">
-              <span>Pelapor: <b>${item.nama || "-"}</b></span>
-              <span>•</span>
-              <span>${formatShortDate(item.waktu)}</span>
-              ${picText}
-            </div>
-            <div style="margin-top: 4px;">
-              ${statusBadgeHtml}
-            </div>
-          </div>
-          <div>
-            <span class="badge-cat">${item.kategori || "Lainnya"}</span>
-          </div>
-        `;
-        container.appendChild(card);
-      });
+      renderPbasData(list, container);
     } catch (err) {
       console.error(err);
-      container.innerHTML = "<div style='text-align:center; color:#f87171; padding:20px;'>Gagal memuat data dari server.</div>";
+      if (!cachedPbas) {
+        container.innerHTML = "<div style='text-align:center; color:#f87171; padding:20px;'>Gagal memuat data dari server.</div>";
+      }
     } finally {
       hideLoading();
     }
+  }
+
+  function renderPbasData(list, container) {
+    if (list.length === 0) {
+      container.innerHTML = "<div style='text-align:center; color:#9099a2; padding:30px;'>Belum ada data permintaan bantuan.</div>";
+      return;
+    }
+
+    container.innerHTML = "";
+    list.slice().reverse().forEach(item => {
+      const card = document.createElement("div");
+      card.className = "pbas-item-card";
+      card.onclick = () => openDetailModal(item);
+
+      let statusBadgeHtml = "";
+      const statusVal = item.statusPengajuan ? item.statusPengajuan.trim() : "";
+
+      if (statusVal === "Disetujui - Menunggu antrian") {
+        statusBadgeHtml = `<span class="badge-status-pbas badge-status-approved">⏳ Disetujui (Antrian)</span>`;
+      } else if (statusVal === "Ditolak") {
+        statusBadgeHtml = `<span class="badge-status-pbas badge-status-rejected">❌ Ditolak</span>`;
+      } else {
+        statusBadgeHtml = `<span class="badge-status-pbas badge-status-pending">🟡 Menunggu Menanggapi</span>`;
+      }
+
+      let picText = "";
+      if (item.tujukanPic) {
+        let cleanPic = item.tujukanPic;
+        if (cleanPic.includes("[") && cleanPic.includes("]")) {
+          cleanPic = cleanPic.split("[")[1].replace("]", "").trim();
+        }
+        picText = `<span>•</span> <span>PIC: <b>${cleanPic}</b></span>`;
+      }
+
+      card.innerHTML = `
+        <div class="pbas-item-left">
+          <span class="pbas-title">${item.judul || "(Tanpa Judul)"}</span>
+          <div class="pbas-meta">
+            <span>Pelapor: <b>${item.nama || "-"}</b></span>
+            <span>•</span>
+            <span>${formatShortDate(item.waktu)}</span>
+            ${picText}
+          </div>
+          <div style="margin-top: 4px;">
+            ${statusBadgeHtml}
+          </div>
+        </div>
+        <div>
+          <span class="badge-cat">${item.kategori || "Lainnya"}</span>
+        </div>
+      `;
+      container.appendChild(card);
+    });
   }
 
   function openDetailModal(item) {
@@ -866,7 +885,7 @@
       });
       alert("Keputusan berhasil disimpan!");
       closeDetailModal();
-      loadPbasList();
+      loadPbasList(true);
     } catch (err) {
       console.error(err);
       alert("Gagal menyimpan keputusan. Periksa koneksi.");
@@ -908,6 +927,7 @@
       document.getElementById("pbasDeskripsi").value = "";
 
       toggleView();
+      loadPbasList(true);
     } catch (err) {
       console.error(err);
       alert("Gagal mengirim permintaan. Periksa koneksi internet Anda.");
