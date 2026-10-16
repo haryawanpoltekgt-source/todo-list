@@ -193,6 +193,11 @@
       align-items: center;
       gap: 6px;
     }
+    .header-buttons-group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
     .brand-wrapper {
       display: flex;
       flex-direction: column;
@@ -210,22 +215,31 @@
       color: var(--text-secondary);
     }
 
+    .btn-action-base {
+      border: none;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
     .btn-add-rutinitas {
       background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
       color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 12px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
       box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-      white-space: nowrap;
     }
     .btn-add-rutinitas:hover { opacity: 0.9; }
+
+    .btn-refresh {
+      background-color: var(--card-bg);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+    .btn-refresh:hover { background-color: var(--card-hover); color: var(--text-main); }
 
     .search-input {
       width: 100%;
@@ -543,9 +557,14 @@
         <h2>Rutinitas Harian</h2>
         <span class="sub-title">Jadwal & checklist operasional rutin pegawai</span>
       </div>
-      <button class="btn-add-rutinitas" onclick="openAddModal()">
-        <span>➕</span> Tambah Rutinitas
-      </button>
+      
+      <!-- TOMBOL REFRESH DAN TAMBAH RUTINITAS -->
+      <div class="header-buttons-group">
+        <button class="btn-action-base btn-refresh" onclick="loadRutinitas(true)" title="Muat Ulang & Perbarui Cache">🔄</button>
+        <button class="btn-action-base btn-add-rutinitas" onclick="openAddModal()">
+          <span>➕</span> Tambah
+        </button>
+      </div>
     </div>
 
     <input type="text" id="searchInput" class="search-input" placeholder="Cari kegiatan rutin..." oninput="renderRutinitas()">
@@ -758,7 +777,6 @@
       select.appendChild(opt);
     });
 
-    // Jika member biasa, batasi dropdown PIC hanya untuk dirinya sendiri
     const isSuperUser = currentUserRole.toLowerCase() === "superuser";
     if (!isSuperUser) {
       select.value = currentUserNama;
@@ -792,7 +810,6 @@
     document.getElementById("inputTanggalWaktu").value = "";
     document.getElementById("modalDeleteBtn").style.display = "none";
     
-    // Pastikan field aktif saat menambah baru
     document.getElementById("inputJudul").disabled = false;
     document.getElementById("selectHari").disabled = false;
     document.getElementById("inputTanggalWaktu").disabled = false;
@@ -825,7 +842,6 @@
       }
     }
 
-    // CEK HAK AKSES (SUPERUSER ATAU PEMILIK MILIK SENDIRI)
     const isSuperUser = currentUserRole.toLowerCase() === "superuser";
     const userClean = currentUserNama.trim().toLowerCase();
     const picClean = (item.pic || "").trim().toLowerCase();
@@ -847,7 +863,7 @@
       modalDeleteBtn.style.display = "none";
     } else {
       inputJudul.disabled = false;
-      selectPic.disabled = !isSuperUser; // Member tidak boleh ganti PIC
+      selectPic.disabled = !isSuperUser;
       selectHari.disabled = false;
       inputTanggalWaktu.disabled = false;
       modalSaveBtn.style.display = "inline-block";
@@ -878,7 +894,7 @@
         console.error("Gagal parse cache lokal rutinitas");
       }
     } else {
-      showLoading("Memuat daftar rutinitas...");
+      showLoading("Memuat data rutinitas terbaru...");
     }
 
     try {
@@ -890,10 +906,15 @@
 
       updatePicOptions();
       renderRutinitas();
+      if (forceRefresh) {
+        showCustomAlert("Berhasil", "Data rutinitas & cache berhasil diperbarui.", "success");
+      }
     } catch (err) {
       console.error(err);
       if (!cachedRutinitas) {
         document.getElementById("rutinitasList").innerHTML = `<li style="text-align:center; color:#f87171; padding:20px;">Gagal memuat data dari server.</li>`;
+      } else if (forceRefresh) {
+        showCustomAlert("Gagal", "Gagal memperbarui data dari server.", "danger");
       }
     } finally {
       hideLoading();
@@ -923,7 +944,7 @@
     const isSuperUser = currentUserRole.toLowerCase() === "superuser";
     if (!isSuperUser && currentUserNama) {
       filterPicSelect.value = currentUserNama;
-      filterPicSelect.disabled = true; // Member hanya bisa melihat miliknya sendiri
+      filterPicSelect.disabled = true;
     } else if (matchedUserPic) {
       filterPicSelect.value = matchedUserPic;
     } else {
@@ -944,7 +965,6 @@
     let countJadwal = 0;
 
     const filtered = allRutinitas.filter(item => {
-      // Pembatasan akses member: hanya tampilkan miliknya sendiri jika bukan superuser
       const isSuperUser = currentUserRole.toLowerCase() === "superuser";
       if (!isSuperUser) {
         const userClean = currentUserNama.trim().toLowerCase();
@@ -1093,8 +1113,6 @@
   }
 
   async function simpanRutinitas() {
-    const actionType = document.getElementById("modalActionType").value;
-    const rutinitasId = document.getElementById("modalRutinitasId").value;
     const judul = document.getElementById("inputJudul").value.trim();
     const pic = document.getElementById("selectPic").value;
     const scheduleType = document.querySelector('input[name="scheduleType"]:checked').value;
@@ -1115,7 +1133,6 @@
 
     showLoading("Menyimpan rutinitas...");
     try {
-      // Backend Anda menggunakan addRutinitas untuk pembuatan data baru
       await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -1146,12 +1163,11 @@
     const rutinitasId = document.getElementById("modalRutinitasId").value;
     showLoading("Menghapus rutinitas...");
     try {
-      // Jika di backend belum ada endpoint hapus khusus rutinitas, Anda bisa menggunakan endpoint hapus yang ada atau menyesuaikan
       await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
-          action: "deleteRutinitas", // Pastikan backend mendukung atau sesuaikan
+          action: "deleteRutinitas",
           id: rutinitasId
         })
       });
