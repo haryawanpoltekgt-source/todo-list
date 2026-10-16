@@ -1018,7 +1018,6 @@
     }
   });
 
-  // Fitur Auto-Refresh saat HP kembali membuka aplikasi
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
       if (currentUserNama && document.getElementById("workView").style.display === "flex") {
@@ -1570,7 +1569,12 @@
     document.getElementById("modalUpdateActionText").value = task.updateAction || "";
 
     const isSuperUser = (currentUserRole.toLowerCase() === "superuser");
-    const isOwner = (task.pic.trim().toLowerCase().includes(currentUserNama.trim().toLowerCase().split(' ')[0]));
+    
+    // Perbaikan Logika Pengecekan Kepemilikan yang Lebih Presisi
+    const userClean = currentUserNama.trim().toLowerCase();
+    const picClean = task.pic.trim().toLowerCase();
+    const isOwner = picClean === userClean || picClean.includes(userClean);
+    
     const canEdit = isSuperUser || isOwner;
 
     const isPbasTask = task.task && task.task.trim().toUpperCase().startsWith("[PBAS]");
