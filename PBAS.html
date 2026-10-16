@@ -46,7 +46,6 @@
       position: relative;
     }
 
-    /* --- LOADING OVERLAY --- */
     #loadingOverlay {
       display: none;
       position: absolute;
@@ -73,7 +72,6 @@
     }
     .loading-text { font-size: 13px; font-weight: 600; color: var(--text-main); }
 
-    /* --- HALAMAN PILIH ROLE --- */
     #roleSelectionView {
       display: flex;
       flex-direction: column;
@@ -135,7 +133,6 @@
     .role-info h3 { margin: 0 0 2px 0; font-size: 15px; color: #ffffff; font-weight: 700; }
     .role-info span { font-size: 11.5px; color: var(--text-secondary); }
 
-    /* --- HALAMAN FORM & LIST --- */
     #mainAppView {
       display: none;
       flex-direction: column;
@@ -197,7 +194,6 @@
     .badge-tamu { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
     .badge-admin { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
 
-    /* Card / Container View */
     .content-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -239,7 +235,6 @@
     }
     .btn-submit:hover { opacity: 0.9; }
 
-    /* List Item View - Simple Card */
     .pbas-item-card {
       background: #161b26;
       border: 1px solid var(--border-color);
@@ -292,7 +287,6 @@
       white-space: nowrap;
     }
 
-    /* Badge Status Pengajuan */
     .badge-status-pbas {
       padding: 3px 8px;
       border-radius: 6px;
@@ -317,7 +311,6 @@
       border: 1px solid rgba(239, 68, 68, 0.3);
     }
 
-    /* Modal Styling Dark */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -423,13 +416,11 @@
 
 <div class="container">
 
-  <!-- LOADING OVERLAY -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
     <div class="loading-text" id="loadingText">Memproses data...</div>
   </div>
 
-  <!-- ==================== TAMPILAN 1: PILIH ROLE ==================== -->
   <div id="roleSelectionView">
     <a href="index.html" class="back-nav" style="align-self: flex-start;">← Kembali ke Menu Utama</a>
     <div class="role-header">
@@ -456,7 +447,6 @@
     </div>
   </div>
 
-  <!-- ==================== TAMPILAN 2: UTAMA (FORM & LIST) ==================== -->
   <div id="mainAppView">
     <div class="nav-header">
       <button class="back-nav" onclick="changeRole()">← Ganti Role Akses</button>
@@ -471,7 +461,6 @@
       <span class="user-badge" id="userRoleBadge">Tamu</span>
     </div>
 
-    <!-- VIEW FORMULIR INPUT -->
     <div class="content-card" id="formView">
       <div class="form-group">
         <label>Nama Pemohon / Pelapor:</label>
@@ -501,7 +490,6 @@
       <button class="btn-submit" onclick="kirimPermintaan()">Kirim Permintaan Bantuan</button>
     </div>
 
-    <!-- VIEW DAFTAR RIWAYAT PERMINTAAN -->
     <div class="content-card" id="listView" style="display: none; gap: 8px;">
       <div id="pbasListContainer" style="display: flex; flex-direction: column; gap: 8px; overflow-y: auto;">
         <div style="text-align:center; color:#9099a2; padding:20px;">Memuat data...</div>
@@ -511,7 +499,6 @@
 
 </div>
 
-<!-- ==================== MODAL LOGIN ADMIN ==================== -->
 <div class="modal-overlay" id="adminLoginModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -535,7 +522,6 @@
   </div>
 </div>
 
-<!-- ==================== MODAL DETAIL PERMINTAAN ==================== -->
 <div class="modal-overlay" id="pbasDetailModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -569,7 +555,6 @@
         <textarea id="modalDeskripsi" rows="3" disabled></textarea>
       </label>
 
-      <!-- FIELD KHUSUS ADMIN -->
       <div id="adminActionSection" style="display: none; flex-direction: column; gap: 10px; border-top: 1px dashed var(--border-color); padding-top: 10px; margin-top: 4px;">
         <label>
           Status Pengajuan:
@@ -595,7 +580,7 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbzql1kUFjP3MYxfpUisEs5BrUwZ-nSAjbI8zs5VCGvPqAnr2XOJvjyExNb7DNNlCYux/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbxkm9s2srnSzKjXDl8uZ5JqJ51QvbuXPMcRcb8fCjdXbIorA3En_HUSZACyAfvR91AJ/exec";
   let isListView = false;
   let currentUserRole = "Tamu";
   let currentAdminNama = "";
@@ -682,7 +667,6 @@
         body: new URLSearchParams({ action: "login", nip: nip, password: password })
       });
       const res = await response.json();
-      hideLoading();
 
       if (res.status === "success") {
         if (res.role && res.role.toLowerCase() === "superuser") {
@@ -699,8 +683,10 @@
         alert("NIP tidak ditemukan dalam sistem UserID.");
       }
     } catch (err) {
-      hideLoading();
+      console.error(err);
       alert("Gagal terhubung ke server. Coba lagi nanti.");
+    } finally {
+      hideLoading();
     }
   }
 
@@ -750,7 +736,6 @@
     try {
       const response = await fetch(`${API_URL}?action=getPbas`);
       const result = await response.json();
-      hideLoading();
 
       const list = Array.isArray(result) ? result : [];
       if (list.length === 0) {
@@ -764,7 +749,6 @@
         card.className = "pbas-item-card";
         card.onclick = () => openDetailModal(item);
 
-        // --- Logika Penentuan Badge Status ---
         let statusBadgeHtml = "";
         const statusVal = item.statusPengajuan ? item.statusPengajuan.trim() : "";
 
@@ -776,7 +760,6 @@
           statusBadgeHtml = `<span class="badge-status-pbas badge-status-pending">🟡 Menunggu Menanggapi</span>`;
         }
 
-        // --- Ekstrak Nama PIC jika ada ---
         let picText = "";
         if (item.tujukanPic) {
           let cleanPic = item.tujukanPic;
@@ -806,8 +789,10 @@
         container.appendChild(card);
       });
     } catch (err) {
-      hideLoading();
+      console.error(err);
       container.innerHTML = "<div style='text-align:center; color:#f87171; padding:20px;'>Gagal memuat data dari server.</div>";
+    } finally {
+      hideLoading();
     }
   }
 
@@ -826,7 +811,6 @@
     const statusSelect = document.getElementById("modalStatusPengajuan");
     const picSelect = document.getElementById("modalTujukanPic");
 
-    // Populate dropdown PIC
     picSelect.innerHTML = '<option value="">-- Pilih PIC --</option>';
     userListCache.forEach(u => {
       const optVal = `${u.nip} [${u.nama}]`;
@@ -880,13 +864,14 @@
           tujukanPic: tujukanPic
         })
       });
-      hideLoading();
       alert("Keputusan berhasil disimpan!");
       closeDetailModal();
       loadPbasList();
     } catch (err) {
-      hideLoading();
+      console.error(err);
       alert("Gagal menyimpan keputusan. Periksa koneksi.");
+    } finally {
+      hideLoading();
     }
   }
 
@@ -914,7 +899,6 @@
           deskripsi: deskripsi
         })
       });
-      hideLoading();
       alert("Permintaan bantuan berhasil dikirim dan tercatat di sistem!");
       
       if (currentUserRole === "Tamu") {
@@ -925,8 +909,10 @@
 
       toggleView();
     } catch (err) {
-      hideLoading();
+      console.error(err);
       alert("Gagal mengirim permintaan. Periksa koneksi internet Anda.");
+    } finally {
+      hideLoading();
     }
   }
 </script>
