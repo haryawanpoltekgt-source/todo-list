@@ -14,6 +14,9 @@
       --border-color: #2a3447;
       --accent-purple: #8b5cf6;
       --accent-blue: #3b82f6;
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
+      --accent-cyan: #06b6d4;
     }
 
     * { box-sizing: border-box; }
@@ -42,6 +45,42 @@
       overflow: hidden;
       position: relative;
     }
+
+    /* LOADING OVERLAY */
+    #loadingOverlay {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(18, 22, 31, 0.85);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .spinner {
+      width: 45px;
+      height: 45px;
+      border: 4px solid var(--border-color);
+      border-top: 4px solid var(--accent-purple);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .loading-text { font-size: 13px; font-weight: 600; color: var(--text-main); }
+
+    /* HEADER & NAV */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
     .back-nav {
       display: inline-flex;
       align-items: center;
@@ -54,44 +93,467 @@
       border: none;
       padding: 0;
       text-decoration: none;
-      margin-bottom: 14px;
-      align-self: flex-start;
     }
     .back-nav:hover { text-decoration: underline; }
 
-    .content-area {
+    .header-area {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-shrink: 0;
+    }
+    .header-area h2 {
+      color: #ffffff;
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .header-area p {
+      margin: 2px 0 0 0;
+      font-size: 11.5px;
+      color: var(--text-secondary);
+    }
+
+    /* TOMBOL TAMBAH RUTINITAS */
+    .btn-add-rutinitas {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      color: white;
+      border: none;
+      padding: 9px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 12.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+      transition: opacity 0.2s;
+    }
+    .btn-add-rutinitas:hover { opacity: 0.9; }
+
+    /* LIST CONTAINER */
+    .rutinitas-card-container {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 12px;
-      padding: 24px;
+      padding: 14px;
       flex: 1;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      gap: 12px;
+      gap: 10px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
-    .icon-dev {
-      font-size: 48px;
-      margin-bottom: 4px;
+
+    /* ITEM CARD RUTINITAS */
+    .rutinitas-item-card {
+      background: #161b26;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
-    h2 { color: #ffffff; margin: 0; font-size: 20px; font-weight: 700; }
-    p { color: var(--text-secondary); font-size: 13.5px; margin: 0; line-height: 1.5; max-width: 400px; }
+    .rutinitas-item-card:hover {
+      background: var(--card-hover);
+      border-color: var(--accent-purple);
+      transform: translateY(-2px);
+    }
+    .item-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow: hidden;
+      flex: 1;
+      padding-right: 10px;
+    }
+    .item-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .item-meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .badge-pic {
+      background: rgba(139, 92, 246, 0.15);
+      color: #a78bfa;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-jadwal {
+      background: rgba(6, 182, 212, 0.15);
+      color: #22d3ee;
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* MODAL STYLING */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 12px;
+    }
+    .modal-content {
+      background: var(--card-bg);
+      color: var(--text-main);
+      width: 100%;
+      max-width: 440px;
+      padding: 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+    .modal-header h3 { margin: 0; color: #ffffff; font-size: 16px; }
+    .btn-close-modal {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .modal-body label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .modal-body input, .modal-body select {
+      padding: 9px 12px;
+      font-size: 12.5px;
+      font-family: inherit;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      outline: none;
+      background: #161b26;
+      color: var(--text-main);
+    }
+    .modal-body input:focus, .modal-body select:focus {
+      border-color: var(--accent-purple);
+    }
+    .radio-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--text-main);
+    }
+    .radio-group label {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 10px;
+    }
+    .btn-save {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      color: white;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12.5px;
+    }
+    .btn-cancel {
+      background: #2a3447;
+      color: #f1f3f5;
+      border: 1px solid var(--border-color);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12.5px;
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <a href="index.html" class="back-nav">← Kembali ke Menu Utama</a>
 
-  <div class="content-area">
-    <div class="icon-dev">⚡</div>
-    <h2>Rutinitas Harian</h2>
-    <p>Halaman ini sedang dalam tahap pengembangan dan akan segera hadir untuk mendukung pencatatan checklist tugas rutin operasional Anda.</p>
+  <!-- LOADING OVERLAY -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loadingText">Memproses data...</div>
+  </div>
+
+  <!-- NAVIGASI ATAS -->
+  <div class="top-bar">
+    <a href="index.html" class="back-nav">← Menu Utama</a>
+  </div>
+
+  <!-- HEADER & TOMBOL TAMBAH -->
+  <div class="header-area">
+    <div>
+      <h2>Rutinitas Harian</h2>
+      <p>Jadwal & checklist operasional rutin pegawai</p>
+    </div>
+    <button class="btn-add-rutinitas" onclick="openAddModal()">
+      <span>➕</span> Tambah Rutinitas
+    </button>
+  </div>
+
+  <!-- CONTAINER DAFTAR LIST RUTINITAS -->
+  <div class="rutinitas-card-container" id="rutinitasContainer">
+    <div style="text-align:center; color:#9099a2; padding:30px;">Memuat data rutinitas...</div>
+  </div>
+
+</div>
+
+<!-- MODAL TAMBAH RUTINITAS -->
+<div class="modal-overlay" id="rutinitasModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalTitle">Tambah Rutinitas Baru</h3>
+      <button class="btn-close-modal" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <label>
+        Judul Kegiatan Rutin:
+        <input type="text" id="inputJudul" placeholder="Contoh: Piket Area Smoking / Backup Server...">
+      </label>
+
+      <label>
+        PIC Penanggung Jawab:
+        <select id="selectPic">
+          <option value="">-- Pilih PIC --</option>
+        </select>
+      </label>
+
+      <label>
+        Tipe Pengingat Jadwal:
+        <div class="radio-group">
+          <label><input type="radio" name="scheduleType" value="hari" checked onchange="toggleScheduleMode()"> Berdasarkan Hari</label>
+          <label><input type="radio" name="scheduleType" value="tanggal" onchange="toggleScheduleMode()"> Tanggal & Jam Spesifik</label>
+        </div>
+      </label>
+
+      <!-- OPSI 1: PER HARI -->
+      <div id="modeHariGroup">
+        <label>
+          Ingatkan Setiap Hari:
+          <select id="selectHari">
+            <option value="Senin">Senin</option>
+            <option value="Selasa">Selasa</option>
+            <option value="Rabu">Rabu</option>
+            <option value="Kamis">Kamis</option>
+            <option value="Jumat">Jumat</option>
+            <option value="Sabtu">Sabtu</option>
+            <option value="Minggu">Minggu</option>
+            <option value="Setiap Hari">Setiap Hari (Senin - Minggu)</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- OPSI 2: SPESIFIK TANGGAL -->
+      <div id="modeTanggalGroup" style="display: none;">
+        <label>
+          Ingatkan di Tanggal & Waktu:
+          <input type="datetime-local" id="inputTanggalWaktu">
+        </label>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Batal</button>
+      <button class="btn-save" onclick="simpanRutinitas()">Simpan Rutinitas</button>
+    </div>
   </div>
 </div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbxT8cAdiup6EerX1CE9Uv6DhYxPh7xzMfM7BMQBHMAkj-IrRnwnHik9Wof5QJELagS7/exec";
+  let userListCache = [];
+
+  function showLoading(text = "Memproses data...") {
+    document.getElementById("loadingText").textContent = text;
+    document.getElementById("loadingOverlay").style.display = "flex";
+  }
+  function hideLoading() {
+    document.getElementById("loadingOverlay").style.display = "none";
+  }
+
+  // Load User ID untuk Dropdown PIC
+  async function loadUserList() {
+    try {
+      const response = await fetch(`${API_URL}?action=getUsers`);
+      const res = await response.json();
+      userListCache = Array.isArray(res) ? res : [];
+      populatePicDropdown();
+    } catch (e) {
+      userListCache = [];
+    }
+  }
+
+  function populatePicDropdown() {
+    const select = document.getElementById("selectPic");
+    select.innerHTML = '<option value="">-- Pilih PIC --</option>';
+    userListCache.forEach(u => {
+      const opt = document.createElement("option");
+      opt.value = u.nama;
+      opt.textContent = `${u.nama} (${u.nip})`;
+      select.appendChild(opt);
+    });
+  }
+
+  function toggleScheduleMode() {
+    const isHari = document.querySelector('input[name="scheduleType"]:checked').value === "hari";
+    document.getElementById("modeHariGroup").style.display = isHari ? "block" : "none";
+    document.getElementById("modeTanggalGroup").style.display = isHari ? "none" : "block";
+  }
+
+  function openAddModal() {
+    document.getElementById("inputJudul").value = "";
+    document.getElementById("selectPic").value = "";
+    document.querySelector('input[value="hari"]').checked = true;
+    toggleScheduleMode();
+    document.getElementById("rutinitasModal").style.display = "flex";
+  }
+
+  function closeModal() {
+    document.getElementById("rutinitasModal").style.display = "none";
+  }
+
+  // Muat Daftar Rutinitas
+  async function loadRutinitas() {
+    showLoading("Memuat daftar rutinitas...");
+    const container = document.getElementById("rutinitasContainer");
+    
+    try {
+      const response = await fetch(`${API_URL}?action=getRutinitas`);
+      const result = await response.json();
+      hideLoading();
+
+      const list = Array.isArray(result) ? result : [];
+      if (list.length === 0) {
+        container.innerHTML = `<div style="text-align:center; color:#9099a2; padding:30px;">Belum ada daftar kegiatan rutin. Klik <b>+ Tambah Rutinitas</b> untuk membuat baru.</div>`;
+        return;
+      }
+
+      container.innerHTML = "";
+      list.reverse().forEach(item => {
+        const card = document.createElement("div");
+        card.className = "rutinitas-item-card";
+
+        let jadwalText = item.hari || item.tanggal || "Tidak ditentukan";
+
+        card.innerHTML = `
+          <div class="item-left">
+            <span class="item-title">${item.judul || "(Tanpa Judul)"}</span>
+            <div class="item-meta">
+              <span>PIC: <b class="badge-pic">${item.pic || "-"}</b></span>
+              <span>•</span>
+              <span>Jadwal: <b class="badge-jadwal">${jadwalText}</b></span>
+            </div>
+          </div>
+          <div style="color: var(--text-secondary); font-size: 11px;">
+            ${item.id || ''}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    } catch (err) {
+      hideLoading();
+      container.innerHTML = `<div style="text-align:center; color:#f87171; padding:20px;">Gagal memuat data dari server.</div>`;
+    }
+  }
+
+  // Simpan Rutinitas Baru
+  async function simpanRutinitas() {
+    const judul = document.getElementById("inputJudul").value.trim();
+    const pic = document.getElementById("selectPic").value;
+    const scheduleType = document.querySelector('input[name="scheduleType"]:checked').value;
+    
+    let hari = "";
+    let tanggal = "";
+
+    if (scheduleType === "hari") {
+      hari = document.getElementById("selectHari").value;
+    } else {
+      tanggal = document.getElementById("inputTanggalWaktu").value;
+    }
+
+    if (!judul || !pic) {
+      alert("Judul Kegiatan dan PIC wajib diisi!");
+      return;
+    }
+
+    showLoading("Menyimpan rutinitas...");
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          action: "addRutinitas",
+          judul: judul,
+          pic: pic,
+          hari: hari,
+          tanggal: tanggal
+        })
+      });
+      hideLoading();
+      closeModal();
+      loadRutinitas();
+    } catch (err) {
+      hideLoading();
+      alert("Gagal menyimpan rutinitas.");
+    }
+  }
+
+  // Inisialisasi awal saat halaman dibuka
+  window.onload = () => {
+    loadUserList();
+    loadRutinitas();
+  };
+</script>
 
 </body>
 </html>
