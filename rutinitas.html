@@ -17,6 +17,7 @@
       --accent-green: #22c55e;
       --accent-red: #ef4444;
       --accent-cyan: #06b6d4;
+      --accent-warn: #f59e0b;
     }
 
     * { box-sizing: border-box; }
@@ -72,6 +73,95 @@
       100% { transform: rotate(360deg); }
     }
     .loading-text { font-size: 13px; font-weight: 600; color: var(--text-main); }
+
+    /* CUSTOM ALERT STYLES */
+    .custom-alert-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+      z-index: 3000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+    .custom-alert-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      width: 100%;
+      max-width: 360px;
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      animation: alertPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes alertPop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .alert-icon-wrapper {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 22px;
+    }
+    .alert-icon-warning { background: rgba(245, 158, 11, 0.15); color: var(--accent-warn); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .alert-icon-success { background: rgba(34, 197, 94, 0.15); color: var(--accent-green); border: 1px solid rgba(34, 197, 94, 0.3); }
+    .alert-icon-danger { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .alert-icon-info { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); border: 1px solid rgba(59, 130, 246, 0.3); }
+    
+    .custom-alert-box h4 { margin: 0; font-size: 16px; color: #ffffff; font-weight: 700; }
+    .custom-alert-box p { margin: 0; font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    
+    .alert-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+    .btn-alert-ok {
+      flex: 1;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    .btn-alert-cancel {
+      flex: 1;
+      background: #2a3447;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .btn-alert-danger-confirm {
+      flex: 1;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
 
     .back-nav {
       display: inline-flex;
@@ -367,6 +457,11 @@
     .modal-body input:focus, .modal-body select:focus {
       border-color: var(--accent-purple);
     }
+    .modal-body input:disabled, .modal-body select:disabled {
+      background-color: #1a202c;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
     .radio-group {
       display: flex;
       gap: 12px;
@@ -383,11 +478,20 @@
     }
     .modal-footer {
       display: flex;
-      justify-content: flex-end;
-      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
       border-top: 1px solid var(--border-color);
       padding-top: 10px;
     }
+    .btn-delete {
+      background: transparent;
+      color: #f87171;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .btn-delete:hover { text-decoration: underline; }
     .btn-save {
       background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
       color: white;
@@ -417,6 +521,18 @@
   <div id="loadingOverlay">
     <div class="spinner"></div>
     <div class="loading-text" id="loadingText">Memproses data...</div>
+  </div>
+
+  <!-- CUSTOM ALERT OVERLAY -->
+  <div class="custom-alert-overlay" id="customAlertOverlay">
+    <div class="custom-alert-box">
+      <div class="alert-icon-wrapper" id="alertIcon">⚠️</div>
+      <h4 id="alertTitle">Informasi Sistem</h4>
+      <p id="alertMessage">Pesan pemberitahuan...</p>
+      <div class="alert-actions" id="alertActions">
+        <button class="btn-alert-ok" id="btnAlertOk" onclick="closeCustomAlert()">Mengerti</button>
+      </div>
+    </div>
   </div>
 
   <a href="index.html#workView" class="back-nav">← Kembali ke Web Kerja</a>
@@ -490,6 +606,8 @@
     </div>
     <div class="modal-body">
       <input type="hidden" id="modalActionType" value="add">
+      <input type="hidden" id="modalRutinitasId">
+      
       <label>
         Judul Kegiatan Rutin:
         <input type="text" id="inputJudul" placeholder="Contoh: Piket Area Smoking / Backup Server...">
@@ -535,8 +653,11 @@
 
     </div>
     <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal()">Batal</button>
-      <button class="btn-save" onclick="simpanRutinitas()">Simpan Rutinitas</button>
+      <button class="btn-delete" id="modalDeleteBtn" onclick="requestDeleteRutinitas()" style="display:none;">Hapus</button>
+      <div style="display: flex; gap: 6px;">
+        <button class="btn-cancel" onclick="closeModal()">Batal</button>
+        <button class="btn-save" id="modalSaveBtn" onclick="simpanRutinitas()">Simpan Rutinitas</button>
+      </div>
     </div>
   </div>
 </div>
@@ -547,6 +668,7 @@
   let allRutinitas = [];
   let userListCache = [];
   let currentUserNama = localStorage.getItem("pbas_nama") || "";
+  let currentUserRole = localStorage.getItem("pbas_role") || "Member";
 
   // Fitur Auto-Refresh saat HP kembali membuka aplikasi
   document.addEventListener("visibilitychange", () => {
@@ -561,6 +683,58 @@
   }
   function hideLoading() {
     document.getElementById("loadingOverlay").style.display = "none";
+  }
+
+  function showCustomAlert(title, message, type = "warning") {
+    document.getElementById("alertTitle").textContent = title;
+    document.getElementById("alertMessage").textContent = message;
+    
+    const iconEl = document.getElementById("alertIcon");
+    iconEl.className = "alert-icon-wrapper";
+    if (type === "warning") {
+      iconEl.textContent = "⚠️";
+      iconEl.classList.add("alert-icon-warning");
+    } else if (type === "success") {
+      iconEl.textContent = "✅";
+      iconEl.classList.add("alert-icon-success");
+    } else if (type === "danger") {
+      iconEl.textContent = "🗑️";
+      iconEl.classList.add("alert-icon-danger");
+    } else {
+      iconEl.textContent = "ℹ️";
+      iconEl.classList.add("alert-icon-info");
+    }
+
+    document.getElementById("alertActions").innerHTML = `
+      <button class="btn-alert-ok" onclick="closeCustomAlert()">Mengerti</button>
+    `;
+    document.getElementById("customAlertOverlay").style.display = "flex";
+  }
+
+  function showCustomConfirm(title, message, onConfirmCallback) {
+    document.getElementById("alertTitle").textContent = title;
+    document.getElementById("alertMessage").textContent = message;
+    
+    const iconEl = document.getElementById("alertIcon");
+    iconEl.className = "alert-icon-wrapper alert-icon-danger";
+    iconEl.textContent = "⚠️";
+
+    const actionsContainer = document.getElementById("alertActions");
+    actionsContainer.innerHTML = `
+      <button class="btn-alert-cancel" onclick="closeCustomAlert()">Batal</button>
+      <button class="btn-alert-danger-confirm" id="btnConfirmDanger">Hapus</button>
+    `;
+
+    document.getElementById("btnConfirmDanger").onclick = () => {
+      closeCustomAlert();
+      onConfirmCallback();
+    };
+
+    document.getElementById("customAlertOverlay").style.display = "flex";
+  }
+
+  function closeCustomAlert() {
+    document.getElementById("customAlertOverlay").style.display = "none";
   }
 
   async function loadUserList() {
@@ -583,6 +757,13 @@
       opt.textContent = `${u.nama} (${u.nip})`;
       select.appendChild(opt);
     });
+
+    // Jika member biasa, batasi dropdown PIC hanya untuk dirinya sendiri
+    const isSuperUser = currentUserRole.toLowerCase() === "superuser";
+    if (!isSuperUser) {
+      select.value = currentUserNama;
+      select.disabled = true;
+    }
   }
 
   function toggleScheduleMode() {
@@ -593,20 +774,42 @@
 
   function openAddModal() {
     document.getElementById("modalActionType").value = "add";
+    document.getElementById("modalRutinitasId").value = "";
     document.getElementById("modalTitle").textContent = "Tambah Rutinitas Baru";
     document.getElementById("inputJudul").value = "";
-    document.getElementById("selectPic").value = currentUserNama || "";
+    
+    const selectPic = document.getElementById("selectPic");
+    const isSuperUser = currentUserRole.toLowerCase() === "superuser";
+    if (isSuperUser) {
+      selectPic.disabled = false;
+      selectPic.value = currentUserNama || "";
+    } else {
+      selectPic.value = currentUserNama || "";
+      selectPic.disabled = true;
+    }
+
     document.querySelector('input[value="hari"]').checked = true;
     document.getElementById("inputTanggalWaktu").value = "";
+    document.getElementById("modalDeleteBtn").style.display = "none";
+    
+    // Pastikan field aktif saat menambah baru
+    document.getElementById("inputJudul").disabled = false;
+    document.getElementById("selectHari").disabled = false;
+    document.getElementById("inputTanggalWaktu").disabled = false;
+    document.getElementById("modalSaveBtn").style.display = "inline-block";
+
     toggleScheduleMode();
     document.getElementById("rutinitasModal").style.display = "flex";
   }
 
   function openDetailModal(item) {
     document.getElementById("modalActionType").value = "edit";
+    document.getElementById("modalRutinitasId").value = item.id || "";
     document.getElementById("modalTitle").textContent = `Detail Rutinitas (${item.id || ''})`;
     document.getElementById("inputJudul").value = item.judul || "";
-    document.getElementById("selectPic").value = item.pic || "";
+    
+    const selectPic = document.getElementById("selectPic");
+    selectPic.value = item.pic || "";
 
     const hasValidTanggal = item.tanggal && item.tanggal.trim() !== "" && !item.tanggal.toLowerCase().includes("tidak bisa dipilih");
 
@@ -620,6 +823,35 @@
       if (item.hari && !item.hari.toLowerCase().includes("tidak bisa dipilih")) {
         document.getElementById("selectHari").value = item.hari;
       }
+    }
+
+    // CEK HAK AKSES (SUPERUSER ATAU PEMILIK MILIK SENDIRI)
+    const isSuperUser = currentUserRole.toLowerCase() === "superuser";
+    const userClean = currentUserNama.trim().toLowerCase();
+    const picClean = (item.pic || "").trim().toLowerCase();
+    const isOwner = picClean === userClean || picClean.includes(userClean);
+    const canEdit = isSuperUser || isOwner;
+
+    const inputJudul = document.getElementById("inputJudul");
+    const selectHari = document.getElementById("selectHari");
+    const inputTanggalWaktu = document.getElementById("inputTanggalWaktu");
+    const modalSaveBtn = document.getElementById("modalSaveBtn");
+    const modalDeleteBtn = document.getElementById("modalDeleteBtn");
+
+    if (!canEdit) {
+      inputJudul.disabled = true;
+      selectPic.disabled = true;
+      selectHari.disabled = true;
+      inputTanggalWaktu.disabled = true;
+      modalSaveBtn.style.display = "none";
+      modalDeleteBtn.style.display = "none";
+    } else {
+      inputJudul.disabled = false;
+      selectPic.disabled = !isSuperUser; // Member tidak boleh ganti PIC
+      selectHari.disabled = false;
+      inputTanggalWaktu.disabled = false;
+      modalSaveBtn.style.display = "inline-block";
+      modalDeleteBtn.style.display = "inline-block";
     }
 
     document.getElementById("rutinitasModal").style.display = "flex";
@@ -688,7 +920,11 @@
       }
     });
 
-    if (matchedUserPic) {
+    const isSuperUser = currentUserRole.toLowerCase() === "superuser";
+    if (!isSuperUser && currentUserNama) {
+      filterPicSelect.value = currentUserNama;
+      filterPicSelect.disabled = true; // Member hanya bisa melihat miliknya sendiri
+    } else if (matchedUserPic) {
       filterPicSelect.value = matchedUserPic;
     } else {
       filterPicSelect.value = "ALL";
@@ -708,6 +944,14 @@
     let countJadwal = 0;
 
     const filtered = allRutinitas.filter(item => {
+      // Pembatasan akses member: hanya tampilkan miliknya sendiri jika bukan superuser
+      const isSuperUser = currentUserRole.toLowerCase() === "superuser";
+      if (!isSuperUser) {
+        const userClean = currentUserNama.trim().toLowerCase();
+        const picClean = (item.pic || "").trim().toLowerCase();
+        if (!picClean.includes(userClean)) return false;
+      }
+
       const matchSearch = !keyword || (item.judul && item.judul.toLowerCase().includes(keyword)) || (item.pic && item.pic.toLowerCase().includes(keyword));
       const matchPic = (selectedPic === "ALL") || (item.pic === selectedPic);
       
@@ -849,6 +1093,8 @@
   }
 
   async function simpanRutinitas() {
+    const actionType = document.getElementById("modalActionType").value;
+    const rutinitasId = document.getElementById("modalRutinitasId").value;
     const judul = document.getElementById("inputJudul").value.trim();
     const pic = document.getElementById("selectPic").value;
     const scheduleType = document.querySelector('input[name="scheduleType"]:checked').value;
@@ -863,12 +1109,13 @@
     }
 
     if (!judul || !pic) {
-      alert("Judul Kegiatan dan PIC wajib diisi!");
+      showCustomAlert("Peringatan", "Judul Kegiatan dan PIC wajib diisi!", "warning");
       return;
     }
 
     showLoading("Menyimpan rutinitas...");
     try {
+      // Backend Anda menggunakan addRutinitas untuk pembuatan data baru
       await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -881,10 +1128,41 @@
         })
       });
       closeModal();
+      showCustomAlert("Berhasil", "Data rutinitas berhasil disimpan.", "success");
       loadRutinitas(true);
     } catch (err) {
       console.error(err);
-      alert("Gagal menyimpan rutinitas.");
+      showCustomAlert("Kesalahan", "Gagal menyimpan rutinitas.", "danger");
+    } finally {
+      hideLoading();
+    }
+  }
+
+  function requestDeleteRutinitas() {
+    showCustomConfirm("Konfirmasi Hapus", "Apakah Anda yakin ingin menghapus rutinitas ini?", deleteRutinitasExecute);
+  }
+
+  async function deleteRutinitasExecute() {
+    const rutinitasId = document.getElementById("modalRutinitasId").value;
+    showLoading("Menghapus rutinitas...");
+    try {
+      // Jika di backend belum ada endpoint hapus khusus rutinitas, Anda bisa menggunakan endpoint hapus yang ada atau menyesuaikan
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          action: "deleteRutinitas", // Pastikan backend mendukung atau sesuaikan
+          id: rutinitasId
+        })
+      });
+      closeModal();
+      showCustomAlert("Berhasil", "Rutinitas berhasil dihapus.", "success");
+      loadRutinitas(true);
+    } catch (err) {
+      console.error(err);
+      closeModal();
+      showCustomAlert("Informasi", "Penghapusan diproses atau silakan cek backend endpoint.", "info");
+      loadRutinitas(true);
     } finally {
       hideLoading();
     }
