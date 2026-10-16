@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Portal Asset & System</title>
 
-<!-- Menghubungkan Manifest ke File HTML -->
+  <!-- Menghubungkan Manifest ke File HTML -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#12161f">
   
@@ -256,7 +256,7 @@
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       background: none;
       border: none;
       padding: 0;
@@ -264,14 +264,26 @@
     }
     .back-nav:hover { text-decoration: underline; }
 
+    /* --- HEADER WEB KERJA (DESAIN BARU DIPROPORSIONALSAN) --- */
     .header-action-area {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+    .header-top-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
-      flex-shrink: 0;
       gap: 6px;
     }
+    .header-bottom-row {
+      display: flex;
+      gap: 6px;
+      width: 100%;
+    }
+
     .brand-wrapper {
       display: flex;
       flex-direction: column;
@@ -294,8 +306,8 @@
     
     /* Search Bar */
     .search-input {
-      flex: 1;
-      padding: 8px 10px;
+      width: 100%;
+      padding: 7px 10px;
       border: 1px solid var(--border-color);
       border-radius: 8px;
       font-size: 12px;
@@ -309,16 +321,17 @@
 
     .button-group {
       display: flex;
-      gap: 5px;
+      gap: 4px;
       flex-shrink: 0;
+      align-items: center;
     }
     .btn-action-base {
       border: none;
-      padding: 8px 10px;
+      padding: 7px 9px;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
-      font-size: 12px;
+      font-size: 11.5px;
       white-space: nowrap;
       display: flex;
       align-items: center;
@@ -335,6 +348,7 @@
       background-color: var(--card-bg);
       color: var(--text-secondary);
       border: 1px solid var(--border-color);
+      padding: 7px 8px;
     }
     .btn-refresh:hover { background-color: var(--card-hover); color: var(--text-main); }
 
@@ -345,14 +359,21 @@
     }
     .btn-absensi:hover { background: rgba(139, 92, 246, 0.25); }
 
+    .btn-rutinitas {
+      background: rgba(6, 182, 212, 0.15);
+      color: #22d3ee;
+      border: 1px solid rgba(6, 182, 212, 0.3);
+    }
+    .btn-rutinitas:hover { background: rgba(6, 182, 212, 0.25); }
+
     /* Filter Box */
     .filter-box {
       display: flex;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       flex-shrink: 0;
       background: var(--card-bg);
-      padding: 10px;
+      padding: 8px 10px;
       border-radius: 10px;
       border: 1px solid var(--border-color);
     }
@@ -362,17 +383,17 @@
       color: var(--text-secondary);
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
       flex: 1;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     .filter-box select {
       width: 100%;
-      padding: 7px;
+      padding: 6px;
       border: 1px solid var(--border-color);
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 11.5px;
       outline: none;
       background: #161b26;
       color: var(--text-main);
@@ -387,8 +408,8 @@
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 10px;
-      padding: 8px 12px;
-      margin-bottom: 12px;
+      padding: 7px 10px;
+      margin-bottom: 10px;
       flex-shrink: 0;
     }
     .summary-title {
@@ -398,16 +419,16 @@
     }
     .summary-badges {
       display: flex;
-      gap: 6px;
+      gap: 5px;
     }
     .count-chip {
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 600;
-      padding: 3px 8px;
+      padding: 2px 7px;
       border-radius: 20px;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
     }
     .count-open { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
     .count-progress { background-color: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
@@ -686,7 +707,7 @@
     <div class="loading-text" id="loadingText">Memproses data...</div>
   </div>
 
-  <!-- CUSTOM ALERT & CONFIRMATION MODAL -->
+  <!-- CUSTOM ALERT & CONFIRM MODAL -->
   <div class="custom-alert-overlay" id="customAlertOverlay">
     <div class="custom-alert-box">
       <div class="alert-icon-wrapper" id="alertIcon">⚠️</div>
@@ -722,35 +743,35 @@
           <span>Formulir pengajuan & perbaikan asset</span>
         </div>
       </div>
-
-      <!-- TOMBOL MENU RUTINITAS (TERLETAK DI DALAM MENU-GRID) -->
-      <div class="menu-card" onclick="window.location.href='rutinitas.html'">
-        <div class="menu-icon" style="background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3);">⚡</div>
-        <div class="menu-info">
-          <h3>Rutinitas Harian</h3>
-          <span>Jadwal & checklist operasional rutin</span>
-        </div>
-      </div>
     </div>
   </div>
 
   <!-- ==================== HALAMAN 2: WEB KERJA ==================== -->
   <div id="workView" class="app-view">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink: 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0;">
       <button class="back-nav" onclick="logout()">← Keluar / Menu Utama</button>
       <span id="loggedInUserLabel" style="font-size: 11.5px; color: #4ade80; font-weight: 600;"></span>
     </div>
     
     <div class="header-action-area">
-      <div class="brand-wrapper">
-        <h2>Web Kerja</h2>
-        <div id="liveClock" class="live-clock">Memuat waktu...</div>
+      <!-- BARIS ATAS: JUDUL & DERETAN TOMBOL AKSI -->
+      <div class="header-top-row">
+        <div class="brand-wrapper">
+          <h2>Web Kerja</h2>
+          <div id="liveClock" class="live-clock">Memuat waktu...</div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn-action-base btn-refresh" onclick="loadTasks()" title="Muat Ulang">🔄</button>
+          <button class="btn-action-base btn-rutinitas" onclick="window.location.href='Rutinitas.html'" title="Rutinitas Harian">⚡ Rutinitas</button>
+          <button class="btn-action-base btn-absensi" onclick="openAbsensiView()" title="Absensi PDCA">📊 Absensi</button>
+          <button class="btn-action-base btn-open-add" onclick="openAddModal()">+ Tambah</button>
+        </div>
       </div>
-      <input type="text" id="searchInput" class="search-input" placeholder="Cari..." oninput="renderTasks()">
-      <div class="button-group">
-        <button class="btn-action-base btn-refresh" onclick="loadTasks()" title="Muat Ulang">🔄</button>
-        <button class="btn-action-base btn-absensi" onclick="openAbsensiView()" title="Absensi PDCA">📊 Absensi</button>
-        <button class="btn-action-base btn-open-add" onclick="openAddModal()">+ Tambah</button>
+
+      <!-- BARIS BAWAH: SEARCH BAR -->
+      <div class="header-bottom-row">
+        <input type="text" id="searchInput" class="search-input" placeholder="Cari tugas..." oninput="renderTasks()">
       </div>
     </div>
 
