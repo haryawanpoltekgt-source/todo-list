@@ -433,6 +433,16 @@
       color: #4ade80;
       border: 1px solid rgba(34, 197, 94, 0.3);
     }
+    .badge-status-progress {
+      background-color: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .badge-status-closed {
+      background-color: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
     .badge-status-rejected {
       background-color: rgba(239, 68, 68, 0.15);
       color: #f87171;
@@ -735,7 +745,7 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbzWKQiSNx01dVVQlN2eAbyW8cWrCyoejsPEjMXH1cj0AJwEM85nKu0hj6ovpKyv4E6i/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbzdHOIk53xNZwAk5-ST20mZIfvd2M_Qd1KiqO4YebMhxzm2l_xXSDIIqhY8Z_A6dlMU/exec";
   let isListView = false;
   let currentUserRole = "Tamu";
   let currentAdminNama = "";
@@ -1001,6 +1011,10 @@
 
       if (statusVal === "Disetujui - Menunggu antrian") {
         statusBadgeHtml = `<span class="badge-status-pbas badge-status-approved">⏳ Disetujui (Antrian)</span>`;
+      } else if (statusVal === "Sedang Diproses") {
+        statusBadgeHtml = `<span class="badge-status-pbas badge-status-progress">🔄 Sedang Diproses</span>`;
+      } else if (statusVal === "Selesai") {
+        statusBadgeHtml = `<span class="badge-status-pbas badge-status-closed">✅ Selesai</span>`;
       } else if (statusVal === "Ditolak") {
         statusBadgeHtml = `<span class="badge-status-pbas badge-status-rejected">❌ Ditolak</span>`;
       } else {
