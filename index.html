@@ -24,7 +24,24 @@
       --accent-warn: #f59e0b;
     }
 
-    * { box-sizing: border-box; }
+    /* Mencegah teks tersorot/copot otomatis saat ditekan lama di HP */
+    * { 
+      box-sizing: border-box; 
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    /* Izinkan seleksi teks khusus pada input & textarea */
+    input, textarea {
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
+    }
+
     html, body {
       height: 100%;
       margin: 0;
