@@ -20,7 +20,24 @@
       --accent-warn: #f59e0b;
     }
 
-    * { box-sizing: border-box; }
+    /* Mencegah seleksi teks dan menu pop-up bawaan saat ditekan lama di HP */
+    * { 
+      box-sizing: border-box; 
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    /* Izinkan seleksi teks khusus pada input & textarea */
+    input, select, textarea {
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
+    }
+
     html, body {
       height: 100%;
       margin: 0;
@@ -73,7 +90,6 @@
     }
     .loading-text { font-size: 13px; font-weight: 600; color: var(--text-main); }
 
-    /* CUSTOM ALERT STYLES (MATCHING WEB KERJA / INDEX.HTML) */
     .custom-alert-overlay {
       display: none;
       position: fixed;
@@ -510,7 +526,6 @@
     <div class="loading-text" id="loadingText">Memproses data...</div>
   </div>
 
-  <!-- CUSTOM ALERT OVERLAY (SESUAI DESAIN WEB KERJA) -->
   <div class="custom-alert-overlay" id="customAlertOverlay">
     <div class="custom-alert-box">
       <div class="alert-icon-wrapper" id="alertIcon">⚠️</div>
@@ -690,7 +705,6 @@
   let currentAdminNama = "";
   let userListCache = [];
 
-  // Fitur Auto-Refresh saat HP kembali membuka aplikasi
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
       if (isListView) {
@@ -707,7 +721,6 @@
     document.getElementById("loadingOverlay").style.display = "none";
   }
 
-  /* FUNGSI CUSTOM ALERT (MODERN NOTIFICATION) */
   function showCustomAlert(title, message, type = "warning") {
     document.getElementById("alertTitle").textContent = title;
     document.getElementById("alertMessage").textContent = message;
