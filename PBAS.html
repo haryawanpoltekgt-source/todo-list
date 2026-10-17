@@ -30,7 +30,7 @@
       -webkit-touch-callout: none;
     }
 
-    /* Izinkan seleksi teks khusus pada input & textarea */
+    /* Izinkan seleksi teks khusus pada input, select, & textarea */
     input, select, textarea {
       -webkit-user-select: text;
       -moz-user-select: text;
@@ -979,7 +979,7 @@
     });
   }
 
-  function openDetailModal(item) {
+  async function openDetailModal(item) {
     document.getElementById("modalIdTitle").textContent = `Detail Permintaan (${item.id})`;
     document.getElementById("modalIdHidden").value = item.id || "";
     document.getElementById("modalId").value = item.id || "-";
@@ -993,6 +993,17 @@
     const btnSaveAdmin = document.getElementById("btnSaveAdmin");
     const statusSelect = document.getElementById("modalStatusPengajuan");
     const picSelect = document.getElementById("modalTujukanPic");
+
+    // Jika cache PIC kosong, ambil data user secara langsung saat modal dibuka
+    if (userListCache.length === 0) {
+      try {
+        const response = await fetch(`${API_URL}?action=getUsers`);
+        const res = await response.json();
+        userListCache = Array.isArray(res) ? res : [];
+      } catch (e) {
+        userListCache = [];
+      }
+    }
 
     picSelect.innerHTML = '<option value="">-- Pilih PIC --</option>';
     userListCache.forEach(u => {
