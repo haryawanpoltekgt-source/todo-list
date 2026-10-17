@@ -894,7 +894,14 @@
     }
 
     try {
-      const response = await fetch(`${API_URL}?action=getRutinitas`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+      const response = await fetch(`${API_URL}?action=getRutinitas`, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) throw new Error("Network response was not ok");
+
       const result = await response.json();
 
       allRutinitas = Array.isArray(result) ? result : [];
@@ -902,15 +909,10 @@
 
       updatePicOptions();
       renderRutinitas();
-      if (forceRefresh) {
-        showCustomAlert("Berhasil", "Data rutinitas & cache berhasil diperbarui.", "success");
-      }
     } catch (err) {
       console.error(err);
-      if (!cachedRutinitas) {
+      if (!cachedRutinitas || allRutinitas.length === 0) {
         document.getElementById("rutinitasList").innerHTML = `<li style="text-align:center; color:#f87171; padding:20px;">Gagal memuat data dari server.</li>`;
-      } else if (forceRefresh) {
-        showCustomAlert("Gagal", "Gagal memperbarui data dari server.", "danger");
       }
     } finally {
       hideLoading();
