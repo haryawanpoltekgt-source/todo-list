@@ -514,7 +514,7 @@
       background: #161b26;
       color: var(--text-main);
     }
-    .modal-body input:disabled, .modal-body textarea:disabled {
+    .modal-body input:disabled, .modal-body textarea:disabled, .modal-body select:disabled {
       background-color: #1a202c;
       color: #cbd5e1;
       cursor: not-allowed;
@@ -556,6 +556,18 @@
       font-weight: 600;
       font-size: 12.5px;
     }
+    .btn-edit-decision {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: none;
+    }
+    .btn-edit-decision:hover { background: rgba(59, 130, 246, 0.25); }
   </style>
 </head>
 <body>
@@ -716,6 +728,10 @@
       </label>
 
       <div id="adminActionSection" style="display: none; flex-direction: column; gap: 10px; border-top: 1px dashed var(--border-color); padding-top: 10px; margin-top: 4px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 11.5px; font-weight: 700; color: var(--text-secondary);">KEPUTUSAN ADMIN:</span>
+          <button class="btn-edit-decision" id="btnEditDecision" onclick="unlockAdminDecision()">✏️ Ubah Keputusan</button>
+        </div>
         <label>
           Status Pengajuan:
           <select id="modalStatusPengajuan">
@@ -743,11 +759,11 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwPMcg34QDY6zMBPaUvIcTzb9todmou9tfOEX-3kjjvhhCkPE19FPiKCQ4qQLKfn1P4/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbxWqtZqMMeYhOHc142VYfxHJVy5baHUKNXVE0PqaIqSvWGnVLtTowl_TWebELtUZdpQ/exec";
   let isListView = false;
   let currentUserRole = "Tamu";
   let currentAdminNama = "";
-  let currentAdminNip = ""; // Ditambahkan untuk menyimpan NIP admin yang login
+  let currentAdminNip = "";
   let userListCache = [];
 
   document.addEventListener("visibilitychange", () => {
@@ -1066,6 +1082,7 @@
     const deleteBtnEl = document.getElementById("modalDeleteBtn");
     const statusSelect = document.getElementById("modalStatusPengajuan");
     const picSelect = document.getElementById("modalTujukanPic");
+    const btnEditDecision = document.getElementById("btnEditDecision");
 
     if (userListCache.length === 0) {
       try {
@@ -1088,10 +1105,24 @@
 
     if (currentUserRole === "Admin") {
       adminSection.style.display = "flex";
-      btnSaveAdmin.style.display = "inline-block";
       deleteBtnEl.style.display = "inline-block";
+      
       statusSelect.value = item.statusPengajuan || "";
       picSelect.value = item.tujukanPic || "";
+
+      // Logika Penguncian Otomatis: Jika sudah diputuskan, kunci form dan tampilkan tombol Ubah
+      const isAlreadyDecided = item.statusPengajuan && item.statusPengajuan.trim() !== "";
+      if (isAlreadyDecided) {
+        statusSelect.disabled = true;
+        picSelect.disabled = true;
+        btnEditDecision.style.display = "inline-block";
+        btnSaveAdmin.style.display = "none"; // Sembunyikan simpan sampai tombol ubah diklik
+      } else {
+        statusSelect.disabled = false;
+        picSelect.disabled = false;
+        btnEditDecision.style.display = "none";
+        btnSaveAdmin.style.display = "inline-block";
+      }
     } else {
       adminSection.style.display = "none";
       btnSaveAdmin.style.display = "none";
@@ -1099,6 +1130,13 @@
     }
 
     document.getElementById("pbasDetailModal").style.display = "flex";
+  }
+
+  function unlockAdminDecision() {
+    document.getElementById("modalStatusPengajuan").disabled = false;
+    document.getElementById("modalTujukanPic").disabled = false;
+    document.getElementById("btnSaveAdmin").style.display = "inline-block";
+    document.getElementById("btnEditDecision").style.display = "none";
   }
 
   function closeDetailModal() {
