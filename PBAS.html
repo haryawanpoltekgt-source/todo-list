@@ -20,7 +20,6 @@
       --accent-warn: #f59e0b;
     }
 
-    /* Mencegah seleksi teks dan menu pop-up bawaan saat ditekan lama di HP */
     * { 
       box-sizing: border-box; 
       -webkit-user-select: none;
@@ -30,7 +29,6 @@
       -webkit-touch-callout: none;
     }
 
-    /* Izinkan seleksi teks khusus pada input, select, & textarea */
     input, select, textarea {
       -webkit-user-select: text;
       -moz-user-select: text;
@@ -745,10 +743,11 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbzdHOIk53xNZwAk5-ST20mZIfvd2M_Qd1KiqO4YebMhxzm2l_xXSDIIqhY8Z_A6dlMU/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwPMcg34QDY6zMBPaUvIcTzb9todmou9tfOEX-3kjjvhhCkPE19FPiKCQ4qQLKfn1P4/exec";
   let isListView = false;
   let currentUserRole = "Tamu";
   let currentAdminNama = "";
+  let currentAdminNip = ""; // Ditambahkan untuk menyimpan NIP admin yang login
   let userListCache = [];
 
   document.addEventListener("visibilitychange", () => {
@@ -829,9 +828,10 @@
     }
   }
 
-  function selectRole(role, adminNama = "") {
+  function selectRole(role, adminNama = "", adminNip = "") {
     currentUserRole = role;
     currentAdminNama = adminNama;
+    currentAdminNip = adminNip;
 
     document.getElementById("roleSelectionView").style.display = "none";
     document.getElementById("mainAppView").style.display = "flex";
@@ -896,7 +896,7 @@
       if (res.status === "success") {
         if (res.role && res.role.toLowerCase() === "superuser") {
           closeAdminLoginModal();
-          selectRole("Admin", res.nama);
+          selectRole("Admin", res.nama, nip);
         } else {
           showCustomAlert("Akses Ditolak", "Akun Anda bukan berstatus Superuser (Admin).", "danger");
         }
@@ -1151,13 +1151,18 @@
     const id = document.getElementById("modalIdHidden").value;
     showLoading("Menghapus permintaan...");
     try {
-      await fetch(API_URL, {
+      const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ action: "deletePbas", id: id })
+        body: new URLSearchParams({ action: "deletePbas", nip: currentAdminNip, id: id })
       });
+      const res = await response.json();
       closeDetailModal();
-      showCustomAlert("Berhasil", "Permintaan bantuan berhasil dihapus.", "success");
+      if (res.status === "success") {
+        showCustomAlert("Berhasil", "Permintaan bantuan dan tugas terkait di Web Kerja berhasil dihapus.", "success");
+      } else {
+        showCustomAlert("Gagal", res.message || "Gagal menghapus data.", "warning");
+      }
       loadPbasList(true);
     } catch (err) {
       console.error(err);
