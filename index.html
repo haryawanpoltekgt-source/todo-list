@@ -24,7 +24,6 @@
       --accent-warn: #f59e0b;
     }
 
-    /* Mencegah teks tersorot/copot otomatis saat ditekan lama di HP */
     * { 
       box-sizing: border-box; 
       -webkit-user-select: none;
@@ -34,7 +33,6 @@
       -webkit-touch-callout: none;
     }
 
-    /* Izinkan seleksi teks khusus pada input & textarea */
     input, textarea {
       -webkit-user-select: text;
       -moz-user-select: text;
@@ -1042,7 +1040,7 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbzdHOIk53xNZwAk5-ST20mZIfvd2M_Qd1KiqO4YebMhxzm2l_xXSDIIqhY8Z_A6dlMU/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbwPMcg34QDY6zMBPaUvIcTzb9todmou9tfOEX-3kjjvhhCkPE19FPiKCQ4qQLKfn1P4/exec";
 
   let allTasks = [];
   let currentUserNama = "";
@@ -1625,7 +1623,8 @@
     
     const canEdit = isSuperUser || isOwner;
 
-    const isPbasTask = task.task && task.task.trim().toUpperCase().startsWith("[PBAS]");
+    // Diperbaiki menggunakan Regex fleksibel /\[PBAS[- ]/i agar mendeteksi [PBAS-...] dengan akurat
+    const isPbasTask = task.task && /\[PBAS[- ]/i.test(task.task.trim());
     const isMemberRole = currentUserRole.toLowerCase() === "member";
 
     const taskTextEl = document.getElementById("modalTaskText");
@@ -1686,6 +1685,7 @@
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
           action: "update",
+          nip: currentUserNip, // Dikirim untuk verifikasi hak akses backend
           id: id,
           task: task,
           pic: pic,
@@ -1726,6 +1726,7 @@
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
           action: "add",
+          nip: currentUserNip,
           task: taskText,
           pic: currentUserNama || "-",
           updateDo: updateDoInput.value.trim(),
@@ -1763,7 +1764,7 @@
       await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ action: "delete", id: id })
+        body: new URLSearchParams({ action: "delete", nip: currentUserNip, id: id })
       });
       closeModal();
       showCustomAlert("Berhasil", "Tugas berhasil dihapus.", "success");
