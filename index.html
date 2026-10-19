@@ -765,7 +765,7 @@
       <div class="menu-card" onclick="handleWebKerjaClick()">
         <div class="menu-icon icon-work">📋</div>
         <div class="menu-info">
-          <h3>Web Kerja</h3>
+          <h3>Web Kerja - Asset & System</h3>
           <span>Kelola daftar tugas & progress operasional</span>
         </div>
       </div>
@@ -773,7 +773,7 @@
       <div class="menu-card" onclick="window.location.href='PBAS.html'">
         <div class="menu-icon icon-request">🛠️</div>
         <div class="menu-info">
-          <h3>Permintaan Bantuan Asset & System</h3>
+          <h3>[PBAS] Permintaan Bantuan Asset & System</h3>
           <span>Formulir pengajuan & perbaikan asset</span>
         </div>
       </div>
@@ -781,7 +781,7 @@
       <div class="menu-card" onclick="openPiketModal()">
         <div class="menu-icon icon-piket">📷</div>
         <div class="menu-info">
-          <h3>Piket & Scan Barcode</h3>
+          <h3>Absen Piket [Scan Barcode]</h3>
           <span>Absensi dan pemindaian area piket harian</span>
         </div>
       </div>
@@ -1195,7 +1195,7 @@
       const isTim = currentUserTim.trim().toLowerCase() === "tim";
 
       if (!isSuperUser && !isTim) {
-        showCustomAlert("Akses Ditolak", "Maaf, akun Member (tanpa status Tim) tidak memiliki hak akses ke Web Kerja. Anda hanya dapat mengakses halaman piket.", "warning");
+        showCustomAlert("Akses Ditolak", "Maaf, akun anda tidak memiliki hak akses ke Web Kerja - Asset & System.", "warning");
         return;
       }
 
