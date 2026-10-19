@@ -277,8 +277,8 @@
         localStorage.setItem("pbas_role", res.role || "Member");
         localStorage.setItem("pbas_tim", res.tim || "");
 
-        // Redirect langsung ke Web Kerja di index.html
-        window.location.href = "index.html#workView";
+        // KEMBALI KE HALAMAN UTAMA PORTAL
+        window.location.href = "index.html";
       } else if (res.status === "wrong_password") {
         alert("Password salah.");
       } else if (res.status === "pending") {
