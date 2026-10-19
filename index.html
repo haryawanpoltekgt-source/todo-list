@@ -196,6 +196,7 @@
       gap: 16px;
       padding: 20px;
       overflow-y: auto;
+      position: relative;
     }
     .portal-header h1 {
       color: #ffffff;
@@ -748,14 +749,20 @@
     </div>
   </div>
 
+  <!-- HOME VIEW DENGAN TOMBOL LOGIN DI POJOK KANAN ATAS -->
   <div id="homeView">
+    <!-- Tombol Login di Pojok Kanan Atas Beranda -->
+    <div style="position: absolute; top: 16px; right: 16px;">
+      <button onclick="window.location.href='login.html'" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); color: white; border: none; padding: 7px 14px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);">Login</button>
+    </div>
+
     <div class="portal-header">
       <h1>Portal Asset & System</h1>
       <p>Pilih menu sistem operasional kerja harian</p>
     </div>
     
     <div class="menu-grid">
-      <div class="menu-card" onclick="openLoginModal()">
+      <div class="menu-card" onclick="handleWebKerjaClick()">
         <div class="menu-icon icon-work">📋</div>
         <div class="menu-info">
           <h3>Web Kerja</h3>
@@ -771,7 +778,6 @@
         </div>
       </div>
 
-      <!-- Menu Baru: Piket & Scan Barcode -->
       <div class="menu-card" onclick="openPiketModal()">
         <div class="menu-icon icon-piket">📷</div>
         <div class="menu-info">
@@ -782,9 +788,11 @@
     </div>
   </div>
 
+  <!-- WORK VIEW -->
   <div id="workView" class="app-view">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0;">
       <button class="back-nav" onclick="logout()">← Keluar / Menu Utama</button>
+      <!-- Tampilan user yang login di pojok kanan atas halaman Web Kerja -->
       <span id="loggedInUserLabel" style="font-size: 11.5px; color: #4ade80; font-weight: 600;"></span>
     </div>
     
@@ -847,6 +855,7 @@
     </div>
   </div>
 
+  <!-- ABSENSI VIEW -->
   <div id="absensiView" class="app-view">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink: 0;">
       <button class="back-nav" onclick="switchView('workView')">← Kembali ke Web Kerja</button>
@@ -879,9 +888,7 @@
       <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
         Fitur ini digunakan untuk mencatat kehadiran Anda pada area piket yang dikunjungi melalui pemindaian barcode.
       </p>
-      <div id="piketStatusUser" style="font-size: 12px; color: var(--accent-green); font-weight: 600; margin-top: 10px;">
-        <!-- Status sesi user akan dimuat disini -->
-      </div>
+      <div id="piketStatusUser" style="font-size: 12px; color: var(--accent-green); font-weight: 600; margin-top: 10px;"></div>
     </div>
     <div class="modal-footer" style="justify-content: space-between;">
       <button onclick="closePiketModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Tutup</button>
@@ -890,65 +897,7 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="loginModal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>Login Web Kerja</h3>
-      <button class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
-    </div>
-    <div class="modal-body">
-      <label>
-        Nomor Induk Pegawai (NIP):
-        <input type="text" id="loginNip" placeholder="Masukkan NIP...">
-      </label>
-      <label>
-        Password:
-        <input type="password" id="loginPass" placeholder="Masukkan password...">
-      </label>
-      <div style="margin-top: 6px; text-align: left; font-size: 12px;">
-        <span style="color: var(--text-secondary);">Belum punya akun?</span> 
-        <a href="javascript:void(0);" onclick="switchToRegisterModal()" style="color: var(--accent-blue); font-weight: 600; text-decoration: none;">Buat Akun di sini</a>
-      </div>
-    </div>
-    <div class="modal-footer" style="justify-content: flex-end; gap: 6px;">
-      <button onclick="closeLoginModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Batal</button>
-      <button class="btn-save" style="width: auto;" onclick="submitLogin()">Masuk</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="registerModal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>Pendaftaran Akun Baru</h3>
-      <button class="btn-close-modal" onclick="closeRegisterModal()">&times;</button>
-    </div>
-    <div class="modal-body">
-      <label>
-        NIP (Nomor Induk Pegawai):
-        <input type="text" id="regNip" placeholder="Masukkan NIP unik...">
-      </label>
-      <label>
-        Nama Lengkap:
-        <input type="text" id="regNama" placeholder="Masukkan nama lengkap...">
-      </label>
-      <label>
-        Password:
-        <input type="password" id="regPass" placeholder="Buat password...">
-      </label>
-      <span style="font-size: 11px; color: #94a3b8; margin-top: 4px;">*Akun baru memerlukan persetujuan (Approved) oleh SuperUser melalui Google Sheet dapat digunakan untuk login.</span>
-      <div style="margin-top: 4px; text-align: left; font-size: 12px;">
-        <span style="color: var(--text-secondary);">Sudah punya akun?</span> 
-        <a href="javascript:void(0);" onclick="switchToLoginModal()" style="color: var(--accent-blue); font-weight: 600; text-decoration: none;">Login di sini</a>
-      </div>
-    </div>
-    <div class="modal-footer" style="justify-content: flex-end; gap: 6px;">
-      <button onclick="closeRegisterModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Batal</button>
-      <button class="btn-save" style="width: auto; background: linear-gradient(135deg, #10b981, #059669);" onclick="submitRegister()">Daftar Akun</button>
-    </div>
-  </div>
-</div>
-
+<!-- Modal Tambah Tugas -->
 <div class="modal-overlay" id="addModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -1004,6 +953,7 @@
   </div>
 </div>
 
+<!-- Modal Detail Tugas -->
 <div class="modal-overlay" id="taskModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -1071,11 +1021,9 @@
   </div>
 </div>
 
-<!-- Memuat file konfigurasi eksternal -->
 <script src="config.js"></script>
 
 <script>
-  // Menggunakan API_URL dari config.js
   const API_URL = CONFIG.API_URL;
 
   let allTasks = [];
@@ -1192,7 +1140,6 @@
     switchView('homeView');
   }
 
-  // Fungsi Kontrol Modal Piket
   function openPiketModal() {
     const statusLabel = document.getElementById("piketStatusUser");
     if (currentUserNama) {
@@ -1211,9 +1158,15 @@
     window.location.href = "piket.html";
   }
 
-  function openLoginModal() { 
-    if (currentUserNama) {
-      // Validasi Hak Akses ke Web Kerja
+  // Penanganan klik menu Web Kerja berdasarkan status login
+  function handleWebKerjaClick() {
+    const savedNama = localStorage.getItem("pbas_nama");
+    if (savedNama) {
+      currentUserNama = savedNama;
+      currentUserNip = localStorage.getItem("pbas_nip");
+      currentUserRole = localStorage.getItem("pbas_role") || "Member";
+      currentUserTim = localStorage.getItem("pbas_tim") || "";
+
       const isSuperUser = currentUserRole.toLowerCase() === "superuser";
       const isTim = currentUserTim.trim().toLowerCase() === "tim";
 
@@ -1225,22 +1178,9 @@
       switchView('workView');
       loadTasks();
     } else {
-      document.getElementById("loginModal").style.display = "flex"; 
+      // Jika belum login, arahkan ke file login.html terpisah
+      window.location.href = "login.html";
     }
-  }
-  function closeLoginModal() { document.getElementById("loginModal").style.display = "none"; }
-
-  function openRegisterModal() { document.getElementById("registerModal").style.display = "flex"; }
-  function closeRegisterModal() { document.getElementById("registerModal").style.display = "none"; }
-
-  function switchToRegisterModal() {
-    closeLoginModal();
-    openRegisterModal();
-  }
-
-  function switchToLoginModal() {
-    closeRegisterModal();
-    openLoginModal();
   }
 
   function openAbsensiView() {
@@ -1312,102 +1252,6 @@
       `;
       container.appendChild(card);
     });
-  }
-
-  async function submitLogin() {
-    const nip = document.getElementById("loginNip").value.trim();
-    const password = document.getElementById("loginPass").value.trim();
-
-    if (!nip || !password) {
-      showCustomAlert("Form Belum Lengkap", "Nomor Induk Pegawai (NIP) dan Password wajib diisi.", "warning");
-      return;
-    }
-
-    showLoading("Memverifikasi akun & mencatat absensi...");
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ action: "login", nip: nip, password: password })
-      });
-      const res = await response.json();
-
-      if (res.status === "success") {
-        currentUserNama = res.nama;
-        currentUserNip = nip;
-        currentUserRole = res.role || "Member";
-        currentUserTim = res.tim || "";
-        
-        localStorage.setItem("pbas_nama", currentUserNama);
-        localStorage.setItem("pbas_nip", currentUserNip);
-        localStorage.setItem("pbas_role", currentUserRole);
-        localStorage.setItem("pbas_tim", currentUserTim);
-
-        document.getElementById("loggedInUserLabel").textContent = `👤 ${currentUserNama} (${currentUserRole}) - ${nip}`;
-        closeLoginModal();
-
-        // Cek Hak Akses Web Kerja
-        const isSuperUser = currentUserRole.toLowerCase() === "superuser";
-        const isTim = currentUserTim.trim().toLowerCase() === "tim";
-
-        if (!isSuperUser && !isTim) {
-          showCustomAlert("Akses Terbatas", "Login berhasil, namun akun Anda merupakan Member biasa (tanpa status Tim) sehingga tidak memiliki hak akses ke Web Kerja.", "warning");
-          return;
-        }
-
-        switchView('workView');
-        loadTasks(true);
-      } else if (res.status === "wrong_password") {
-        showCustomAlert("Gagal Masuk", "Password yang Anda masukkan salah.", "warning");
-      } else if (res.status === "pending") {
-        showCustomAlert("Akses Tertunda", "Akun Anda masih berstatus PENDING. Menunggu persetujuan SuperUser.", "warning");
-      } else {
-        showCustomAlert("Akun Tidak Ditemukan", "NIP belum terdaftar. Silakan buat akun terlebih dahulu.", "warning");
-      }
-    } catch (err) {
-      console.error(err);
-      showCustomAlert("Kesalahan Jaringan", "Gagal terhubung ke server. Periksa koneksi internet Anda.", "warning");
-    } finally {
-      hideLoading();
-    }
-  }
-
-  async function submitRegister() {
-    const nip = document.getElementById("regNip").value.trim();
-    const nama = document.getElementById("regNama").value.trim();
-    const password = document.getElementById("regPass").value.trim();
-
-    if (!nip || !nama || !password) {
-      showCustomAlert("Form Belum Lengkap", "Semua kolom pendaftaran wajib diisi dengan benar.", "warning");
-      return;
-    }
-
-    showLoading("Mendaftarkan akun baru...");
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ action: "register", nip: nip, nama: nama, password: password })
-      });
-      const res = await response.json();
-
-      if (res.status === "success") {
-        showCustomAlert("Pendaftaran Berhasil", "Akun berhasil didaftarkan! Silakan menunggu persetujuan (Approved) dari SuperUser.", "success");
-        document.getElementById("regNip").value = "";
-        document.getElementById("regNama").value = "";
-        document.getElementById("regPass").value = "";
-        closeRegisterModal();
-      } else if (res.status === "registered") {
-        showCustomAlert("NIP Terdaftar", "Nomor Induk Pegawai tersebut sudah terdaftar sebelumnya.", "warning");
-      } else {
-        showCustomAlert("Pendaftaran Gagal", "Terjadi kendala saat mendaftarkan akun.", "warning");
-      }
-    } catch (err) {
-      console.error(err);
-      showCustomAlert("Kesalahan Jaringan", "Gagal terhubung ke server.", "warning");
-    } finally {
-      hideLoading();
-    }
   }
 
   function updateClock() {
@@ -1698,25 +1542,19 @@
 
     const isSuperUser = (currentUserRole.toLowerCase() === "superuser");
     
-    // ==========================================
-    // VALIDASI HAK AKSES BERBASIS NIP (UTAMA)
-    // ==========================================
     const userNipClean = currentUserNip ? currentUserNip.trim().toLowerCase() : "";
     const taskNipClean = task.nip ? task.nip.trim().toLowerCase() : "";
 
     let isOwner = false;
     if (userNipClean && taskNipClean) {
-      // Perbandingan ketat berdasarkan NIP unik
       isOwner = (userNipClean === taskNipClean);
     } else {
-      // Fallback cadangan spesifik berbasis pencocokan nama lengkap jika NIP tugas belum terekam
       const userClean = currentUserNama ? currentUserNama.trim().toLowerCase() : "";
       const picClean = task.pic ? task.pic.trim().toLowerCase() : "";
       isOwner = (userClean && picClean && picClean === userClean);
     }
     
     const canEdit = isSuperUser || isOwner;
-    // ==========================================
 
     const isPbasTask = task.task && /\[PBAS[- ]/i.test(task.task.trim());
     const isMemberRole = currentUserRole.toLowerCase() === "member";
@@ -1823,7 +1661,7 @@
           nip: currentUserNip,
           task: taskText,
           pic: currentUserNama || "-",
-          updateDo: updateDoInput.value.trim(),
+            updateDo: updateDoInput.value.trim(),
           status: statusInput.value,
           percentStatus: percentInput.value,
           updateAction: updateActionInput.value.trim()
