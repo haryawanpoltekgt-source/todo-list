@@ -749,11 +749,11 @@
     </div>
   </div>
 
-  <!-- HOME VIEW DENGAN TOMBOL LOGIN DI POJOK KANAN ATAS -->
+  <!-- HOME VIEW -->
   <div id="homeView">
-    <!-- Tombol Login di Pojok Kanan Atas Beranda -->
-    <div style="position: absolute; top: 16px; right: 16px;">
-      <button onclick="window.location.href='login.html'" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); color: white; border: none; padding: 7px 14px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);">Login</button>
+    <!-- Tombol Login / Keluar di Pojok Kanan Atas Portal -->
+    <div style="position: absolute; top: 16px; right: 16px;" id="topAuthArea">
+      <!-- Akan di-render dinamis via JS apakah tombol Login atau Logout -->
     </div>
 
     <div class="portal-header">
@@ -791,8 +791,7 @@
   <!-- WORK VIEW -->
   <div id="workView" class="app-view">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0;">
-      <button class="back-nav" onclick="logout()">← Keluar / Menu Utama</button>
-      <!-- Tampilan user yang login di pojok kanan atas halaman Web Kerja -->
+      <button class="back-nav" onclick="backToHome()">← Keluar / Menu Utama</button>
       <span id="loggedInUserLabel" style="font-size: 11.5px; color: #4ade80; font-weight: 600;"></span>
     </div>
     
@@ -1044,13 +1043,32 @@
       currentUserRole = savedRole || "Member";
       currentUserTim = savedTim || "";
       document.getElementById("loggedInUserLabel").textContent = `👤 ${currentUserNama} (${currentUserRole}) - ${savedNip}`;
-      
-      if (window.location.hash === "#workView" || savedNama) {
-        switchView('workView');
-        loadTasks(); 
-      }
     }
+    
+    // Selalu mulai di halaman portal awal (#homeView) meskipun sudah login
+    switchView('homeView');
+    renderTopAuthButton();
   });
+
+  // Render tombol di pojok kanan atas beranda secara dinamis
+  function renderTopAuthButton() {
+    const authArea = document.getElementById("topAuthArea");
+    const savedNama = localStorage.getItem("pbas_nama");
+
+    if (savedNama) {
+      authArea.innerHTML = `
+        <button onclick="logout()" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 7px 12px; border-radius: 8px; font-weight: 600; font-size: 11.5px; cursor: pointer;">
+          Keluar (${savedNama.split(' ')[0]})
+        </button>
+      `;
+    } else {
+      authArea.innerHTML = `
+        <button onclick="window.location.href='login.html'" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); color: white; border: none; padding: 7px 14px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);">
+          Login
+        </button>
+      `;
+    }
+  }
 
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
@@ -1137,7 +1155,13 @@
     localStorage.removeItem("pbas_role");
     localStorage.removeItem("pbas_tim");
     document.getElementById("loggedInUserLabel").textContent = "";
+    renderTopAuthButton();
+    showCustomAlert("Berhasil Keluar", "Anda telah keluar dari akun.", "info");
+  }
+
+  function backToHome() {
     switchView('homeView');
+    renderTopAuthButton();
   }
 
   function openPiketModal() {
@@ -1158,7 +1182,7 @@
     window.location.href = "piket.html";
   }
 
-  // Penanganan klik menu Web Kerja berdasarkan status login
+  // Alur klik Web Kerja: Cek status login, jika belum munculkan notifikasi belum login
   function handleWebKerjaClick() {
     const savedNama = localStorage.getItem("pbas_nama");
     if (savedNama) {
@@ -1178,8 +1202,7 @@
       switchView('workView');
       loadTasks();
     } else {
-      // Jika belum login, arahkan ke file login.html terpisah
-      window.location.href = "login.html";
+      showCustomAlert("Belum Login", "Anda belum login. Silakan melakukan login terlebih dahulu melalui tombol di pojok kanan atas.", "warning");
     }
   }
 
@@ -1661,7 +1684,7 @@
           nip: currentUserNip,
           task: taskText,
           pic: currentUserNama || "-",
-            updateDo: updateDoInput.value.trim(),
+          updateDo: updateDoInput.value.trim(),
           status: statusInput.value,
           percentStatus: percentInput.value,
           updateAction: updateActionInput.value.trim()
