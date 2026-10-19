@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Piket & Scan Barcode - Portal Asset & System</title>
+  <style>
+    :root {
+      --bg-app: #12161f;
+      --card-bg: #1c2230;
+      --text-main: #f1f3f5;
+      --text-secondary: #9099a2;
+      --border-color: #2a3447;
+      --accent-green: #22c55e;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-warn: #f59e0b;
+    }
+
+    * { 
+      box-sizing: border-box; 
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      height: 100%;
+      max-height: 100vh;
+      background: var(--bg-app);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      flex-shrink: 0;
+    }
+
+    .back-nav {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    .back-nav:hover { text-decoration: underline; }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      flex: 1;
+      margin: 16px 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+      margin: 0;
+      color: #ffffff;
+      font-size: 18px;
+    }
+
+    .scanner-box {
+      background: #161b26;
+      border: 2px dashed var(--border-color);
+      border-radius: 10px;
+      height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .btn-scan {
+      background: linear-gradient(135deg, var(--accent-green), #16a34a);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13.5px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+    .btn-scan:hover { opacity: 0.9; }
+
+    .footer-info {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <a href="index.html" class="back-nav">← Menu Utama</a>
+    <span id="userInfoLabel" style="font-size: 11px; color: var(--accent-green); font-weight: 600;">Memuat sesi...</span>
+  </div>
+
+  <div class="card">
+    <h2>Piket & Daftar Hadir Area</h2>
+    <p style="font-size: 12.5px; color: var(--text-secondary); margin: 0; line-height: 1.4;">
+      Silakan lakukan pemindaian (scan) barcode pada area piket yang dikunjungi sebagai bentuk bukti kehadiran.
+    </p>
+
+    <div class="scanner-box" id="scannerArea">
+      <span style="font-size: 32px;">📷</span>
+      <span>Arahkan kamera ke Barcode Area</span>
+    </div>
+
+    <button class="btn-scan" onclick="simulasiScanBarcode()">Mulai Scan Barcode Area</button>
+  </div>
+
+  <div class="footer-info">
+    Portal Asset & System &copy; 2026
+  </div>
+</div>
+
+<script>
+  // Pengecekan Sesi Login Berdasarkan Awalan pbas_
+  window.onload = () => {
+    const savedNama = localStorage.getItem("pbas_nama");
+    const savedNip = localStorage.getItem("pbas_nip");
+    const savedRole = localStorage.getItem("pbas_role");
+
+    if (!savedNama) {
+      alert("Sesi login tidak ditemukan. Silakan login terlebih dahulu melalui menu utama.");
+      window.location.href = "index.html";
+      return;
+    }
+
+    document.getElementById("userInfoLabel").textContent = `👤 ${savedNama} (${savedRole})`;
+  };
+
+  function simulasiScanBarcode() {
+    const areaName = prompt("Masukkan nama area atau ID Barcode yang di-scan (Simulasi):", "Area Gudang Utama / Server Room");
+    if (areaName) {
+      const namaUser = localStorage.getItem("pbas_nama");
+      const nipUser = localStorage.getItem("pbas_nip");
+      
+      alert(`Berhasil!\nAbsen piket di area [${areaName}] atas nama ${namaUser} (NIP: ${nipUser}) telah tercatat.`);
+      // Catatan: Anda bisa menambahkan fungsi fetch/kirim data absensi piket ke Google Apps Script di sini jika diperlukan.
+    }
+  }
+</script>
+
+</body>
+</html>
