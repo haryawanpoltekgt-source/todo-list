@@ -186,6 +186,41 @@
       box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
 
+    /* BAR NAVBAR ATAS (PORTAL HEADER) */
+    .top-portal-nav {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 10;
+    }
+
+    .btn-portal-login {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: #ffffff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .user-portal-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
     #homeView {
       display: flex;
       flex-direction: column;
@@ -431,9 +466,6 @@
       color: #ffffff;
       transform: translateY(-1px);
     }
-    .btn-refresh-side:active {
-      transform: translateY(0);
-    }
 
     .summary-area {
       display: flex;
@@ -446,15 +478,8 @@
       margin-bottom: 10px;
       flex-shrink: 0;
     }
-    .summary-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-secondary);
-    }
-    .summary-badges {
-      display: flex;
-      gap: 5px;
-    }
+    .summary-title { font-size: 11px; font-weight: 700; color: var(--text-secondary); }
+    .summary-badges { display: flex; gap: 5px; }
     .count-chip {
       font-size: 10.5px;
       font-weight: 600;
@@ -488,10 +513,7 @@
       transition: transform 0.2s ease, opacity 0.2s ease;
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
-    li.task-item:hover {
-      transform: translateY(-2px);
-      opacity: 0.95;
-    }
+    li.task-item:hover { transform: translateY(-2px); opacity: 0.95; }
 
     li.task-item.status-Open {
       background: linear-gradient(135deg, #1e293b 0%, #7f1d1d 100%);
@@ -538,13 +560,9 @@
       font-weight: 700;
       font-size: 11px;
       letter-spacing: 0.3px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
-    .closed-date-tag {
-      color: #4ade80;
-      font-weight: 500;
-    }
+    .closed-date-tag { color: #4ade80; font-weight: 500; }
     .badge-status {
       padding: 3px 8px;
       border-radius: 6px;
@@ -593,35 +611,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
     }
-    .absensi-user-info {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .absensi-name {
-      font-size: 13.5px;
-      font-weight: 700;
-      color: #ffffff;
-    }
-    .absensi-submeta {
-      font-size: 11px;
-      color: var(--text-secondary);
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-    .absensi-status-badge {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .badge-hadir { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
 
     .modal-overlay {
       display: none;
@@ -633,7 +623,6 @@
       align-items: center;
       z-index: 1000;
       padding: 12px;
-      box-sizing: border-box;
     }
     .modal-content {
       background: var(--card-bg);
@@ -664,13 +653,8 @@
       font-size: 20px;
       cursor: pointer;
       color: var(--text-secondary);
-      line-height: 1;
     }
-    .modal-body {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .modal-body { display: flex; flex-direction: column; gap: 8px; }
     .modal-body label {
       display: flex;
       flex-direction: column;
@@ -682,21 +666,12 @@
     .modal-body input, .modal-body select, .modal-body textarea {
       padding: 8px 10px;
       font-size: 12.5px;
-      font-family: inherit;
       border: 1px solid var(--border-color);
       border-radius: 6px;
       outline: none;
       width: 100%;
       background: #161b26;
       color: var(--text-main);
-    }
-    .modal-body input:focus, .modal-body select:focus, .modal-body textarea:focus {
-      border-color: var(--accent-blue);
-    }
-    .modal-body input:disabled, .modal-body select:disabled, .modal-body textarea:disabled {
-      background-color: #1a202c;
-      color: #94a3b8;
-      cursor: not-allowed;
     }
     .modal-footer {
       display: flex;
@@ -705,15 +680,6 @@
       border-top: 1px solid var(--border-color);
       padding-top: 10px;
     }
-    .btn-delete {
-      background: transparent;
-      color: #f87171;
-      border: none;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .btn-delete:hover { text-decoration: underline; }
     .btn-save {
       background: linear-gradient(135deg, #22c55e, #16a34a);
       color: white;
@@ -725,12 +691,22 @@
       font-size: 12.5px;
       width: 100%;
     }
-    .btn-save:hover { opacity: 0.9; }
   </style>
 </head>
 <body>
 
 <div class="container">
+
+  <!-- TOMBOL LOGIN / SESI DI POJOK KANAN ATAS PORTAL -->
+  <div class="top-portal-nav" id="topPortalNav">
+    <a href="login.html" class="btn-portal-login" id="portalLoginBtn">
+      <span>🔑</span> Login
+    </a>
+    <div class="user-portal-status" id="portalUserStatus" style="display: none;">
+      <span style="color: #4ade80; font-weight: 600;" id="portalUserName">👤 Username</span>
+      <button onclick="logout()" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 11px; font-weight: 700;">Keluar</button>
+    </div>
+  </div>
 
   <div id="loadingOverlay">
     <div class="spinner"></div>
@@ -748,6 +724,7 @@
     </div>
   </div>
 
+  <!-- VIEW PORTAL UTAMA -->
   <div id="homeView">
     <div class="portal-header">
       <h1>Portal Asset & System</h1>
@@ -755,7 +732,7 @@
     </div>
     
     <div class="menu-grid">
-      <div class="menu-card" onclick="openLoginModal()">
+      <div class="menu-card" onclick="openWebKerja()">
         <div class="menu-icon icon-work">📋</div>
         <div class="menu-info">
           <h3>Web Kerja</h3>
@@ -771,7 +748,6 @@
         </div>
       </div>
 
-      <!-- Menu Baru: Piket & Scan Barcode -->
       <div class="menu-card" onclick="openPiketModal()">
         <div class="menu-icon icon-piket">📷</div>
         <div class="menu-info">
@@ -782,9 +758,10 @@
     </div>
   </div>
 
+  <!-- VIEW WEB KERJA -->
   <div id="workView" class="app-view">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0;">
-      <button class="back-nav" onclick="logout()">← Keluar / Menu Utama</button>
+      <button class="back-nav" onclick="switchView('homeView')">← Kembali ke Menu Utama</button>
       <span id="loggedInUserLabel" style="font-size: 11.5px; color: #4ade80; font-weight: 600;"></span>
     </div>
     
@@ -847,6 +824,7 @@
     </div>
   </div>
 
+  <!-- VIEW MONITOR ABSENSI -->
   <div id="absensiView" class="app-view">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink: 0;">
       <button class="back-nav" onclick="switchView('workView')">← Kembali ke Web Kerja</button>
@@ -879,9 +857,7 @@
       <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
         Fitur ini digunakan untuk mencatat kehadiran Anda pada area piket yang dikunjungi melalui pemindaian barcode.
       </p>
-      <div id="piketStatusUser" style="font-size: 12px; color: var(--accent-green); font-weight: 600; margin-top: 10px;">
-        <!-- Status sesi user akan dimuat disini -->
-      </div>
+      <div id="piketStatusUser" style="font-size: 12px; color: var(--accent-green); font-weight: 600; margin-top: 10px;"></div>
     </div>
     <div class="modal-footer" style="justify-content: space-between;">
       <button onclick="closePiketModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Tutup</button>
@@ -890,65 +866,7 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="loginModal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>Login Web Kerja</h3>
-      <button class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
-    </div>
-    <div class="modal-body">
-      <label>
-        Nomor Induk Pegawai (NIP):
-        <input type="text" id="loginNip" placeholder="Masukkan NIP...">
-      </label>
-      <label>
-        Password:
-        <input type="password" id="loginPass" placeholder="Masukkan password...">
-      </label>
-      <div style="margin-top: 6px; text-align: left; font-size: 12px;">
-        <span style="color: var(--text-secondary);">Belum punya akun?</span> 
-        <a href="javascript:void(0);" onclick="switchToRegisterModal()" style="color: var(--accent-blue); font-weight: 600; text-decoration: none;">Buat Akun di sini</a>
-      </div>
-    </div>
-    <div class="modal-footer" style="justify-content: flex-end; gap: 6px;">
-      <button onclick="closeLoginModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Batal</button>
-      <button class="btn-save" style="width: auto;" onclick="submitLogin()">Masuk</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="registerModal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>Pendaftaran Akun Baru</h3>
-      <button class="btn-close-modal" onclick="closeRegisterModal()">&times;</button>
-    </div>
-    <div class="modal-body">
-      <label>
-        NIP (Nomor Induk Pegawai):
-        <input type="text" id="regNip" placeholder="Masukkan NIP unik...">
-      </label>
-      <label>
-        Nama Lengkap:
-        <input type="text" id="regNama" placeholder="Masukkan nama lengkap...">
-      </label>
-      <label>
-        Password:
-        <input type="password" id="regPass" placeholder="Buat password...">
-      </label>
-      <span style="font-size: 11px; color: #94a3b8; margin-top: 4px;">*Akun baru memerlukan persetujuan (Approved) oleh SuperUser melalui Google Sheet dapat digunakan untuk login.</span>
-      <div style="margin-top: 4px; text-align: left; font-size: 12px;">
-        <span style="color: var(--text-secondary);">Sudah punya akun?</span> 
-        <a href="javascript:void(0);" onclick="switchToLoginModal()" style="color: var(--accent-blue); font-weight: 600; text-decoration: none;">Login di sini</a>
-      </div>
-    </div>
-    <div class="modal-footer" style="justify-content: flex-end; gap: 6px;">
-      <button onclick="closeRegisterModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Batal</button>
-      <button class="btn-save" style="width: auto; background: linear-gradient(135deg, #10b981, #059669);" onclick="submitRegister()">Daftar Akun</button>
-    </div>
-  </div>
-</div>
-
+<!-- Modal Tambah Tugas -->
 <div class="modal-overlay" id="addModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -1004,6 +922,7 @@
   </div>
 </div>
 
+<!-- Modal Detail Tugas -->
 <div class="modal-overlay" id="taskModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -1071,11 +990,9 @@
   </div>
 </div>
 
-<!-- Memuat file konfigurasi eksternal -->
 <script src="config.js"></script>
 
 <script>
-  // Menggunakan API_URL dari config.js
   const API_URL = CONFIG.API_URL;
 
   let allTasks = [];
@@ -1085,32 +1002,88 @@
   let currentUserTim = "";
 
   window.addEventListener('DOMContentLoaded', () => {
+    checkSessionStatus();
+
+    // Jika datang dari login (dengan hash #workView)
+    if (window.location.hash === "#workView") {
+      openWebKerja();
+    }
+  });
+
+  function checkSessionStatus() {
     const savedNama = localStorage.getItem("pbas_nama");
     const savedNip = localStorage.getItem("pbas_nip");
     const savedRole = localStorage.getItem("pbas_role");
     const savedTim = localStorage.getItem("pbas_tim");
+
+    const portalLoginBtn = document.getElementById("portalLoginBtn");
+    const portalUserStatus = document.getElementById("portalUserStatus");
 
     if (savedNama) {
       currentUserNama = savedNama;
       currentUserNip = savedNip;
       currentUserRole = savedRole || "Member";
       currentUserTim = savedTim || "";
+
       document.getElementById("loggedInUserLabel").textContent = `👤 ${currentUserNama} (${currentUserRole}) - ${savedNip}`;
       
-      if (window.location.hash === "#workView" || savedNama) {
-        switchView('workView');
-        loadTasks(); 
-      }
+      // Update UI Kanan Atas Portal
+      portalLoginBtn.style.display = "none";
+      portalUserStatus.style.display = "flex";
+      document.getElementById("portalUserName").textContent = `👤 ${currentUserNama}`;
+    } else {
+      portalLoginBtn.style.display = "flex";
+      portalUserStatus.style.display = "none";
     }
-  });
+  }
 
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
-      if (currentUserNama && document.getElementById("workView").style.display === "flex") {
-        loadTasks(true);
-      }
+  function openWebKerja() {
+    if (!currentUserNama) {
+      showCustomAlert(
+        "Akses Terbatas", 
+        "Anda belum login. Silakan klik tombol Login di kanan atas terlebih dahulu untuk membuka Web Kerja.", 
+        "warning"
+      );
+      return;
     }
-  });
+
+    const isSuperUser = currentUserRole.toLowerCase() === "superuser";
+    const isTim = currentUserTim.trim().toLowerCase() === "tim";
+
+    if (!isSuperUser && !isTim) {
+      showCustomAlert(
+        "Akses Ditolak", 
+        "Maaf, akun Member (tanpa status Tim) tidak memiliki hak akses ke Web Kerja. Anda hanya dapat mengakses halaman piket.", 
+        "warning"
+      );
+      return;
+    }
+
+    switchView('workView');
+    loadTasks();
+  }
+
+  function logout() {
+    currentUserNama = "";
+    currentUserNip = "";
+    currentUserRole = "Member";
+    currentUserTim = "";
+    localStorage.removeItem("pbas_nama");
+    localStorage.removeItem("pbas_nip");
+    localStorage.removeItem("pbas_role");
+    localStorage.removeItem("pbas_tim");
+    
+    checkSessionStatus();
+    switchView('homeView');
+    window.location.hash = "";
+  }
+
+  function switchView(viewId) {
+    document.getElementById('homeView').style.display = 'none';
+    document.getElementById('workView').style.display = 'none';
+    document.getElementById('absensiView').style.display = 'none';
+    document.getElementById(viewId).style.display = 'flex';
+  }
 
   function showLoading(text = "Memproses data...") {
     document.getElementById("loadingText").textContent = text;
@@ -1146,53 +1119,10 @@
     document.getElementById("customAlertOverlay").style.display = "flex";
   }
 
-  function showCustomConfirm(title, message, onConfirmCallback) {
-    document.getElementById("alertTitle").textContent = title;
-    document.getElementById("alertMessage").textContent = message;
-    
-    const iconEl = document.getElementById("alertIcon");
-    iconEl.className = "alert-icon-wrapper alert-icon-danger";
-    iconEl.textContent = "⚠️";
-
-    const actionsContainer = document.getElementById("alertActions");
-    actionsContainer.innerHTML = `
-      <button class="btn-alert-cancel" onclick="closeCustomAlert()">Batal</button>
-      <button class="btn-alert-danger-confirm" id="btnConfirmDanger">Hapus Tugas</button>
-    `;
-
-    document.getElementById("btnConfirmDanger").onclick = () => {
-      closeCustomAlert();
-      onConfirmCallback();
-    };
-
-    document.getElementById("customAlertOverlay").style.display = "flex";
-  }
-
   function closeCustomAlert() {
     document.getElementById("customAlertOverlay").style.display = "none";
   }
 
-  function switchView(viewId) {
-    document.getElementById('homeView').style.display = 'none';
-    document.getElementById('workView').style.display = 'none';
-    document.getElementById('absensiView').style.display = 'none';
-    document.getElementById(viewId).style.display = 'flex';
-  }
-
-  function logout() {
-    currentUserNama = "";
-    currentUserNip = "";
-    currentUserRole = "Member";
-    currentUserTim = "";
-    localStorage.removeItem("pbas_nama");
-    localStorage.removeItem("pbas_nip");
-    localStorage.removeItem("pbas_role");
-    localStorage.removeItem("pbas_tim");
-    document.getElementById("loggedInUserLabel").textContent = "";
-    switchView('homeView');
-  }
-
-  // Fungsi Kontrol Modal Piket
   function openPiketModal() {
     const statusLabel = document.getElementById("piketStatusUser");
     if (currentUserNama) {
@@ -1211,38 +1141,6 @@
     window.location.href = "piket.html";
   }
 
-  function openLoginModal() { 
-    if (currentUserNama) {
-      // Validasi Hak Akses ke Web Kerja
-      const isSuperUser = currentUserRole.toLowerCase() === "superuser";
-      const isTim = currentUserTim.trim().toLowerCase() === "tim";
-
-      if (!isSuperUser && !isTim) {
-        showCustomAlert("Akses Ditolak", "Maaf, akun Member (tanpa status Tim) tidak memiliki hak akses ke Web Kerja. Anda hanya dapat mengakses halaman piket.", "warning");
-        return;
-      }
-
-      switchView('workView');
-      loadTasks();
-    } else {
-      document.getElementById("loginModal").style.display = "flex"; 
-    }
-  }
-  function closeLoginModal() { document.getElementById("loginModal").style.display = "none"; }
-
-  function openRegisterModal() { document.getElementById("registerModal").style.display = "flex"; }
-  function closeRegisterModal() { document.getElementById("registerModal").style.display = "none"; }
-
-  function switchToRegisterModal() {
-    closeLoginModal();
-    openRegisterModal();
-  }
-
-  function switchToLoginModal() {
-    closeRegisterModal();
-    openLoginModal();
-  }
-
   function openAbsensiView() {
     switchView('absensiView');
     const today = new Date().toISOString().split('T')[0];
@@ -1258,7 +1156,6 @@
       window.absensiCache = Array.isArray(result) ? result : [];
       renderAbsensiList();
     } catch (err) {
-      console.error(err);
       showCustomAlert("Kesalahan", "Gagal memuat data absensi.", "warning");
       window.absensiCache = [];
       renderAbsensiList();
@@ -1273,17 +1170,10 @@
     container.innerHTML = "<div style='text-align:center; color:#9099a2; padding:20px;'>Memproses data...</div>";
 
     const absensiRecords = window.absensiCache || [];
-    const filteredAbsensi = absensiRecords.filter(a => {
-      if (!a.tanggal) return false;
-      return a.tanggal.trim() === selectedDate.trim();
-    });
+    const filteredAbsensi = absensiRecords.filter(a => a.tanggal && a.tanggal.trim() === selectedDate.trim());
 
     if (filteredAbsensi.length === 0) {
-      container.innerHTML = `
-        <div style='text-align:center; color:#9099a2; padding:30px; display:flex; flex-direction:column; gap:6px;'>
-          <span style='font-size:28px;'>📭</span>
-          <span style='font-weight:600; font-size:13px;'>Belum ada anggota yang login/absen pada tanggal ini.</span>
-        </div>`;
+      container.innerHTML = `<div style='text-align:center; color:#9099a2; padding:30px;'>Belum ada anggota yang login/absen pada tanggal ini.</div>`;
       return;
     }
 
@@ -1291,7 +1181,6 @@
     filteredAbsensi.forEach(item => {
       const card = document.createElement("div");
       card.className = "absensi-item-card";
-
       const isSuper = item.role && item.role.toLowerCase() === "superuser";
       const roleBadgeColor = isSuper ? "background: #ef4444; color:#fff;" : "background: #3b82f6; color:#fff;";
 
@@ -1305,109 +1194,11 @@
           </div>
         </div>
         <div>
-          <span class="absensi-status-badge badge-hadir">
-            ✅ Hadir <small style="opacity: 0.8; font-weight: normal;">(${item.jamMasuk})</small>
-          </span>
+          <span class="absensi-status-badge badge-hadir">✅ Hadir (${item.jamMasuk})</span>
         </div>
       `;
       container.appendChild(card);
     });
-  }
-
-  async function submitLogin() {
-    const nip = document.getElementById("loginNip").value.trim();
-    const password = document.getElementById("loginPass").value.trim();
-
-    if (!nip || !password) {
-      showCustomAlert("Form Belum Lengkap", "Nomor Induk Pegawai (NIP) dan Password wajib diisi.", "warning");
-      return;
-    }
-
-    showLoading("Memverifikasi akun & mencatat absensi...");
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ action: "login", nip: nip, password: password })
-      });
-      const res = await response.json();
-
-      if (res.status === "success") {
-        currentUserNama = res.nama;
-        currentUserNip = nip;
-        currentUserRole = res.role || "Member";
-        currentUserTim = res.tim || "";
-        
-        localStorage.setItem("pbas_nama", currentUserNama);
-        localStorage.setItem("pbas_nip", currentUserNip);
-        localStorage.setItem("pbas_role", currentUserRole);
-        localStorage.setItem("pbas_tim", currentUserTim);
-
-        document.getElementById("loggedInUserLabel").textContent = `👤 ${currentUserNama} (${currentUserRole}) - ${nip}`;
-        closeLoginModal();
-
-        // Cek Hak Akses Web Kerja
-        const isSuperUser = currentUserRole.toLowerCase() === "superuser";
-        const isTim = currentUserTim.trim().toLowerCase() === "tim";
-
-        if (!isSuperUser && !isTim) {
-          showCustomAlert("Akses Terbatas", "Login berhasil, namun akun Anda merupakan Member biasa (tanpa status Tim) sehingga tidak memiliki hak akses ke Web Kerja.", "warning");
-          return;
-        }
-
-        switchView('workView');
-        loadTasks(true);
-      } else if (res.status === "wrong_password") {
-        showCustomAlert("Gagal Masuk", "Password yang Anda masukkan salah.", "warning");
-      } else if (res.status === "pending") {
-        showCustomAlert("Akses Tertunda", "Akun Anda masih berstatus PENDING. Menunggu persetujuan SuperUser.", "warning");
-      } else {
-        showCustomAlert("Akun Tidak Ditemukan", "NIP belum terdaftar. Silakan buat akun terlebih dahulu.", "warning");
-      }
-    } catch (err) {
-      console.error(err);
-      showCustomAlert("Kesalahan Jaringan", "Gagal terhubung ke server. Periksa koneksi internet Anda.", "warning");
-    } finally {
-      hideLoading();
-    }
-  }
-
-  async function submitRegister() {
-    const nip = document.getElementById("regNip").value.trim();
-    const nama = document.getElementById("regNama").value.trim();
-    const password = document.getElementById("regPass").value.trim();
-
-    if (!nip || !nama || !password) {
-      showCustomAlert("Form Belum Lengkap", "Semua kolom pendaftaran wajib diisi dengan benar.", "warning");
-      return;
-    }
-
-    showLoading("Mendaftarkan akun baru...");
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ action: "register", nip: nip, nama: nama, password: password })
-      });
-      const res = await response.json();
-
-      if (res.status === "success") {
-        showCustomAlert("Pendaftaran Berhasil", "Akun berhasil didaftarkan! Silakan menunggu persetujuan (Approved) dari SuperUser.", "success");
-        document.getElementById("regNip").value = "";
-        document.getElementById("regNama").value = "";
-        document.getElementById("regPass").value = "";
-        closeRegisterModal();
-      } else if (res.status === "registered") {
-        showCustomAlert("NIP Terdaftar", "Nomor Induk Pegawai tersebut sudah terdaftar sebelumnya.", "warning");
-      } else {
-        showCustomAlert("Pendaftaran Gagal", "Terjadi kendala saat mendaftarkan akun.", "warning");
-      }
-    } catch (err) {
-      console.error(err);
-      showCustomAlert("Kesalahan Jaringan", "Gagal terhubung ke server.", "warning");
-    } finally {
-      hideLoading();
-    }
   }
 
   function updateClock() {
@@ -1422,42 +1213,11 @@
   updateClock();
 
   function getPicBadgeStyle(picName) {
-    if (!picName || picName === "-") {
-      return { bg: "rgba(255,255,255,0.1)", text: "#cbd5e1" };
-    }
-    const p = picName.toLowerCase().trim();
-
-    if (p.includes("saripudin")) return { bg: "#ffffff", text: "#0f172a" };
-    if (p.includes("yossandy")) return { bg: "#ef4444", text: "#ffffff" };
-    if (p.includes("test1")) return { bg: "#3b82f6", text: "#ffffff" };
-    if (p.includes("test2")) return { bg: "#8b5cf6", text: "#ffffff" };
-    if (p.includes("nursandi")) return { bg: "#06b6d4", text: "#ffffff" };
-    if (p.includes("nedi")) return { bg: "#ec4899", text: "#ffffff" };
-    if (p.includes("harits")) return { bg: "#f97316", text: "#ffffff" };
-    if (p.includes("febry")) return { bg: "#10b981", text: "#ffffff" };
-    if (p.includes("trengginas")) return { bg: "#eab308", text: "#0f172a" };
-
+    if (!picName || picName === "-") return { bg: "rgba(255,255,255,0.1)", text: "#cbd5e1" };
     let hash = 0;
-    for (let i = 0; i < p.length; i++) {
-      hash = p.charCodeAt(i) + ((hash << 5) - hash);
-    }
+    for (let i = 0; i < picName.length; i++) hash = picName.charCodeAt(i) + ((hash << 5) - hash);
     const hue = Math.abs(hash) % 360;
     return { bg: `hsl(${hue}, 80%, 50%)`, text: "#ffffff" };
-  }
-
-  function formatDateCustom(dateString) {
-    if (!dateString) return "-";
-    const d = new Date(dateString);
-    if (isNaN(d.getTime())) return dateString;
-
-    const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = months[d.getMonth()];
-    const year = d.getFullYear();
-    const hours = String(d.getHours()).padStart(2, '0');
-    const minutes = String(d.getMinutes()).padStart(2, '0');
-
-    return `${day} ${month} ${year} ${hours}:${minutes}`;
   }
 
   function formatShortDate(dateString) {
@@ -1465,48 +1225,31 @@
     const d = new Date(dateString);
     if (isNaN(d.getTime())) return dateString;
     const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = months[d.getMonth()];
-    const hours = String(d.getHours()).padStart(2, '0');
-    const minutes = String(d.getMinutes()).padStart(2, '0');
-    return `${day} ${month}, ${hours}:${minutes}`;
+    return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]}, ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   }
 
   async function loadTasks(forceRefresh = false) {
     const cachedTasks = localStorage.getItem("local_tasks_cache");
-
     if (cachedTasks && !forceRefresh) {
       try {
         allTasks = JSON.parse(cachedTasks);
         updatePicOptions();
         renderTasks();
-      } catch (e) {
-        console.error("Gagal parse cache lokal");
-      }
+      } catch (e) {}
     } else {
       showLoading("Memuat data tugas...");
     }
 
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-      const response = await fetch(API_URL, { signal: controller.signal });
-      clearTimeout(timeoutId);
-
-      if (!response.ok) throw new Error("Network response was not ok");
-      
+      const response = await fetch(API_URL);
       const result = await response.json();
       allTasks = Array.isArray(result) ? result : [];
-      
       localStorage.setItem("local_tasks_cache", JSON.stringify(allTasks));
-
       updatePicOptions();
       renderTasks();
     } catch (err) {
-      console.error(err);
       if (!allTasks || allTasks.length === 0) {
-        document.getElementById("taskList").innerHTML = "<li style='padding:20px; text-align:center; color:#f87171;'>Gagal memuat tugas. Silakan klik tombol Refresh.</li>";
+        document.getElementById("taskList").innerHTML = "<li style='padding:20px; text-align:center; color:#f87171;'>Gagal memuat tugas. Silakan klik Refresh.</li>";
       }
     } finally {
       hideLoading();
@@ -1516,30 +1259,14 @@
   function updatePicOptions() {
     const filterPicSelect = document.getElementById("filterPic");
     const pics = [...new Set(allTasks.map(t => t.pic).filter(p => p && p !== "-"))];
-
     filterPicSelect.innerHTML = `<option value="ALL">Semua PIC</option>`;
-    
-    let matchedUserPic = "";
-    const cleanUserNama = currentUserNama ? currentUserNama.toLowerCase().trim() : "";
-    const cleanUserNip = currentUserNip ? currentUserNip.toLowerCase().trim() : "";
 
     pics.forEach(pic => {
       const opt = document.createElement("option");
       opt.value = pic;
       opt.textContent = pic;
       filterPicSelect.appendChild(opt);
-
-      const cleanPic = pic.toLowerCase().trim();
-      if ((cleanUserNama && cleanPic.includes(cleanUserNama)) || (cleanUserNip && cleanPic.includes(cleanUserNip))) {
-        matchedUserPic = pic;
-      }
     });
-
-    if (matchedUserPic) {
-      filterPicSelect.value = matchedUserPic;
-    } else {
-      filterPicSelect.value = "ALL";
-    }
   }
 
   function renderTasks() {
@@ -1552,254 +1279,67 @@
 
     const scopeForCounting = allTasks.filter(t => {
       const matchPic = (selectedPic === "ALL") || (t.pic === selectedPic);
-      const matchSearch = !keyword || 
-        (t.task && t.task.toLowerCase().includes(keyword)) ||
-        (t.pic && t.pic.toLowerCase().includes(keyword)) ||
-        (t.updateDo && t.updateDo.toLowerCase().includes(keyword)) ||
-        (t.updateAction && t.updateAction.toLowerCase().includes(keyword));
+      const matchSearch = !keyword || (t.task && t.task.toLowerCase().includes(keyword));
       return matchPic && matchSearch;
     });
 
-    let openCount = 0;
-    let progressCount = 0;
-    let closedCount = 0;
-
+    let openCount = 0, progressCount = 0, closedCount = 0;
     scopeForCounting.forEach(t => {
       if (t.status === "Open") openCount++;
       else if (t.status === "Progress") progressCount++;
       else if (t.status === "Closed") closedCount++;
     });
 
-    document.getElementById("summaryPicLabel").textContent = (selectedPic === "ALL") 
-      ? "Total Tugas (Semua PIC):" 
-      : `Total Tugas (${selectedPic}):`;
-
     document.getElementById("countOpen").textContent = openCount;
     document.getElementById("countProgress").textContent = progressCount;
     document.getElementById("countClosed").textContent = closedCount;
 
     const filtered = scopeForCounting.filter(t => {
-      if (selectedStatus === "ACTIVE") {
-        return (t.status === "Open" || t.status === "Progress");
-      } else if (selectedStatus === "ALL") {
-        return true;
-      } else {
-        return (t.status === selectedStatus);
-      }
+      if (selectedStatus === "ACTIVE") return (t.status === "Open" || t.status === "Progress");
+      if (selectedStatus === "ALL") return true;
+      return t.status === selectedStatus;
     });
 
     if (filtered.length === 0) {
-      list.innerHTML = "<li style='text-align:center; color:#9099a2; display:block; padding:20px;'>Tidak ada tugas yang sesuai.</li>";
+      list.innerHTML = "<li style='text-align:center; color:#9099a2; padding:20px;'>Tidak ada tugas yang sesuai.</li>";
       return;
     }
 
-    const reversedFiltered = filtered.slice().reverse();
-
-    reversedFiltered.forEach(t => {
+    filtered.slice().reverse().forEach(t => {
       const li = document.createElement("li");
       li.className = `task-item status-${t.status}`;
       li.onclick = () => openModal(t);
 
-      let closedDateHtml = "";
-      if (t.status === "Closed" && t.closedAt) {
-        closedDateHtml = `<span>•</span> <span class="closed-date-tag">Closed: ${formatShortDate(t.closedAt)}</span>`;
-      }
-
       const picStyle = getPicBadgeStyle(t.pic);
-      const picBadgeHtml = `<span class="pic-tag-badge" style="background-color: ${picStyle.bg}; color: ${picStyle.text};">${t.pic || "-"}</span>`;
-
       li.innerHTML = `
         <div class="task-preview-info">
-          <span class="task-plan-text">${t.task || "(Tanpa Nama Tugas)"}</span>
+          <span class="task-plan-text">${t.task || "(Tanpa Nama)"}</span>
           <div class="task-meta-preview">
-            <span><b>PIC:</b> ${picBadgeHtml}</span>
+            <span>PIC: <span class="pic-tag-badge" style="background:${picStyle.bg}; color:${picStyle.text};">${t.pic || "-"}</span></span>
             <span>•</span>
-            <span><b>% Status:</b> ${t.percentStatus || "0%"}</span>
-            ${closedDateHtml}
+            <span>${t.percentStatus || "0%"}</span>
           </div>
         </div>
-        <div>
-          <span class="badge-status">${t.status}</span>
-        </div>
+        <div><span class="badge-status">${t.status}</span></div>
       `;
       list.appendChild(li);
     });
   }
 
-  function handlePercentChange(mode) {
-    let percentVal, statusSelect;
-    if (mode === 'add') {
-      percentVal = document.getElementById("percentInput").value;
-      statusSelect = document.getElementById("statusInput");
-    } else {
-      percentVal = document.getElementById("modalPercentSelect").value;
-      statusSelect = document.getElementById("modalStatusSelect");
-    }
-
-    const num = parseInt(percentVal);
-
-    if (num >= 10 && num <= 90) {
-      statusSelect.value = "Progress";
-    } else if (num === 100) {
-      statusSelect.value = "Closed";
-    } else if (num === 0) {
-      statusSelect.value = "Open";
-    }
-  }
-
-  function handleStatusChange(mode) {
-    let statusVal, percentSelect;
-    if (mode === 'add') {
-      statusVal = document.getElementById("statusInput").value;
-      percentSelect = document.getElementById("percentInput");
-    } else {
-      statusVal = document.getElementById("modalStatusSelect").value;
-      percentSelect = document.getElementById("modalPercentSelect");
-    }
-
-    if (statusVal === "Closed") {
-      percentSelect.value = "100%";
-    } else if (statusVal === "Open") {
-      percentSelect.value = "0%";
-    } else if (statusVal === "Progress") {
-      if (percentSelect.value === "0%" || percentSelect.value === "100%") {
-        percentSelect.value = "50%";
-      }
-    }
-  }
-
-  function openAddModal() { 
+  function openAddModal() {
     document.getElementById("picInput").value = currentUserNama || "-";
-    document.getElementById("addModal").style.display = "flex"; 
+    document.getElementById("addModal").style.display = "flex";
   }
   function closeAddModal() { document.getElementById("addModal").style.display = "none"; }
 
-  function openModal(task) {
-    document.getElementById("modalTaskId").value = task.id;
-    document.getElementById("modalTitleID").textContent = `Detail Tugas (${task.id})`;
-    document.getElementById("modalCreatedAt").value = formatDateCustom(task.createdAt);
-    
-    const isClosed = (task.status === "Closed");
-    
-    const closedAtWrapper = document.getElementById("closedAtWrapper");
-    if (isClosed && task.closedAt) {
-      closedAtWrapper.style.display = "flex";
-      document.getElementById("modalClosedAt").value = formatDateCustom(task.closedAt);
-    } else {
-      closedAtWrapper.style.display = "none";
-    }
-
-    document.getElementById("modalTaskText").value = task.task || "";
-    document.getElementById("modalPicText").value = task.pic || "-";
-    document.getElementById("modalUpdateDoText").value = task.updateDo || "";
-    document.getElementById("modalStatusSelect").value = task.status || "Open";
-    document.getElementById("modalPercentSelect").value = task.percentStatus || "0%";
-    document.getElementById("modalUpdateActionText").value = task.updateAction || "";
-
-    const isSuperUser = (currentUserRole.toLowerCase() === "superuser");
-    
-    const userClean = currentUserNama.trim().toLowerCase();
-    const picClean = task.pic.trim().toLowerCase();
-    const isOwner = picClean === userClean || picClean.includes(userClean);
-    
-    const canEdit = isSuperUser || isOwner;
-
-    const isPbasTask = task.task && /\[PBAS[- ]/i.test(task.task.trim());
-    const isMemberRole = currentUserRole.toLowerCase() === "member";
-
-    const taskTextEl = document.getElementById("modalTaskText");
-    const updateDoEl = document.getElementById("modalUpdateDoText");
-    const statusSelectEl = document.getElementById("modalStatusSelect");
-    const percentSelectEl = document.getElementById("modalPercentSelect");
-    const updateActionEl = document.getElementById("modalUpdateActionText");
-    const deleteBtnEl = document.getElementById("modalDeleteBtn");
-    const saveBtnEl = document.getElementById("modalSaveBtn");
-
-    if (isClosed || !canEdit) {
-      taskTextEl.disabled = true;
-      updateDoEl.disabled = true;
-      statusSelectEl.disabled = true;
-      percentSelectEl.disabled = true;
-      updateActionEl.disabled = true;
-      saveBtnEl.style.display = "none";
-      deleteBtnEl.style.display = "none";
-    } else {
-      taskTextEl.disabled = false;
-      updateDoEl.disabled = false;
-      statusSelectEl.disabled = false;
-      percentSelectEl.disabled = false;
-      updateActionEl.disabled = false;
-      saveBtnEl.style.display = "inline-block";
-      deleteBtnEl.style.display = "inline-block";
-
-      if (isMemberRole && isPbasTask) {
-        taskTextEl.disabled = true;
-        updateDoEl.disabled = true;
-        deleteBtnEl.style.display = "none";
-      }
-    }
-
-    document.getElementById("taskModal").style.display = "flex";
-  }
-
-  function closeModal() { document.getElementById("taskModal").style.display = "none"; }
-
-  async function saveTaskDetails() {
-    const id = document.getElementById("modalTaskId").value;
-    const task = document.getElementById("modalTaskText").value.trim();
-    const pic = document.getElementById("modalPicText").value.trim();
-    const updateDo = document.getElementById("modalUpdateDoText").value.trim();
-    const status = document.getElementById("modalStatusSelect").value;
-    const percentStatus = document.getElementById("modalPercentSelect").value;
-    const updateAction = document.getElementById("modalUpdateActionText").value.trim();
-
-    if (!task) {
-      showCustomAlert("Peringatan", "Nama tugas (Plan) tidak boleh kosong!", "warning");
-      return;
-    }
-
-    showLoading("Menyimpan perubahan...");
-    try {
-      await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          action: "update",
-          nip: currentUserNip, 
-          id: id,
-          task: task,
-          pic: pic,
-          updateDo: updateDo,
-          status: status,
-          percentStatus: percentStatus,
-          updateAction: updateAction
-        })
-      });
-      closeModal();
-      showCustomAlert("Berhasil", "Tugas berhasil diperbarui.", "success");
-      loadTasks(true); 
-    } catch (err) {
-      console.error(err);
-      showCustomAlert("Kesalahan", "Gagal menyimpan perubahan. Silakan coba lagi.", "warning");
-    } finally {
-      hideLoading();
-    }
-  }
-
   async function addTask() {
-    const taskInput = document.getElementById("taskInput");
-    const updateDoInput = document.getElementById("updateDoInput");
-    const statusInput = document.getElementById("statusInput");
-    const percentInput = document.getElementById("percentInput");
-    const updateActionInput = document.getElementById("updateActionInput");
-
-    const taskText = taskInput.value.trim();
-    if (!taskText) {
-      showCustomAlert("Peringatan", "Silakan isi nama tugas terlebih dahulu!", "warning");
+    const taskInput = document.getElementById("taskInput").value.trim();
+    if (!taskInput) {
+      showCustomAlert("Peringatan", "Isi nama tugas terlebih dahulu!", "warning");
       return;
     }
 
-    showLoading("Menyimpan tugas baru...");
+    showLoading("Menyimpan tugas...");
     try {
       await fetch(API_URL, {
         method: "POST",
@@ -1807,60 +1347,79 @@
         body: new URLSearchParams({
           action: "add",
           nip: currentUserNip,
-          task: taskText,
+          task: taskInput,
           pic: currentUserNama || "-",
-          updateDo: updateDoInput.value.trim(),
-          status: statusInput.value,
-          percentStatus: percentInput.value,
-          updateAction: updateActionInput.value.trim()
+          updateDo: document.getElementById("updateDoInput").value.trim(),
+          status: document.getElementById("statusInput").value,
+          percentStatus: document.getElementById("percentInput").value,
+          updateAction: document.getElementById("updateActionInput").value.trim()
         })
       });
-
-      taskInput.value = "";
-      updateDoInput.value = "";
-      updateActionInput.value = "";
-      statusInput.value = "Open";
-      percentInput.value = "0%";
-
       closeAddModal();
-      showCustomAlert("Berhasil", "Tugas baru berhasil disimpan.", "success");
-      loadTasks(true); 
+      loadTasks(true);
     } catch (err) {
-      console.error(err);
-      showCustomAlert("Kesalahan", "Gagal menambahkan tugas. Silakan coba lagi.", "warning");
+      showCustomAlert("Kesalahan", "Gagal menyimpan tugas.", "warning");
     } finally {
       hideLoading();
     }
   }
 
-  function requestDeleteTask() {
-    showCustomConfirm("Konfirmasi Hapus", "Apakah Anda yakin ingin menghapus tugas ini secara permanen?", deleteExecute);
+  function openModal(task) {
+    document.getElementById("modalTaskId").value = task.id;
+    document.getElementById("modalTaskText").value = task.task || "";
+    document.getElementById("modalPicText").value = task.pic || "-";
+    document.getElementById("modalUpdateDoText").value = task.updateDo || "";
+    document.getElementById("modalStatusSelect").value = task.status || "Open";
+    document.getElementById("modalPercentSelect").value = task.percentStatus || "0%";
+    document.getElementById("modalUpdateActionText").value = task.updateAction || "";
+    document.getElementById("taskModal").style.display = "flex";
+  }
+  function closeModal() { document.getElementById("taskModal").style.display = "none"; }
+
+  async function saveTaskDetails() {
+    showLoading("Menyimpan perubahan...");
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          action: "update",
+          nip: currentUserNip,
+          id: document.getElementById("modalTaskId").value,
+          task: document.getElementById("modalTaskText").value.trim(),
+          pic: document.getElementById("modalPicText").value.trim(),
+          updateDo: document.getElementById("modalUpdateDoText").value.trim(),
+          status: document.getElementById("modalStatusSelect").value,
+          percentStatus: document.getElementById("modalPercentSelect").value,
+          updateAction: document.getElementById("modalUpdateActionText").value.trim()
+        })
+      });
+      closeModal();
+      loadTasks(true);
+    } catch (err) {
+      showCustomAlert("Kesalahan", "Gagal memperbarui data.", "warning");
+    } finally {
+      hideLoading();
+    }
   }
 
-  async function deleteExecute() {
-    const id = document.getElementById("modalTaskId").value;
+  async function requestDeleteTask() {
+    if (!confirm("Hapus tugas ini?")) return;
     showLoading("Menghapus tugas...");
     try {
       await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ action: "delete", nip: currentUserNip, id: id })
+        body: new URLSearchParams({ action: "delete", nip: currentUserNip, id: document.getElementById("modalTaskId").value })
       });
       closeModal();
-      showCustomAlert("Berhasil", "Tugas berhasil dihapus.", "success");
-      loadTasks(true); 
+      loadTasks(true);
     } catch (err) {
-      console.error(err);
-      showCustomAlert("Kesalahan", "Gagal menghapus tugas dari database.", "warning");
+      showCustomAlert("Kesalahan", "Gagal menghapus tugas.", "warning");
     } finally {
       hideLoading();
     }
   }
-
-  function handleAddKeyPress(e) {
-    if (e.key === "Enter") addTask();
-  }
 </script>
-
 </body>
 </html>
