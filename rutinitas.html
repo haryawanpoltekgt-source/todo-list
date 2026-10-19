@@ -695,8 +695,12 @@
   </div>
 </div>
 
+<!-- Memuat file konfigurasi eksternal -->
+<script src="config.js"></script>
+
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbxWqtZqMMeYhOHc142VYfxHJVy5baHUKNXVE0PqaIqSvWGnVLtTowl_TWebELtUZdpQ/exec";
+  // Menggunakan API_URL dari config.js
+  const API_URL = CONFIG.API_URL;
   
   let allRutinitas = [];
   let userListCache = [];
