@@ -246,6 +246,7 @@
     }
     .icon-work { background: rgba(59, 130, 246, 0.15); color: #ef4444; border: 1px solid rgba(59, 130, 246, 0.3); }
     .icon-request { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
+    .icon-piket { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
     
     .menu-info h3 { margin: 0 0 2px 0; font-size: 14px; color: #ffffff; font-weight: 700; }
     .menu-info span { font-size: 11px; color: var(--text-secondary); }
@@ -769,6 +770,15 @@
           <span>Formulir pengajuan & perbaikan asset</span>
         </div>
       </div>
+
+      <!-- Menu Baru: Piket & Scan Barcode -->
+      <div class="menu-card" onclick="openPiketModal()">
+        <div class="menu-icon icon-piket">📷</div>
+        <div class="menu-info">
+          <h3>Piket & Scan Barcode</h3>
+          <span>Absensi dan pemindaian area piket harian</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -856,6 +866,28 @@
     </div>
   </div>
 
+</div>
+
+<!-- Modal Pop-up Piket & Scan Barcode -->
+<div class="modal-overlay" id="piketModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Piket & Scan Barcode Area</h3>
+      <button class="btn-close-modal" onclick="closePiketModal()">&times;</button>
+    </div>
+    <div class="modal-body" style="text-align: center; padding: 10px 0;">
+      <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+        Fitur ini digunakan untuk mencatat kehadiran Anda pada area piket yang dikunjungi melalui pemindaian barcode.
+      </p>
+      <div id="piketStatusUser" style="font-size: 12px; color: var(--accent-green); font-weight: 600; margin-top: 10px;">
+        <!-- Status sesi user akan dimuat disini -->
+      </div>
+    </div>
+    <div class="modal-footer" style="justify-content: space-between;">
+      <button onclick="closePiketModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Tutup</button>
+      <button class="btn-save" style="width: auto; background: linear-gradient(135deg, #22c55e, #16a34a);" onclick="lanjutKePiket()">Lanjutkan ke Scan</button>
+    </div>
+  </div>
 </div>
 
 <div class="modal-overlay" id="loginModal">
@@ -1158,6 +1190,25 @@
     localStorage.removeItem("pbas_tim");
     document.getElementById("loggedInUserLabel").textContent = "";
     switchView('homeView');
+  }
+
+  // Fungsi Kontrol Modal Piket
+  function openPiketModal() {
+    const statusLabel = document.getElementById("piketStatusUser");
+    if (currentUserNama) {
+      statusLabel.textContent = `👤 Sesi Aktif: ${currentUserNama} (${currentUserRole})`;
+    } else {
+      statusLabel.textContent = "⚠️ Anda belum login. Sesi akan menggunakan mode tamu/umum.";
+    }
+    document.getElementById("piketModal").style.display = "flex";
+  }
+
+  function closePiketModal() {
+    document.getElementById("piketModal").style.display = "none";
+  }
+
+  function lanjutKePiket() {
+    window.location.href = "piket.html";
   }
 
   function openLoginModal() { 
