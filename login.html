@@ -356,6 +356,8 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+      max-height: 90vh;
+      overflow-y: auto;
     }
     .modal-header {
       display: flex;
@@ -458,7 +460,7 @@
 
     <div style="margin: 10px 0 6px 0;">
       <h2 style="font-size: 18px; margin:0 0 2px 0; color:#ffffff;">Kelola Anggota</h2>
-      <p style="font-size: 11.5px; color: var(--text-secondary); margin:0;">Ketuk salah satu akun untuk mengubah status atau peran</p>
+      <p style="font-size: 11.5px; color: var(--text-secondary); margin:0;">Ketuk salah satu akun untuk mengubah status, peran, atau password</p>
     </div>
 
     <div class="approval-filter-box">
@@ -511,6 +513,10 @@
       <label>
         Tim:
         <input type="text" id="modalUserTim" placeholder="Contoh: Tim / Kosongkan">
+      </label>
+      <label>
+        Password Baru (Opsional):
+        <input type="password" id="modalUserNewPassword" placeholder="Kosongkan jika tidak diubah">
       </label>
     </div>
     <div class="modal-footer">
@@ -822,6 +828,7 @@
     document.getElementById("modalUserStatus").value = user.status || "Pending";
     document.getElementById("modalUserRole").value = user.role || "Member";
     document.getElementById("modalUserTim").value = user.tim || "";
+    document.getElementById("modalUserNewPassword").value = ""; // Kosongkan field password baru
 
     document.getElementById("userModal").style.display = "flex";
   }
@@ -836,6 +843,7 @@
     const status = document.getElementById("modalUserStatus").value;
     const role = document.getElementById("modalUserRole").value;
     const tim = document.getElementById("modalUserTim").value.trim();
+    const newPassword = document.getElementById("modalUserNewPassword").value.trim();
 
     showLoading("Menyimpan perubahan akun...");
     try {
@@ -848,7 +856,8 @@
           targetNip: targetNip,
           status: status,
           role: role,
-          tim: tim
+          tim: tim,
+          newPassword: newPassword
         })
       });
       const res = await response.json();
