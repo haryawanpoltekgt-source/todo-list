@@ -1025,47 +1025,85 @@
       card.className = "pbas-item-card";
       card.onclick = () => openDetailModal(item);
 
-      let statusBadgeHtml = "";
       const statusVal = item.statusPengajuan ? item.statusPengajuan.trim() : "";
+      const statusBadge = document.createElement("span");
+      statusBadge.className = "badge-status-pbas";
 
       if (statusVal === "Disetujui - Menunggu antrian") {
-        statusBadgeHtml = `<span class="badge-status-pbas badge-status-approved">⏳ Disetujui (Antrian)</span>`;
+        statusBadge.className += " badge-status-approved";
+        statusBadge.textContent = "⏳ Disetujui (Antrian)";
       } else if (statusVal === "Sedang Diproses") {
-        statusBadgeHtml = `<span class="badge-status-pbas badge-status-progress">🔄 Sedang Diproses</span>`;
+        statusBadge.className += " badge-status-progress";
+        statusBadge.textContent = "🔄 Sedang Diproses";
       } else if (statusVal === "Selesai") {
-        statusBadgeHtml = `<span class="badge-status-pbas badge-status-closed">✅ Selesai</span>`;
+        statusBadge.className += " badge-status-closed";
+        statusBadge.textContent = "✅ Selesai";
       } else if (statusVal === "Ditolak") {
-        statusBadgeHtml = `<span class="badge-status-pbas badge-status-rejected">❌ Ditolak</span>`;
+        statusBadge.className += " badge-status-rejected";
+        statusBadge.textContent = "❌ Ditolak";
       } else {
-        statusBadgeHtml = `<span class="badge-status-pbas badge-status-pending">🟡 Menunggu Menanggapi</span>`;
+        statusBadge.className += " badge-status-pending";
+        statusBadge.textContent = "🟡 Menunggu Menanggapi";
       }
 
-      let picText = "";
+      const leftDiv = document.createElement("div");
+      leftDiv.className = "pbas-item-left";
+
+      const titleSpan = document.createElement("span");
+      titleSpan.className = "pbas-title";
+      titleSpan.textContent = item.judul || "(Tanpa Judul)";
+
+      const metaDiv = document.createElement("div");
+      metaDiv.className = "pbas-meta";
+
+      const pelaporSpan = document.createElement("span");
+      const pelaporBold = document.createElement("b");
+      pelaporBold.textContent = item.nama || "-";
+      pelaporSpan.textContent = "Pelapor: ";
+      pelaporSpan.appendChild(pelaporBold);
+
+      const dot1 = document.createElement("span");
+      dot1.textContent = "•";
+
+      const timeSpan = document.createElement("span");
+      timeSpan.textContent = formatShortDate(item.waktu);
+
+      metaDiv.appendChild(pelaporSpan);
+      metaDiv.appendChild(dot1);
+      metaDiv.appendChild(timeSpan);
+
       if (item.tujukanPic) {
         let cleanPic = item.tujukanPic;
         if (cleanPic.includes("[") && cleanPic.includes("]")) {
           cleanPic = cleanPic.split("[")[1].replace("]", "").trim();
         }
-        picText = `<span>•</span> <span>PIC: <b>${cleanPic}</b></span>`;
+        const dot2 = document.createElement("span");
+        dot2.textContent = "•";
+        const picSpan = document.createElement("span");
+        const picBold = document.createElement("b");
+        picBold.textContent = cleanPic;
+        picSpan.textContent = "PIC: ";
+        picSpan.appendChild(picBold);
+        metaDiv.appendChild(dot2);
+        metaDiv.appendChild(picSpan);
       }
 
-      card.innerHTML = `
-        <div class="pbas-item-left">
-          <span class="pbas-title">${item.judul || "(Tanpa Judul)"}</span>
-          <div class="pbas-meta">
-            <span>Pelapor: <b>${item.nama || "-"}</b></span>
-            <span>•</span>
-            <span>${formatShortDate(item.waktu)}</span>
-            ${picText}
-          </div>
-          <div style="margin-top: 4px;">
-            ${statusBadgeHtml}
-          </div>
-        </div>
-        <div>
-          <span class="badge-cat">${item.kategori || "Lainnya"}</span>
-        </div>
-      `;
+      const statusContainer = document.createElement("div");
+      statusContainer.style.marginTop = "4px";
+      statusContainer.appendChild(statusBadge);
+
+      leftDiv.appendChild(titleSpan);
+      leftDiv.appendChild(metaDiv);
+      leftDiv.appendChild(statusContainer);
+
+      const rightDiv = document.createElement("div");
+      const catBadge = document.createElement("span");
+      catBadge.className = "badge-cat";
+      catBadge.textContent = item.kategori || "Lainnya";
+      rightDiv.appendChild(catBadge);
+
+      card.appendChild(leftDiv);
+      card.appendChild(rightDiv);
       container.appendChild(card);
     });
   }
