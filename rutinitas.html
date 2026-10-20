@@ -20,7 +20,6 @@
       --accent-warn: #f59e0b;
     }
 
-    /* Mencegah seleksi teks dan menu pop-up bawaan saat ditekan lama di HP */
     * { 
       box-sizing: border-box; 
       -webkit-user-select: none;
@@ -30,7 +29,6 @@
       -webkit-touch-callout: none;
     }
 
-    /* Izinkan seleksi teks khusus pada input & select */
     input, select {
       -webkit-user-select: text;
       -moz-user-select: text;
@@ -695,11 +693,9 @@
   </div>
 </div>
 
-<!-- Memuat file konfigurasi eksternal -->
 <script src="config.js"></script>
 
 <script>
-  // Menggunakan API_URL dari config.js
   const API_URL = CONFIG.API_URL;
   
   let allRutinitas = [];
