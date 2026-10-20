@@ -751,10 +751,7 @@
 
   <!-- HOME VIEW -->
   <div id="homeView">
-    <!-- Tombol Login / Keluar di Pojok Kanan Atas Portal -->
-    <div style="position: absolute; top: 16px; right: 16px;" id="topAuthArea">
-      <!-- Akan di-render dinamis via JS apakah tombol Login atau Logout -->
-    </div>
+    <div style="position: absolute; top: 16px; right: 16px;" id="topAuthArea"></div>
 
     <div class="portal-header">
       <h1>Portal Asset & System</h1>
@@ -1255,21 +1252,45 @@
       const isSuper = item.role && item.role.toLowerCase() === "superuser";
       const roleBadgeColor = isSuper ? "background: #ef4444; color:#fff;" : "background: #3b82f6; color:#fff;";
 
-      card.innerHTML = `
-        <div class="absensi-user-info">
-          <span class="absensi-name">${item.nama}</span>
-          <div class="absensi-submeta">
-            <span>NIP: ${item.nip}</span>
-            <span>•</span>
-            <span style="padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; ${roleBadgeColor}">${item.role || 'Member'}</span>
-          </div>
-        </div>
-        <div>
-          <span class="absensi-status-badge badge-hadir">
-            ✅ Hadir <small style="opacity: 0.8; font-weight: normal;">(${item.jamMasuk})</small>
-          </span>
-        </div>
-      `;
+      const userInfoDiv = document.createElement("div");
+      userInfoDiv.className = "absensi-user-info";
+
+      const nameSpan = document.createElement("span");
+      nameSpan.className = "absensi-name";
+      nameSpan.textContent = item.nama;
+
+      const submetaDiv = document.createElement("div");
+      submetaDiv.className = "absensi-submeta";
+
+      const nipSpan = document.createElement("span");
+      nipSpan.textContent = `NIP: ${item.nip}`;
+
+      const dotSpan = document.createElement("span");
+      dotSpan.textContent = "•";
+
+      const roleSpan = document.createElement("span");
+      roleSpan.style.cssText = `padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; ${roleBadgeColor}`;
+      roleSpan.textContent = item.role || 'Member';
+
+      submetaDiv.appendChild(nipSpan);
+      submetaDiv.appendChild(dotSpan);
+      submetaDiv.appendChild(roleSpan);
+      userInfoDiv.appendChild(nameSpan);
+      userInfoDiv.appendChild(submetaDiv);
+
+      const rightDiv = document.createElement("div");
+      const statusBadge = document.createElement("span");
+      statusBadge.className = "absensi-status-badge badge-hadir";
+      statusBadge.textContent = `✅ Hadir `;
+      
+      const smallTime = document.createElement("small");
+      smallTime.style.cssText = "opacity: 0.8; font-weight: normal;";
+      smallTime.textContent = `(${item.jamMasuk})`;
+      statusBadge.appendChild(smallTime);
+      rightDiv.appendChild(statusBadge);
+
+      card.appendChild(userInfoDiv);
+      card.appendChild(rightDiv);
       container.appendChild(card);
     });
   }
@@ -1464,28 +1485,62 @@
       li.className = `task-item status-${t.status}`;
       li.onclick = () => openModal(t);
 
-      let closedDateHtml = "";
-      if (t.status === "Closed" && t.closedAt) {
-        closedDateHtml = `<span>•</span> <span class="closed-date-tag">Closed: ${formatShortDate(t.closedAt)}</span>`;
-      }
+      const previewInfo = document.createElement("div");
+      previewInfo.className = "task-preview-info";
+
+      const planText = document.createElement("span");
+      planText.className = "task-plan-text";
+      planText.textContent = t.task || "(Tanpa Nama Tugas)";
+
+      const metaPreview = document.createElement("div");
+      metaPreview.className = "task-meta-preview";
+
+      const picSpan = document.createElement("span");
+      const picStrong = document.createElement("b");
+      picStrong.textContent = "PIC: ";
+      picSpan.appendChild(picStrong);
 
       const picStyle = getPicBadgeStyle(t.pic);
-      const picBadgeHtml = `<span class="pic-tag-badge" style="background-color: ${picStyle.bg}; color: ${picStyle.text};">${t.pic || "-"}</span>`;
+      const picBadge = document.createElement("span");
+      picBadge.className = "pic-tag-badge";
+      picBadge.style.cssText = `background-color: ${picStyle.bg}; color: ${picStyle.text};`;
+      picBadge.textContent = t.pic || "-";
+      picSpan.appendChild(picBadge);
 
-      li.innerHTML = `
-        <div class="task-preview-info">
-          <span class="task-plan-text">${t.task || "(Tanpa Nama Tugas)"}</span>
-          <div class="task-meta-preview">
-            <span><b>PIC:</b> ${picBadgeHtml}</span>
-            <span>•</span>
-            <span><b>% Status:</b> ${t.percentStatus || "0%"}</span>
-            ${closedDateHtml}
-          </div>
-        </div>
-        <div>
-          <span class="badge-status">${t.status}</span>
-        </div>
-      `;
+      const dot1 = document.createElement("span");
+      dot1.textContent = "•";
+
+      const percentSpan = document.createElement("span");
+      const percentStrong = document.createElement("b");
+      percentStrong.textContent = "% Status: ";
+      percentSpan.appendChild(percentStrong);
+      percentSpan.appendChild(document.createTextNode(t.percentStatus || "0%"));
+
+      metaPreview.appendChild(picSpan);
+      metaPreview.appendChild(dot1);
+      metaPreview.appendChild(percentSpan);
+
+      if (t.status === "Closed" && t.closedAt) {
+        const dot2 = document.createElement("span");
+        dot2.textContent = "•";
+        const closedTag = document.createElement("span");
+        closedTag.className = "closed-date-tag";
+        closedTag.textContent = `Closed: ${formatShortDate(t.closedAt)}`;
+        metaPreview.appendChild(dot2);
+        metaPreview.appendChild(closedTag);
+      }
+
+      previewInfo.appendChild(planText);
+      previewInfo.appendChild(metaPreview);
+
+      const rightDiv = document.createElement("div");
+      const statusBadge = document.createElement("span");
+      statusBadge.className = "badge-status";
+      statusBadge.textContent = t.status;
+      rightDiv.appendChild(statusBadge);
+
+      li.appendChild(previewInfo);
+      li.appendChild(rightDiv);
       list.appendChild(li);
     });
   }
