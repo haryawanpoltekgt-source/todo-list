@@ -1081,7 +1081,7 @@
     document.getElementById("loadingOverlay").style.display = "none";
   }
 
-  function showCustomAlert(title, message, type = "warning") {
+  function showCustomAlert(title, message, type = "warning", callback = null) {
     document.getElementById("alertTitle").textContent = title;
     document.getElementById("alertMessage").textContent = message;
     
@@ -1101,6 +1101,7 @@
       iconEl.classList.add("alert-icon-info");
     }
 
+    window._alertCallback = callback;
     document.getElementById("alertActions").innerHTML = `
       <button class="btn-alert-ok" onclick="closeCustomAlert()">Mengerti</button>
     `;
@@ -1131,6 +1132,10 @@
 
   function closeCustomAlert() {
     document.getElementById("customAlertOverlay").style.display = "none";
+    if (window._alertCallback && typeof window._alertCallback === "function") {
+      window._alertCallback();
+      window._alertCallback = null;
+    }
   }
 
   function switchView(viewId) {
@@ -1179,25 +1184,28 @@
 
   function handleWebKerjaClick() {
     const savedNama = localStorage.getItem("pbas_nama");
-    if (savedNama) {
-      currentUserNama = savedNama;
-      currentUserNip = localStorage.getItem("pbas_nip");
-      currentUserRole = localStorage.getItem("pbas_role") || "Member";
-      currentUserTim = localStorage.getItem("pbas_tim") || "";
-
-      const isSuperUser = currentUserRole.toLowerCase() === "superuser";
-      const isTim = currentUserTim.trim().toLowerCase() === "tim";
-
-      if (!isSuperUser && !isTim) {
-        showCustomAlert("Akses Ditolak", "Maaf, akun anda tidak memiliki hak akses ke Web Kerja - Asset & System.", "warning");
-        return;
-      }
-
-      switchView('workView');
-      loadTasks();
-    } else {
-      showCustomAlert("Belum Login", "Anda belum login. Silakan melakukan login terlebih dahulu melalui tombol di pojok kanan atas.", "warning");
+    if (!savedNama) {
+      showCustomAlert("Belum Login", "Anda belum login. Silakan login terlebih dahulu untuk mengakses Web Kerja - Asset & System.", "warning", () => {
+        window.location.href = "login.html";
+      });
+      return;
     }
+
+    currentUserNama = savedNama;
+    currentUserNip = localStorage.getItem("pbas_nip");
+    currentUserRole = localStorage.getItem("pbas_role") || "Member";
+    currentUserTim = localStorage.getItem("pbas_tim") || "";
+
+    const isSuperUser = currentUserRole.toLowerCase() === "superuser";
+    const isTim = currentUserTim.trim().toLowerCase() === "tim";
+
+    if (!isSuperUser && !isTim) {
+      showCustomAlert("Akses Ditolak", "Maaf, akun anda tidak memiliki hak akses ke Web Kerja - Asset & System.", "warning");
+      return;
+    }
+
+    switchView('workView');
+    loadTasks();
   }
 
   function openAbsensiView() {
