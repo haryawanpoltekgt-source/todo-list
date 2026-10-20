@@ -1098,19 +1098,45 @@
         jadwalText = "Jadwal Fleksibel";
       }
 
-      li.innerHTML = `
-        <div class="item-left">
-          <span class="item-title">${item.judul || "(Tanpa Judul)"}</span>
-          <div class="item-meta">
-            <span>PIC: <b class="badge-pic">${item.pic || "-"}</b></span>
-            <span>•</span>
-            <span style="color: #94a3b8; font-size:10px;">ID: ${item.id || ''}</span>
-          </div>
-        </div>
-        <div>
-          <span class="badge-jadwal">${jadwalText}</span>
-        </div>
-      `;
+      const itemLeft = document.createElement("div");
+      itemLeft.className = "item-left";
+
+      const titleSpan = document.createElement("span");
+      titleSpan.className = "item-title";
+      titleSpan.textContent = item.judul || "(Tanpa Judul)";
+
+      const metaDiv = document.createElement("div");
+      metaDiv.className = "item-meta";
+
+      const picSpan = document.createElement("span");
+      picSpan.textContent = "PIC: ";
+      const picBadge = document.createElement("b");
+      picBadge.className = "badge-pic";
+      picBadge.textContent = item.pic || "-";
+      picSpan.appendChild(picBadge);
+
+      const dot = document.createElement("span");
+      dot.textContent = "•";
+
+      const idSpan = document.createElement("span");
+      idSpan.style.cssText = "color: #94a3b8; font-size:10px;";
+      idSpan.textContent = `ID: ${item.id || ''}`;
+
+      metaDiv.appendChild(picSpan);
+      metaDiv.appendChild(dot);
+      metaDiv.appendChild(idSpan);
+
+      itemLeft.appendChild(titleSpan);
+      itemLeft.appendChild(metaDiv);
+
+      const rightDiv = document.createElement("div");
+      const jadwalBadge = document.createElement("span");
+      jadwalBadge.className = "badge-jadwal";
+      jadwalBadge.textContent = jadwalText;
+      rightDiv.appendChild(jadwalBadge);
+
+      li.appendChild(itemLeft);
+      li.appendChild(rightDiv);
       listEl.appendChild(li);
     });
   }
