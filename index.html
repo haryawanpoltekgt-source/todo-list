@@ -751,7 +751,7 @@
 
   <!-- HOME VIEW -->
   <div id="homeView">
-    <div style="position: absolute; top: 16px; right: 16px;" id="topAuthArea"></div>
+    <div style="position: absolute; top: 16px; right: 16px; display: flex; flex-direction: column; align-items: flex-end; gap: 6px;" id="topAuthArea"></div>
 
     <div class="portal-header">
       <h1>Portal Asset & System</h1>
@@ -1049,13 +1049,24 @@
   function renderTopAuthButton() {
     const authArea = document.getElementById("topAuthArea");
     const savedNama = localStorage.getItem("pbas_nama");
+    const savedRole = localStorage.getItem("pbas_role") || "";
 
     if (savedNama) {
-      authArea.innerHTML = `
-        <button onclick="logout()" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 7px 12px; border-radius: 8px; font-weight: 600; font-size: 11.5px; cursor: pointer;">
+      let htmlContent = `
+        <button onclick="logout()" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 7px 12px; border-radius: 8px; font-weight: 600; font-size: 11.5px; cursor: pointer; white-space: nowrap;">
           Keluar (${savedNama.split(' ')[0]})
         </button>
       `;
+
+      if (savedRole.toLowerCase() === "superuser") {
+        htmlContent += `
+          <button onclick="window.location.href='login.html#approval'" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); padding: 6px 10px; border-radius: 8px; font-weight: 600; font-size: 11px; cursor: pointer; white-space: nowrap;">
+            👥 Approval Member
+          </button>
+        `;
+      }
+
+      authArea.innerHTML = htmlContent;
     } else {
       authArea.innerHTML = `
         <button onclick="window.location.href='login.html'" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); color: white; border: none; padding: 7px 14px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);">
