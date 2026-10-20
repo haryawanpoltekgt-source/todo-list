@@ -277,7 +277,6 @@
         localStorage.setItem("pbas_role", res.role || "Member");
         localStorage.setItem("pbas_tim", res.tim || "");
 
-        // KEMBALI KE HALAMAN PORTAL UTAMA DI AWAL (Bukan ke Web Kerja)
         window.location.href = "index.html";
       } else if (res.status === "wrong_password") {
         alert("Password salah.");
