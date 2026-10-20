@@ -1045,12 +1045,10 @@
       document.getElementById("loggedInUserLabel").textContent = `👤 ${currentUserNama} (${currentUserRole}) - ${savedNip}`;
     }
     
-    // Selalu mulai di halaman portal awal (#homeView) meskipun sudah login
     switchView('homeView');
     renderTopAuthButton();
   });
 
-  // Render tombol di pojok kanan atas beranda secara dinamis
   function renderTopAuthButton() {
     const authArea = document.getElementById("topAuthArea");
     const savedNama = localStorage.getItem("pbas_nama");
@@ -1182,7 +1180,6 @@
     window.location.href = "piket.html";
   }
 
-  // Alur klik Web Kerja: Cek status login, jika belum munculkan notifikasi belum login
   function handleWebKerjaClick() {
     const savedNama = localStorage.getItem("pbas_nama");
     if (savedNama) {
