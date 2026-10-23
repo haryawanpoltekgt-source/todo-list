@@ -280,7 +280,7 @@
     .item-left {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 5px;
       overflow: hidden;
       flex: 1;
       padding-right: 10px;
@@ -297,7 +297,7 @@
       font-size: 11px;
       color: var(--text-secondary);
       display: flex;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -305,19 +305,61 @@
       background: rgba(59, 130, 246, 0.15);
       color: #60a5fa;
       border: 1px solid rgba(59, 130, 246, 0.3);
-      padding: 2px 8px;
-      border-radius: 5px;
-      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10.5px;
       font-weight: 600;
     }
     .badge-bagian {
       background: rgba(139, 92, 246, 0.15);
       color: #a78bfa;
       border: 1px solid rgba(139, 92, 246, 0.3);
-      padding: 2px 8px;
-      border-radius: 5px;
-      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10.5px;
       font-weight: 600;
+    }
+    .waste-badge-container {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+    .badge-waste-tag {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 9.5px;
+      font-weight: 700;
+    }
+
+    /* Checkbox DOWNTIME Grid */
+    .waste-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: #161b26;
+      border: 1px solid var(--border-color);
+      padding: 8px;
+      border-radius: 6px;
+      max-height: 140px;
+      overflow-y: auto;
+    }
+    .waste-checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+    .waste-checkbox-item input {
+      accent-color: var(--accent-cyan);
+      cursor: pointer;
+      width: 14px;
+      height: 14px;
     }
 
     /* Modal Styles */
@@ -422,7 +464,7 @@
       </div>
       <button class="btn-open-add" onclick="openAddModal()">+ Buat Saran</button>
     </div>
-    <input type="text" id="searchInput" class="search-input" placeholder="Cari temuan atau solusi..." oninput="renderKotakSaran()">
+    <input type="text" id="searchInput" class="search-input" placeholder="Cari temuan, solusi, atau jenis waste..." oninput="renderKotakSaran()">
   </div>
 
   <div class="summary-area">
@@ -470,13 +512,27 @@
       </label>
 
       <label>
+        Jenis Waste (D-O-W-N-T-I-M-E):
+        <div class="waste-grid" id="wasteCheckboxGroup">
+          <label class="waste-checkbox-item"><input type="checkbox" value="Defect"> D - Defect</label>
+          <label class="waste-checkbox-item"><input type="checkbox" value="OverProduction"> O - OverProduction</label>
+          <label class="waste-checkbox-item"><input type="checkbox" value="Waiting"> W - Waiting</label>
+          <label class="waste-checkbox-item"><input type="checkbox" value="Non-Utilized Potential"> N - Non-Utilized</label>
+          <label class="waste-checkbox-item"><input type="checkbox" value="Transport"> T - Transport</label>
+          <label class="waste-checkbox-item"><input type="checkbox" value="Inventory"> I - Inventory</label>
+          <label class="waste-checkbox-item"><input type="checkbox" value="Motion"> M - Motion</label>
+          <label class="waste-checkbox-item"><input type="checkbox" value="Extra-Processing"> E - Extra-Process</label>
+        </div>
+      </label>
+
+      <label>
         Deskripsi Temuan / Waste:
-        <textarea id="inputDesc" rows="3" placeholder="Jelaskan temuan masalah atau pemborosan..."></textarea>
+        <textarea id="inputDesc" rows="2" placeholder="Jelaskan temuan masalah atau pemborosan..."></textarea>
       </label>
 
       <label>
         Solusi Perbaikan / Inovasi / Improvement:
-        <textarea id="inputSolusi" rows="3" placeholder="Usulan solusi atau perbaikan..."></textarea>
+        <textarea id="inputSolusi" rows="2" placeholder="Usulan solusi atau perbaikan..."></textarea>
       </label>
     </div>
     <div class="modal-footer">
@@ -573,7 +629,6 @@
     }
   }
 
-  // --- Fungsi Pemformatan Tanggal Rapi ---
   function formatDateCustom(dateString) {
     if (!dateString || dateString === "-") return "-";
     const d = new Date(dateString);
@@ -587,7 +642,6 @@
     return `${day} ${month} ${year}`;
   }
 
-  // --- Fungsi Konversi Tanggal ke Format YYYY-MM-DD untuk Input Date ---
   function parseToYYYYMMDD(dateString) {
     if (!dateString) return "";
     const d = new Date(dateString);
@@ -637,11 +691,8 @@
 
     const isSuperUser = currentUserRole.toLowerCase() === "superuser";
 
-    // Filter Hak Akses & Pencarian
     const filtered = allKotakData.filter(item => {
       const isOwner = (item.namaPelapor && currentUserNama && item.namaPelapor.toLowerCase().trim() === currentUserNama.toLowerCase().trim());
-      
-      // Jika member biasa, hanya tampilkan miliknya sendiri
       if (!isSuperUser && !isOwner) return false;
 
       const matchSearch = !keyword ||
@@ -649,6 +700,7 @@
         (item.namaPelapor && item.namaPelapor.toLowerCase().includes(keyword)) ||
         (item.bagian && item.bagian.toLowerCase().includes(keyword)) ||
         (item.lokasiTemuan && item.lokasiTemuan.toLowerCase().includes(keyword)) ||
+        (item.jenisWaste && item.jenisWaste.toLowerCase().includes(keyword)) ||
         (item.descTemuanWaste && item.descTemuanWaste.toLowerCase().includes(keyword)) ||
         (item.solusi && item.solusi.toLowerCase().includes(keyword));
 
@@ -676,6 +728,19 @@
       titleSpan.className = "item-title";
       titleSpan.textContent = item.solusi || item.descTemuanWaste || "(Tanpa Deskripsi)";
 
+      // Render Waste Badges
+      const badgeContainer = document.createElement("div");
+      badgeContainer.className = "waste-badge-container";
+      if (item.jenisWaste && item.jenisWaste !== "-") {
+        const wasteArr = item.jenisWaste.split(",");
+        wasteArr.forEach(w => {
+          const wBadge = document.createElement("span");
+          wBadge.className = "badge-waste-tag";
+          wBadge.textContent = `⚠️ ${w.trim()}`;
+          badgeContainer.appendChild(wBadge);
+        });
+      }
+
       const metaDiv = document.createElement("div");
       metaDiv.className = "item-meta";
 
@@ -696,6 +761,9 @@
       metaDiv.appendChild(dateSpan);
 
       itemLeft.appendChild(titleSpan);
+      if (badgeContainer.children.length > 0) {
+        itemLeft.appendChild(badgeContainer);
+      }
       itemLeft.appendChild(metaDiv);
 
       const rightDiv = document.createElement("div");
@@ -720,10 +788,12 @@
     document.getElementById("inputDesc").value = "";
     document.getElementById("inputSolusi").value = "";
 
+    // Reset Checkboxes
+    const checkboxes = document.querySelectorAll("#wasteCheckboxGroup input[type='checkbox']");
+    checkboxes.forEach(cb => cb.checked = false);
+
     document.getElementById("modalDeleteBtn").style.display = "none";
     document.getElementById("modalSaveBtn").style.display = "inline-block";
-    
-    // Enable fields
     setModalFieldsDisabled(false);
 
     document.getElementById("kotakModal").style.display = "flex";
@@ -738,6 +808,13 @@
     document.getElementById("inputLokasi").value = item.lokasiTemuan || "";
     document.getElementById("inputDesc").value = item.descTemuanWaste || "";
     document.getElementById("inputSolusi").value = item.solusi || "";
+
+    // Set Checkboxes based on item.jenisWaste
+    const checkboxes = document.querySelectorAll("#wasteCheckboxGroup input[type='checkbox']");
+    const selectedWastes = item.jenisWaste ? item.jenisWaste.split(",").map(s => s.trim()) : [];
+    checkboxes.forEach(cb => {
+      cb.checked = selectedWastes.includes(cb.value);
+    });
 
     const isSuperUser = currentUserRole.toLowerCase() === "superuser";
     const isOwner = (item.namaPelapor && currentUserNama && item.namaPelapor.toLowerCase().trim() === currentUserNama.toLowerCase().trim());
@@ -762,6 +839,8 @@
     document.getElementById("inputLokasi").disabled = status;
     document.getElementById("inputDesc").disabled = status;
     document.getElementById("inputSolusi").disabled = status;
+    const checkboxes = document.querySelectorAll("#wasteCheckboxGroup input[type='checkbox']");
+    checkboxes.forEach(cb => cb.disabled = status);
   }
 
   function closeModal() {
@@ -775,6 +854,12 @@
     const lokasiTemuan = document.getElementById("inputLokasi").value.trim();
     const descTemuanWaste = document.getElementById("inputDesc").value.trim();
     const solusi = document.getElementById("inputSolusi").value.trim();
+
+    // Collect checked wastes
+    const selectedWastes = [];
+    const checkboxes = document.querySelectorAll("#wasteCheckboxGroup input[type='checkbox']:checked");
+    checkboxes.forEach(cb => selectedWastes.push(cb.value));
+    const jenisWasteStr = selectedWastes.length > 0 ? selectedWastes.join(", ") : "-";
 
     if (!bagian || !lokasiTemuan || !descTemuanWaste || !solusi) {
       showCustomAlert("Peringatan", "Mohon lengkapi seluruh kolom formulir!", "warning");
@@ -793,6 +878,7 @@
         bagian: bagian,
         tglDiTemukan: tglDiTemukan,
         lokasiTemuan: lokasiTemuan,
+        jenisWaste: jenisWasteStr,
         descTemuanWaste: descTemuanWaste,
         solusi: solusi
       };
