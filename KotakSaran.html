@@ -573,6 +573,36 @@
     }
   }
 
+  // --- Fungsi Pemformatan Tanggal Rapi ---
+  function formatDateCustom(dateString) {
+    if (!dateString || dateString === "-") return "-";
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return dateString;
+
+    const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = months[d.getMonth()];
+    const year = d.getFullYear();
+
+    return `${day} ${month} ${year}`;
+  }
+
+  // --- Fungsi Konversi Tanggal ke Format YYYY-MM-DD untuk Input Date ---
+  function parseToYYYYMMDD(dateString) {
+    if (!dateString) return "";
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) {
+      if (typeof dateString === "string" && dateString.length >= 10) {
+        return dateString.substring(0, 10);
+      }
+      return "";
+    }
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
   async function loadKotakSaranData(forceRefresh = false) {
     if (!forceRefresh) showLoading("Memuat data kotak saran...");
     try {
@@ -659,7 +689,7 @@
 
       const dateSpan = document.createElement("span");
       dateSpan.style.color = "#94a3b8";
-      dateSpan.textContent = `• Ditemukan: ${item.tglDiTemukan || '-'}`;
+      dateSpan.textContent = `• Ditemukan: ${formatDateCustom(item.tglDiTemukan)}`;
 
       metaDiv.appendChild(bagianBadge);
       metaDiv.appendChild(pelaporBadge);
@@ -704,7 +734,7 @@
     document.getElementById("modalTitleID").textContent = `Detail Saran (${item.id})`;
     document.getElementById("inputNamaPelapor").value = item.namaPelapor || "";
     document.getElementById("inputBagian").value = item.bagian || "";
-    document.getElementById("inputTglDitemukan").value = item.tglDiTemukan || "";
+    document.getElementById("inputTglDitemukan").value = parseToYYYYMMDD(item.tglDiTemukan);
     document.getElementById("inputLokasi").value = item.lokasiTemuan || "";
     document.getElementById("inputDesc").value = item.descTemuanWaste || "";
     document.getElementById("inputSolusi").value = item.solusi || "";
