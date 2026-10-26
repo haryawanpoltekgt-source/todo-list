@@ -125,7 +125,7 @@
     }
 
     .btn-scan {
-      background: linear-gradient(135deg, var(--accent-green), #16a34a);
+      background: linear-gradient(135deg, var(--accent-blue), #2563eb);
       color: white;
       border: none;
       padding: 12px;
@@ -133,7 +133,7 @@
       font-weight: 700;
       font-size: 13.5px;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
     }
     .btn-scan:hover { opacity: 0.9; }
 
@@ -251,7 +251,7 @@
   <!-- Loading Overlay -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
-    <div style="font-size: 13px; font-weight: 600; color: #fff;" id="loadingText">Menyimpan data piket...</div>
+    <div style="font-size: 13px; font-weight: 600; color: #fff;" id="loadingText">Memeriksa lokasi GPS...</div>
   </div>
 
   <!-- Custom Alert Overlay Component -->
@@ -272,21 +272,21 @@
   </div>
 
   <div class="card">
-    <h2>Piket & Daftar Hadir Area</h2>
+    <h2>Piket & Validasi GPS</h2>
     <p style="font-size: 12.5px; color: var(--text-secondary); margin: 0; line-height: 1.4;">
-      Silakan lakukan pemindaian (scan) barcode pada area piket yang dikunjungi sebagai bentuk bukti kehadiran.
+      Sistem akan memvalidasi posisi GPS Anda terlebih dahulu (maks. radius 30 meter) sebelum mengaktifkan kamera scan barcode area.
     </p>
 
     <div class="scanner-box" id="scannerContainer">
       <div id="reader"></div>
       <div id="placeholderText" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-        <span style="font-size: 32px;">📷</span>
-        <span>Arahkan kamera ke Barcode Area</span>
+        <span style="font-size: 32px;">📍</span>
+        <span>Tekan tombol di bawah untuk Cek GPS & Scan</span>
       </div>
     </div>
 
-    <button class="btn-scan" id="btnStartScan" onclick="mulaiScanKamera()">Mulai Scan Barcode Area</button>
-    <button class="btn-stop" id="btnStopScan" onclick="hentikanScanKamera()">Tutup Kamera</button>
+    <button class="btn-scan" id="btnStartScan" onclick="prosesCekGpsDanScan()">Cek GPS & Buka Kamera Scan</button>
+    <button class="btn-stop" id="btnStopScan" onclick="hentikanScanKamera()" style="display: none;">Tutup Kamera</button>
   </div>
 
   <div class="footer-info">
@@ -298,6 +298,7 @@
 <script>
   const API_URL = CONFIG.API_URL;
   let html5QrCode = null;
+  let validatedAreaName = ""; // Menyimpan nama area yang lolos validasi GPS
 
   window.onload = () => {
     const savedNama = localStorage.getItem("pbas_nama");
@@ -355,7 +356,98 @@
     }
   }
 
-  function mulaiScanKamera() {
+  // Fungsi Haversine untuk menghitung jarak dalam meter antara 2 koordinat GPS
+  function hitungJarakMeter(lat1, lon1, lat2, lon2) {
+    const R = 6371e3; // Radius bumi dalam meter
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c; // Jarak dalam meter
+  }
+
+  // Alur Utama: Cek GPS Terlebih Dahulu (Opsi B)
+  async function prosesCekGpsDanScan() {
+    if (!navigator.geolocation) {
+      showCustomAlert("Tidak Mendukung", "Browser perangkat Anda tidak mendukung fitur Geolocation.", "danger");
+      return;
+    }
+
+    showLoading("Mengambil koordinat GPS perangkat...");
+
+    // 1. Ambil Master Data Koordinat dari Sheet 'KoordinatGPS'
+    try {
+      const responseMaster = await fetch(`${API_URL}?action=getKoordinatGPS`);
+      const resMaster = await responseMaster.json();
+
+      if (resMaster.status !== "success" || !resMaster.data || resMaster.data.length === 0) {
+        hideLoading();
+        showCustomAlert("Master Kosong", "Data master 'KoordinatGPS' belum diatur atau kosong di Google Spreadsheet.", "warning");
+        return;
+      }
+
+      const masterAreas = resMaster.data;
+
+      // 2. Tangkap Posisi GPS HP Pengguna
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          hideLoading();
+          const userLat = position.coords.latitude;
+          const userLon = position.coords.longitude;
+          const userAccuracy = position.coords.accuracy; // Akurasi GPS dalam meter
+
+          // Peringatan jika akurasi GPS buruk/lemah (misal > 50 meter)
+          if (userAccuracy > 50) {
+            showCustomAlert("GPS Lemah", `Sinyal GPS Anda kurang akurat (akurasi ±${Math.round(userAccuracy)} meter). Mohon berpindah ke dekat jendela / area terbuka agar validasi sukses.`, "warning");
+            return;
+          }
+
+          // 3. Bandingkan dengan Semua Area di Master Menggunakan Haversine
+          let matchedArea = null;
+          let minDistance = Infinity;
+
+          for (let area of masterAreas) {
+            const jarak = hitungJarakMeter(userLat, userLon, area.latitude, area.longitude);
+            if (jarak <= area.radiusMeter && jarak < minDistance) {
+              minDistance = jarak;
+              matchedArea = area.namaArea;
+            }
+          }
+
+          if (matchedArea) {
+            // Lolos Validasi GPS! Simpan nama area dan buka kamera
+            validatedAreaName = matchedArea;
+            mulaiScanKameraKondisional();
+          } else {
+            showCustomAlert("Diluar Area", "Posisi Anda berada di luar radius area piket yang diizinkan (Maksimal 30 meter dari titik pusat area terdaftar).", "danger");
+          }
+        },
+        (error) => {
+          hideLoading();
+          let errMessage = "Gagal mendeteksi lokasi GPS.";
+          if (error.code === error.PERMISSION_DENIED) {
+            errMessage = "Izin akses lokasi (GPS) ditolak oleh browser. Mohon aktifkan izin lokasi di pengaturan situs browser Anda.";
+          } else if (error.code === error.POSITION_UNAVAILABLE) {
+            errMessage = "Informasi lokasi tidak tersedia. Pastikan GPS / Layanan Lokasi perangkat Anda sudah diaktifkan.";
+          } else if (error.code === error.TIMEOUT) {
+            errMessage = "Waktu permintaan lokasi habis (Timeout). Sinyal GPS Anda mungkin sedang lemah.";
+          }
+          showCustomAlert("Kendala GPS", errMessage, "danger");
+        },
+        { timeout: 15000, enableHighAccuracy: true, maximumAge: 0 }
+      );
+
+    } catch (err) {
+      hideLoading();
+      console.error(err);
+      showCustomAlert("Kesalahan Jaringan", "Gagal mengambil data master koordinat dari server.", "danger");
+    }
+  }
+
+  function mulaiScanKameraKondisional() {
     const placeholder = document.getElementById("placeholderText");
     placeholder.style.display = "none";
 
@@ -381,6 +473,12 @@
   async function onScanSuccess(decodedText) {
     hentikanScanKamera();
 
+    // Validasi tambahan: Pastikan hasil scan QR cocok dengan area GPS yang sebelumnya terverifikasi
+    if (decodedText.trim() !== validatedAreaName.trim()) {
+      showCustomAlert("Area Tidak Sesuai", `QR Code yang Anda scan (${decodedText}) tidak sesuai dengan lokasi GPS terverifikasi Anda (${validatedAreaName}).`, "danger");
+      return;
+    }
+
     const nipUser = localStorage.getItem("pbas_nip");
     const namaUser = localStorage.getItem("pbas_nama");
 
@@ -399,14 +497,14 @@
           action: "addPiket",
           nip: nipUser,
           nama: namaUser,
-          area: decodedText
+          area: validatedAreaName
         })
       });
 
       const res = await response.json();
 
       if (res.status === "success") {
-        showCustomAlert("Absen Berhasil", `Absen piket di area [${decodedText}] atas nama ${namaUser} telah tercatat di database.`, "success");
+        showCustomAlert("Absen Berhasil", `Absen piket di area [${validatedAreaName}] atas nama ${namaUser} telah berhasil dicatat dengan validasi GPS.`, "success");
       } else {
         showCustomAlert("Gagal Menyimpan", "Gagal mencatat absensi piket ke server.", "danger");
       }
@@ -428,7 +526,7 @@
     }
 
     document.getElementById("btnStopScan").style.display = "none";
-    document.getElementById("btnStartScan").style.display = "block";
+    document.getElementById("btnStartScan").style.display = "flex";
     document.getElementById("placeholderText").style.display = "flex";
   }
 </script>
