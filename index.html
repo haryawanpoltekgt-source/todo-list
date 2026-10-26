@@ -143,7 +143,7 @@
     .alert-icon-info { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); border: 1px solid rgba(59, 130, 246, 0.3); }
     
     .custom-alert-box h4 { margin: 0; font-size: 16px; color: #ffffff; font-weight: 700; }
-    .custom-alert-box p { margin: 0; font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .custom-alert-box p { margin: 0; font-size: 13px; color: var(--text-secondary); line-height: 1.5; text-align: left; }
     
     .alert-actions {
       display: flex;
@@ -1202,7 +1202,7 @@
     window.location.href = "piket.html";
   }
 
-  function handleWebKerjaClick() {
+  async function handleWebKerjaClick() {
     const savedNama = localStorage.getItem("pbas_nama");
     if (!savedNama) {
       showCustomAlert("Belum Login", "Anda belum login. Silakan login terlebih dahulu untuk mengakses Web Kerja - Asset & System.", "warning", () => {
@@ -1226,6 +1226,68 @@
 
     switchView('workView');
     loadTasks();
+    
+    // TAMBAHAN FITUR: Cek dan tampilkan pop-up jadwal rutinitas hari ini
+    checkAndShowTodayRutinitasPopup();
+  }
+
+  // === FUNGSI TAMBAHAN BARU: POP-UP JADWAL RUTINITAS HARI INI ===
+  async function checkAndShowTodayRutinitasPopup() {
+    try {
+      const response = await fetch(`${API_URL}?action=getRutinitas`);
+      const result = await response.json();
+      const rutinitasList = Array.isArray(result) ? result : [];
+
+      if (rutinitasList.length === 0) return;
+
+      const daysNameInID = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+      const todayIndex = new Date().getDay();
+      const todayName = daysNameInID[todayIndex]; // e.g. "Senin"
+      
+      const todayDateStr = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+
+      const userClean = currentUserNama.trim().toLowerCase();
+
+      // Filter rutinitas berdasarkan PIC yang login DAN jadwal hari ini (Hari / Setiap Hari / Tanggal spesifik)
+      const myTodaySchedules = rutinitasList.filter(item => {
+        const picClean = (item.pic || "").trim().toLowerCase();
+        if (!picClean.includes(userClean)) return false;
+
+        const hariVal = (item.hari || "").trim().toLowerCase();
+        const tglVal = (item.tanggal || "").trim();
+
+        const matchHari = (hariVal === todayName.toLowerCase() || hariVal === "setiap hari");
+        
+        let matchTanggal = false;
+        if (tglVal && !tglVal.toLowerCase().includes("tidak bisa dipilih")) {
+          matchTanggal = tglVal.startsWith(todayDateStr);
+        }
+
+        return matchHari || matchTanggal;
+      });
+
+      if (myTodaySchedules.length > 0) {
+        let msgHtml = `Hai <b>${currentUserNama}</b>, jadwal rutinitas kamu hari ini (${todayName}):<br><br><ul style="padding-left:18px; margin:0; text-align:left; display:flex; flex-direction:column; gap:6px;">`;
+        
+        myTodaySchedules.forEach(s => {
+          let timeInfo = "";
+          if (s.tanggal && !s.tanggal.toLowerCase().includes("tidak bisa dipilih")) {
+            let timePart = s.tanggal.split(" ")[1] || s.tanggal.split("T")[1];
+            if (timePart) timeInfo = ` <small style="color:var(--accent-cyan);">(Pukul ${timePart.substring(0,5)})</small>`;
+          }
+          msgHtml += `<li><b>• ${s.judul}</b>${timeInfo}</li>`;
+        });
+        
+        msgHtml += `</ul>`;
+
+        // Tampilkan menggunakan custom alert sistem
+        setTimeout(() => {
+          showCustomAlert(`⚡ Jadwal Hari Ini (${todayName})`, msgHtml, "info");
+        }, 400);
+      }
+    } catch (err) {
+      console.error("Gagal memuat pop-up rutinitas:", err);
+    }
   }
 
   function openAbsensiView() {
