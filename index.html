@@ -1231,7 +1231,7 @@
     checkAndShowTodayRutinitasPopup();
   }
 
-  // FUNGSI POP-UP JADWAL RUTINITAS HARI INI (Mengambil langsung nilai dari Kolom E: Ingatkan di Tanggal)
+  // FUNGSI POP-UP JADWAL RUTINITAS HARI INI (Mengonversi Kolom E ke format dd/mm/yy hh:mm secara akurat)
   async function checkAndShowTodayRutinitasPopup() {
     try {
       const response = await fetch(`${API_URL}?action=getRutinitas`);
@@ -1252,8 +1252,6 @@
         if (!picClean.includes(userClean)) return false;
 
         const hariVal = (item.hari || "").trim().toLowerCase();
-        
-        // Mengambil langsung dari kolom E (property tanggal / tanggalSpesifik / ingatkanDiTanggal)
         const kolEVal = String(item.tanggalSpesifik || item.tanggal || item.ingatkanDiTanggal || "").trim();
 
         const matchHari = (hariVal === todayName.toLowerCase() || hariVal === "setiap hari");
@@ -1271,21 +1269,24 @@
         
         myTodaySchedules.forEach(s => {
           let timeInfo = "";
-          // Mengambil mirror mentah langsung dari Kolom E
           const kolEVal = String(s.tanggalSpesifik || s.tanggal || s.ingatkanDiTanggal || "").trim();
           
           if (kolEVal && !kolEVal.toLowerCase().includes("tidak bisa dipilih")) {
-            let timePart = "";
-            if (kolEVal.includes("T")) {
-              timePart = kolEVal.split("T")[1];
-            } else if (kolEVal.includes(" ")) {
-              timePart = kolEVal.split(" ")[1];
-            } else {
-              timePart = kolEVal;
-            }
-            
-            if (timePart && timePart.length >= 5) {
-              timeInfo = ` <small style="color:var(--accent-cyan);">(Pukul ${timePart.substring(0,5)})</small>`;
+            // Mengubah format string YYYY-MM-DD HH:MM menjadi dd/mm/yy hh:mm secara presisi
+            let cleanVal = kolEVal.replace("T", " ");
+            let parts = cleanVal.split(" ");
+            if (parts.length >= 2) {
+              let dateParts = parts[0].split("-"); // [YYYY, MM, DD]
+              let timePart = parts[1].substring(0, 5); // HH:MM
+              
+              if (dateParts.length === 3) {
+                let yy = dateParts[0].substring(2); // 2026 -> 26
+                let mm = dateParts[1];
+                let dd = dateParts[2];
+                timeInfo = ` <small style="color:var(--accent-cyan);">(${dd}/${mm}/${yy} ${timePart})</small>`;
+              }
+            } else if (cleanVal.length >= 5) {
+              timeInfo = ` <small style="color:var(--accent-cyan);">(${cleanVal})</small>`;
             }
           }
           msgHtml += `<li><b>• ${s.judul || s.judulKegiatanRutin}</b>${timeInfo}</li>`;
