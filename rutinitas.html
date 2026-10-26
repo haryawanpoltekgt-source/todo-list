@@ -846,7 +846,26 @@
     if (hasValidTanggal) {
       document.querySelector('input[name="scheduleType"][value="tanggal"]').checked = true;
       toggleScheduleMode();
-      document.getElementById("inputTanggalWaktu").value = item.tanggal.replace(' ', 'T').substring(0, 16);
+      
+      // PERBAIKAN: Parsing string tanggal secara langsung agar tidak bergeser karena timezone UTC/Lokal
+      let rawDateStr = item.tanggal.trim();
+      let formattedDT = "";
+      let dObj = new Date(rawDateStr);
+      
+      if (!isNaN(dObj.getTime())) {
+        // Ekstrak komponen tahun, bulan, tanggal, jam, menit secara lokal dari objek date database
+        let y = dObj.getFullYear();
+        let m = String(dObj.getMonth() + 1).padStart(2, '0');
+        let d = String(dObj.getDate()).padStart(2, '0');
+        let h = String(dObj.getHours()).padStart(2, '0');
+        let min = String(dObj.getMinutes()).padStart(2, '0');
+        formattedDT = `${y}-${m}-${d}T${h}:${min}`;
+      } else {
+        // Fallback jika string manual
+        formattedDT = rawDateStr.replace(' ', 'T').substring(0, 16);
+      }
+      
+      document.getElementById("inputTanggalWaktu").value = formattedDT;
     } else {
       document.querySelector('input[name="scheduleType"][value="hari"]').checked = true;
       toggleScheduleMode();
