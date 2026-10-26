@@ -1103,7 +1103,9 @@
 
   function showCustomAlert(title, message, type = "warning", callback = null) {
     document.getElementById("alertTitle").textContent = title;
-    document.getElementById("alertMessage").textContent = message;
+    
+    // PERBAIKAN: Menggunakan innerHTML agar tag HTML (seperti <br>, <b>, <ul>, dsb.) terdirender dengan benar
+    document.getElementById("alertMessage").innerHTML = message;
     
     const iconEl = document.getElementById("alertIcon");
     iconEl.className = "alert-icon-wrapper";
@@ -1227,11 +1229,11 @@
     switchView('workView');
     loadTasks();
     
-    // TAMBAHAN FITUR: Cek dan tampilkan pop-up jadwal rutinitas hari ini
+    // Cek dan tampilkan pop-up jadwal rutinitas hari ini
     checkAndShowTodayRutinitasPopup();
   }
 
-  // === FUNGSI TAMBAHAN BARU: POP-UP JADWAL RUTINITAS HARI INI ===
+  // FUNGSI POP-UP JADWAL RUTINITAS HARI INI
   async function checkAndShowTodayRutinitasPopup() {
     try {
       const response = await fetch(`${API_URL}?action=getRutinitas`);
@@ -1242,13 +1244,12 @@
 
       const daysNameInID = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
       const todayIndex = new Date().getDay();
-      const todayName = daysNameInID[todayIndex]; // e.g. "Senin"
+      const todayName = daysNameInID[todayIndex];
       
-      const todayDateStr = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+      const todayDateStr = new Date().toISOString().split('T')[0];
 
       const userClean = currentUserNama.trim().toLowerCase();
 
-      // Filter rutinitas berdasarkan PIC yang login DAN jadwal hari ini (Hari / Setiap Hari / Tanggal spesifik)
       const myTodaySchedules = rutinitasList.filter(item => {
         const picClean = (item.pic || "").trim().toLowerCase();
         if (!picClean.includes(userClean)) return false;
@@ -1280,7 +1281,6 @@
         
         msgHtml += `</ul>`;
 
-        // Tampilkan menggunakan custom alert sistem
         setTimeout(() => {
           showCustomAlert(`⚡ Jadwal Hari Ini (${todayName})`, msgHtml, "info");
         }, 400);
