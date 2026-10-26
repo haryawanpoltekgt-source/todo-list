@@ -1231,7 +1231,7 @@
     checkAndShowTodayRutinitasPopup();
   }
 
-  // FUNGSI POP-UP JADWAL RUTINITAS HARI INI (Ekstraksi string langsung aman dari timezone offset)
+  // FUNGSI POP-UP JADWAL RUTINITAS HARI INI (Mirror langsung teks mentah jam:menit)
   async function checkAndShowTodayRutinitasPopup() {
     try {
       const response = await fetch(`${API_URL}?action=getRutinitas`);
@@ -1270,14 +1270,16 @@
         myTodaySchedules.forEach(s => {
           let timeInfo = "";
           if (s.tanggal && !s.tanggal.toLowerCase().includes("tidak bisa dipilih")) {
-            let rawDt = s.tanggal.trim();
+            let rawDt = String(s.tanggal).trim();
             let timePart = "";
             
-            // Mengambil substring jam:menit langsung dari string database tanpa objek Date
+            // Mirror langsung bagian waktu dari string database tanpa konversi objek Date sama sekali
             if (rawDt.includes("T")) {
               timePart = rawDt.split("T")[1];
             } else if (rawDt.includes(" ")) {
               timePart = rawDt.split(" ")[1];
+            } else {
+              timePart = rawDt;
             }
             
             if (timePart && timePart.length >= 5) {
