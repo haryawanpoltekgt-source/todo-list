@@ -1231,7 +1231,7 @@
     checkAndShowTodayRutinitasPopup();
   }
 
-  // FUNGSI POP-UP JADWAL RUTINITAS HARI INI (Mirror langsung teks mentah jam:menit)
+  // FUNGSI POP-UP JADWAL RUTINITAS HARI INI (Mengambil langsung nilai dari Kolom E: Ingatkan di Tanggal)
   async function checkAndShowTodayRutinitasPopup() {
     try {
       const response = await fetch(`${API_URL}?action=getRutinitas`);
@@ -1252,13 +1252,15 @@
         if (!picClean.includes(userClean)) return false;
 
         const hariVal = (item.hari || "").trim().toLowerCase();
-        const tglVal = (item.tanggal || "").trim();
+        
+        // Mengambil langsung dari kolom E (property tanggal / tanggalSpesifik / ingatkanDiTanggal)
+        const kolEVal = String(item.tanggalSpesifik || item.tanggal || item.ingatkanDiTanggal || "").trim();
 
         const matchHari = (hariVal === todayName.toLowerCase() || hariVal === "setiap hari");
         
         let matchTanggal = false;
-        if (tglVal && !tglVal.toLowerCase().includes("tidak bisa dipilih")) {
-          matchTanggal = tglVal.startsWith(todayDateStr);
+        if (kolEVal && !kolEVal.toLowerCase().includes("tidak bisa dipilih")) {
+          matchTanggal = kolEVal.startsWith(todayDateStr);
         }
 
         return matchHari || matchTanggal;
@@ -1269,24 +1271,24 @@
         
         myTodaySchedules.forEach(s => {
           let timeInfo = "";
-          if (s.tanggal && !s.tanggal.toLowerCase().includes("tidak bisa dipilih")) {
-            let rawDt = String(s.tanggal).trim();
+          // Mengambil mirror mentah langsung dari Kolom E
+          const kolEVal = String(s.tanggalSpesifik || s.tanggal || s.ingatkanDiTanggal || "").trim();
+          
+          if (kolEVal && !kolEVal.toLowerCase().includes("tidak bisa dipilih")) {
             let timePart = "";
-            
-            // Mirror langsung bagian waktu dari string database tanpa konversi objek Date sama sekali
-            if (rawDt.includes("T")) {
-              timePart = rawDt.split("T")[1];
-            } else if (rawDt.includes(" ")) {
-              timePart = rawDt.split(" ")[1];
+            if (kolEVal.includes("T")) {
+              timePart = kolEVal.split("T")[1];
+            } else if (kolEVal.includes(" ")) {
+              timePart = kolEVal.split(" ")[1];
             } else {
-              timePart = rawDt;
+              timePart = kolEVal;
             }
             
             if (timePart && timePart.length >= 5) {
               timeInfo = ` <small style="color:var(--accent-cyan);">(Pukul ${timePart.substring(0,5)})</small>`;
             }
           }
-          msgHtml += `<li><b>• ${s.judul}</b>${timeInfo}</li>`;
+          msgHtml += `<li><b>• ${s.judul || s.judulKegiatanRutin}</b>${timeInfo}</li>`;
         });
         
         msgHtml += `</ul>`;
