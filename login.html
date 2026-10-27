@@ -212,6 +212,13 @@
       color: var(--text-main);
     }
     .form-group input:focus { border-color: var(--accent-blue); }
+    .form-group input:disabled, .form-group input[readonly] {
+      background-color: #1a202c;
+      color: #38bdf8;
+      font-weight: bold;
+      cursor: not-allowed;
+      border-color: #2a3447;
+    }
 
     .btn-auth-submit {
       background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
@@ -451,7 +458,7 @@
     </div>
   </div>
 
-  <!-- UBAH PASSWORD VIEW (MEMBER) -->
+  <!-- UBAH PASSWORD VIEW (MEMBER TERKUNCI DENGAN SESI LOGIN) -->
   <div id="ubahPasswordView" class="auth-view">
     <div style="width: 100%; max-width: 400px;">
       <a href="index.html" class="back-home-link">← Kembali ke Menu Utama</a>
@@ -459,11 +466,11 @@
     <div class="auth-card">
       <div class="auth-header">
         <h2>Ubah Password Member</h2>
-        <p>Perbarui kata sandi akun Anda secara mandiri</p>
+        <p>Perbarui kata sandi akun Anda yang sedang aktif</p>
       </div>
       <div class="form-group">
-        <label>Nomor Induk Pegawai (NIP):</label>
-        <input type="text" id="upNip" placeholder="Contoh: 20-0145">
+        <label>Nomor Induk Pegawai (Ter kunci Sesi Login):</label>
+        <input type="text" id="upNip" readonly title="NIP dikunci berdasarkan akun login Anda">
       </div>
       <div class="form-group">
         <label>Password Lama:</label>
@@ -572,6 +579,8 @@
 
   function checkHashRoute() {
     const hash = window.location.hash;
+    const activeNip = localStorage.getItem("pbas_nip");
+
     if (hash === "#approval") {
       const savedRole = localStorage.getItem("pbas_role") || "";
       if (savedRole.toLowerCase() !== "superuser") {
@@ -584,6 +593,16 @@
       switchView('approvalView');
       loadApprovalUsers();
     } else if (hash === "#ubah-password") {
+      // PROTEKSI KEAMANAN: Memastikan akun sudah login terlebih dahulu
+      if (!activeNip) {
+        showCustomAlert("Akses Terkunci", "Anda harus login terlebih dahulu untuk mengubah password akun Anda.", "warning", () => {
+          window.location.hash = "";
+          switchView('loginView');
+        });
+        return;
+      }
+      // NIP otomatis diisi dari akun aktif dan tidak dapat diubah
+      document.getElementById("upNip").value = activeNip;
       switchView('ubahPasswordView');
     } else {
       switchView('loginView');
@@ -750,13 +769,21 @@
   }
 
   async function submitUbahPassword() {
-    const nip = document.getElementById("upNip").value.trim();
+    const activeNip = localStorage.getItem("pbas_nip");
     const oldPassword = document.getElementById("upOldPassword").value.trim();
     const newPassword = document.getElementById("upNewPassword").value.trim();
     const confirmPassword = document.getElementById("upConfirmPassword").value.trim();
 
-    if (!nip || !oldPassword || !newPassword || !confirmPassword) {
-      showCustomAlert("Peringatan", "Semua kolom ubah password harus diisi!", "warning");
+    if (!activeNip) {
+      showCustomAlert("Sesi Berakhir", "Sesi login tidak ditemukan. Silakan login kembali.", "warning", () => {
+        window.location.hash = "";
+        switchView('loginView');
+      });
+      return;
+    }
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      showCustomAlert("Peringatan", "Semua kolom kata sandi harus diisi!", "warning");
       return;
     }
 
@@ -770,12 +797,12 @@
       const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ action: "ubahPassword", nip: nip, oldPassword: oldPassword, newPassword: newPassword })
+        body: new URLSearchParams({ action: "ubahPassword", nip: activeNip, oldPassword: oldPassword, newPassword: newPassword })
       });
       const res = await response.json();
 
       if (res.status === "success") {
-        showCustomAlert("Berhasil", "Password berhasil diubah. Sesi Anda akan diakhiri, silakan login kembali.", "success", () => {
+        showCustomAlert("Berhasil", "Password akun Anda berhasil diperbarui. Sesi diakhiri, silakan login kembali.", "success", () => {
           localStorage.clear();
           window.location.hash = "";
           window.location.reload();
@@ -783,7 +810,7 @@
       } else if (res.status === "wrong_password") {
         showCustomAlert("Gagal", "Password lama yang Anda masukkan salah.", "warning");
       } else if (res.status === "not_found") {
-        showCustomAlert("Gagal", "NIP tidak ditemukan dalam sistem.", "warning");
+        showCustomAlert("Gagal", "NIP akun Anda tidak ditemukan dalam sistem.", "warning");
       } else {
         showCustomAlert("Gagal", res.message || "Gagal mengubah password.", "warning");
       }
