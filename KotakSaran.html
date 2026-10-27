@@ -4,10 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Kotak Saran & Inovasi - Portal Asset & System</title>
-
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#12161f">
-  
   <style>
     :root {
       --bg-app: #12161f;
@@ -33,7 +29,7 @@
       -webkit-touch-callout: none;
     }
 
-    input, textarea, select {
+    input, select, textarea {
       -webkit-user-select: text;
       -moz-user-select: text;
       -ms-user-select: text;
@@ -44,7 +40,6 @@
       height: 100%;
       margin: 0;
       padding: 0;
-      overflow: hidden;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-app);
       color: var(--text-main);
@@ -83,7 +78,7 @@
       width: 45px;
       height: 45px;
       border: 4px solid var(--border-color);
-      border-top: 4px solid var(--accent-cyan);
+      border-top: 4px solid var(--accent-blue);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
@@ -91,11 +86,7 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    .loading-text {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-main);
-    }
+    .loading-text { font-size: 13px; font-weight: 600; color: var(--text-main); }
 
     .custom-alert-overlay {
       display: none;
@@ -120,6 +111,11 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
+      animation: alertPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes alertPop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
     .alert-icon-wrapper {
       width: 48px;
@@ -139,10 +135,14 @@
     .custom-alert-box h4 { margin: 0; font-size: 16px; color: #ffffff; font-weight: 700; }
     .custom-alert-box p { margin: 0; font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
     
-    .alert-actions { display: flex; gap: 8px; justify-content: center; }
+    .alert-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
     .btn-alert-ok {
       flex: 1;
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
       color: white;
       border: none;
       padding: 10px;
@@ -150,225 +150,173 @@
       font-weight: 600;
       font-size: 13px;
       cursor: pointer;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
     }
     .btn-alert-cancel {
-      flex: 1; background: #2a3447; color: var(--text-main); border: 1px solid var(--border-color);
-      padding: 10px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer;
+      flex: 1;
+      background: #2a3447;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
     }
     .btn-alert-danger-confirm {
-      flex: 1; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none;
-      padding: 10px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer;
+      flex: 1;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
 
-    .back-nav {
-      display: inline-flex;
+    .header-area {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 6px;
-      color: var(--accent-cyan);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      background: none;
-      border: none;
-      padding: 0;
-      margin-bottom: 8px;
-      text-decoration: none;
+      margin-bottom: 12px;
       flex-shrink: 0;
     }
-    .back-nav:hover { text-decoration: underline; }
+    .back-home {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .back-home:hover { text-decoration: underline; }
 
-    .header-action-area {
+    .page-title h2 { margin: 0 0 2px 0; font-size: 18px; color: #ffffff; }
+    .page-title p { margin: 0; font-size: 11px; color: var(--text-secondary); }
+
+    .btn-add-saran {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn-add-saran:hover { opacity: 0.9; }
+
+    .search-box {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-main);
+      font-size: 12.5px;
+      outline: none;
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+    .search-box:focus { border-color: var(--accent-blue); }
+
+    .info-bar {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .list-container {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-bottom: 10px;
+    }
+
+    .card-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      margin-bottom: 10px;
-      flex-shrink: 0;
-    }
-    .header-top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-    }
-    .brand-wrapper h2 {
-      color: #ffffff;
-      margin: 0;
-      font-size: 18px;
-      font-weight: 700;
-    }
-    .sub-title { font-size: 11px; color: var(--text-secondary); }
-
-    .btn-open-add {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-      color: white;
-      border: none;
-      padding: 7px 12px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 12px;
       cursor: pointer;
-      box-shadow: 0 3px 10px rgba(6, 182, 212, 0.3);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      white-space: nowrap;
-    }
-    .btn-open-add:hover { opacity: 0.9; }
-
-    .search-input {
-      width: 100%;
-      padding: 7px 10px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 12px;
-      outline: none;
-      background: var(--card-bg);
-      color: var(--text-main);
-    }
-    .search-input:focus { border-color: var(--accent-cyan); }
-
-    .summary-area {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 7px 10px;
-      margin-bottom: 10px;
-      flex-shrink: 0;
-    }
-    .summary-title { font-size: 11px; font-weight: 700; color: var(--text-secondary); }
-    .count-chip {
-      font-size: 10.5px;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 20px;
-      background: rgba(6, 182, 212, 0.15);
-      color: #22d3ee;
-      border: 1px solid rgba(6, 182, 212, 0.3);
-    }
-
-    .scroll-area {
-      flex: 1;
-      overflow-y: auto;
-      padding-right: 2px;
-      -webkit-overflow-scrolling: touch;
-    }
-    ul { list-style: none; padding: 0; margin: 0; }
-
-    li.kotak-item {
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-left: 4px solid var(--accent-cyan);
-      border-radius: 10px;
-      padding: 12px 14px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
+      transition: all 0.2s;
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      transition: all 0.2s ease;
     }
-    li.kotak-item:hover {
+    .card-item:hover {
       background: var(--card-hover);
-      border-color: var(--accent-cyan);
-      transform: translateY(-2px);
+      border-color: var(--accent-blue);
+      transform: translateY(-1px);
     }
 
-    .item-left {
+    .card-top {
       display: flex;
-      flex-direction: column;
-      gap: 5px;
-      overflow: hidden;
-      flex: 1;
-      padding-right: 10px;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
     }
-    .item-title {
+    .card-title {
       font-size: 13.5px;
       font-weight: 700;
       color: #ffffff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      line-height: 1.4;
     }
-    .item-meta {
+    .card-id {
+      font-size: 11px;
+      color: var(--accent-cyan);
+      font-family: monospace;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .card-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .badge {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 650;
+    }
+    .badge-waste { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-section { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
+    .badge-pic { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .badge-status { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+
+    .card-meta {
       font-size: 11px;
       color: var(--text-secondary);
+      border-top: 1px solid var(--border-color);
+      padding-top: 6px;
       display: flex;
-      gap: 6px;
+      justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-    }
-    .badge-pelapor {
-      background: rgba(59, 130, 246, 0.15);
-      color: #60a5fa;
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 10.5px;
-      font-weight: 600;
-    }
-    .badge-bagian {
-      background: rgba(139, 92, 246, 0.15);
-      color: #a78bfa;
-      border: 1px solid rgba(139, 92, 246, 0.3);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 10.5px;
-      font-weight: 600;
-    }
-    .waste-badge-container {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-      margin-top: 2px;
-    }
-    .badge-waste-tag {
-      background: rgba(245, 158, 11, 0.15);
-      color: #fbbf24;
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      padding: 1px 5px;
-      border-radius: 4px;
-      font-size: 9.5px;
-      font-weight: 700;
     }
 
-    /* Checkbox DOWNTIME Grid */
-    .waste-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      background: #161b26;
-      border: 1px solid var(--border-color);
-      padding: 8px;
-      border-radius: 6px;
-      max-height: 140px;
-      overflow-y: auto;
-    }
-    .waste-checkbox-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11.5px;
-      color: var(--text-main);
-      cursor: pointer;
-    }
-    .waste-checkbox-item input {
-      accent-color: var(--accent-cyan);
-      cursor: pointer;
-      width: 14px;
-      height: 14px;
-    }
-
-    /* Modal Styles */
     .modal-overlay {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
       justify-content: center;
       align-items: center;
       z-index: 1000;
@@ -379,13 +327,13 @@
       color: var(--text-main);
       width: 100%;
       max-width: 450px;
-      padding: 18px;
-      border-radius: 12px;
+      padding: 20px;
+      border-radius: 14px;
       border: 1px solid var(--border-color);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       max-height: 90vh;
       overflow-y: auto;
     }
@@ -394,43 +342,52 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 8px;
+      padding-bottom: 10px;
     }
     .modal-header h3 { margin: 0; color: #ffffff; font-size: 16px; }
-    .btn-close-modal { background: transparent; border: none; font-size: 20px; cursor: pointer; color: var(--text-secondary); }
-    .modal-body { display: flex; flex-direction: column; gap: 8px; }
-    .modal-body label { display: flex; flex-direction: column; gap: 3px; font-size: 11.5px; font-weight: 600; color: var(--text-secondary); }
-    .modal-body input, .modal-body textarea, .modal-body select {
-      padding: 8px 10px;
+    .btn-close { background: transparent; border: none; font-size: 22px; cursor: pointer; color: var(--text-secondary); line-height: 1; }
+    
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group label { font-size: 11.5px; font-weight: 600; color: var(--text-secondary); }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 9px 12px;
       font-size: 12.5px;
-      font-family: inherit;
       border: 1px solid var(--border-color);
-      border-radius: 6px;
+      border-radius: 8px;
       outline: none;
       background: #161b26;
       color: var(--text-main);
-      width: 100%;
+      font-family: inherit;
     }
-    .modal-body input:focus, .modal-body textarea:focus { border-color: var(--accent-cyan); }
+    .form-group textarea { resize: vertical; min-height: 70px; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-blue); }
+
+    .approval-box-list {
+      background: #161b26;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .approval-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      padding: 4px 0;
+      border-bottom: 1px dashed rgba(255,255,255,0.05);
+    }
+    .approval-row:last-child { border-bottom: none; }
+
     .modal-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-top: 1px solid var(--border-color);
-      padding-top: 10px;
-    }
-    .btn-delete { background: transparent; color: #f87171; border: none; cursor: pointer; font-size: 12px; font-weight: 600; }
-    .btn-delete:hover { text-decoration: underline; }
-    .btn-save {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 12.5px;
-      width: 100%;
+      padding-top: 12px;
+      gap: 8px;
     }
   </style>
 </head>
@@ -449,138 +406,157 @@
       <h4 id="alertTitle">Informasi Sistem</h4>
       <p id="alertMessage">Pesan pemberitahuan...</p>
       <div class="alert-actions" id="alertActions">
-        <button class="btn-alert-ok" onclick="closeCustomAlert()">Mengerti</button>
+        <button class="btn-alert-ok" id="btnAlertOk" onclick="closeCustomAlert()">Mengerti</button>
       </div>
     </div>
   </div>
 
-  <a href="index.html" class="back-nav">← Kembali ke Menu Utama</a>
-
-  <div class="header-action-area">
-    <div class="header-top-row">
-      <div class="brand-wrapper">
+  <div class="header-area">
+    <div>
+      <a href="index.html" class="back-home">← Kembali ke Menu Utama</a>
+      <div class="page-title" style="margin-top: 4px;">
         <h2>Kotak Saran & Inovasi</h2>
-        <span class="sub-title" id="subTitleRole">Pengajuan ide dan perbaikan kerja</span>
+        <p id="modeSubtitle">Sistem Pengelolaan Improvement Terpadu</p>
       </div>
-      <button class="btn-open-add" onclick="openAddModal()">+ Buat Saran</button>
     </div>
-    <input type="text" id="searchInput" class="search-input" placeholder="Cari temuan, solusi, atau jenis waste..." oninput="renderKotakSaran()">
+    <button class="btn-add-saran" onclick="openAddModal()">+ Buat Saran</button>
   </div>
 
-  <div class="summary-area">
-    <span class="summary-title" id="summaryLabel">Total Saran Terekam:</span>
-    <span class="count-chip"><b id="countTotal">0</b> Data</span>
+  <input type="text" class="search-box" id="searchInput" placeholder="Cari temuan, solusi, atau jenis waste..." oninput="renderKotakList()">
+
+  <div class="info-bar">
+    <span id="totalCount">Total Saran Terekam: 0 Data</span>
+    <span id="userRoleBadge" style="color: var(--accent-cyan); font-weight: 600;">-</span>
   </div>
 
-  <div class="scroll-area">
-    <ul id="kotakList">
-      <div style="text-align:center; color:#9099a2; padding:30px;">Memuat data...</div>
-    </ul>
+  <div class="list-container" id="listContainer">
+    <div style="text-align: center; color: var(--text-secondary); padding: 30px;">Memuat data saran...</div>
   </div>
 
 </div>
 
-<!-- Modal Tambah / Edit Kotak Saran -->
-<div class="modal-overlay" id="kotakModal">
+<!-- Modal Tambah / Detail Saran -->
+<div class="modal-overlay" id="saranModal">
   <div class="modal-content">
     <div class="modal-header">
-      <h3 id="modalTitleID">Form Kotak Saran & Inovasi</h3>
-      <button class="btn-close-modal" onclick="closeModal()">&times;</button>
+      <h3 id="modalTitle">Buat Saran & Inovasi Baru</h3>
+      <button class="btn-close" onclick="closeSaranModal()">&times;</button>
     </div>
-    <div class="modal-body">
-      <input type="hidden" id="modalId">
-      
-      <label>
-        Nama Pelapor:
-        <input type="text" id="inputNamaPelapor" readonly disabled style="background-color: #1a202c; color: #38bdf8; font-weight: bold;">
-      </label>
-
-      <label>
-        Bagian / Section:
-        <input type="text" id="inputBagian" list="bagianListOptions" placeholder="Ketik atau pilih bagian...">
-        <datalist id="bagianListOptions"></datalist>
-      </label>
-
-      <label>
-        Tanggal Ditemukan:
-        <input type="date" id="inputTglDitemukan">
-      </label>
-
-      <label>
-        Lokasi Temuan:
-        <input type="text" id="inputLokasi" placeholder="Lokasi spesifik temuan...">
-      </label>
-
-      <label>
-        Jenis Waste (D-O-W-N-T-I-M-E):
-        <div class="waste-grid" id="wasteCheckboxGroup">
-          <label class="waste-checkbox-item"><input type="checkbox" value="Defect"> D - Defect</label>
-          <label class="waste-checkbox-item"><input type="checkbox" value="OverProduction"> O - OverProduction</label>
-          <label class="waste-checkbox-item"><input type="checkbox" value="Waiting"> W - Waiting</label>
-          <label class="waste-checkbox-item"><input type="checkbox" value="Non-Utilized Potential"> N - Non-Utilized</label>
-          <label class="waste-checkbox-item"><input type="checkbox" value="Transport"> T - Transport</label>
-          <label class="waste-checkbox-item"><input type="checkbox" value="Inventory"> I - Inventory</label>
-          <label class="waste-checkbox-item"><input type="checkbox" value="Motion"> M - Motion</label>
-          <label class="waste-checkbox-item"><input type="checkbox" value="Extra-Processing"> E - Extra-Process</label>
+    <div class="modal-body" style="display: flex; flex-direction: column; gap: 10px;">
+      <input type="hidden" id="modalSaranId">
+      <div class="form-group">
+        <label>Nama Pelapor:</label>
+        <input type="text" id="inputNamaPelapor" placeholder="Nama lengkap...">
+      </div>
+      <div class="form-group">
+        <label>Bagian / Section:</label>
+        <input type="text" id="inputBagian" placeholder="Contoh: Asset & System Control">
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <div class="form-group" style="flex: 1;">
+          <label>Tanggal Ditemukan:</label>
+          <input type="date" id="inputTglDitemukan">
         </div>
-      </label>
+        <div class="form-group" style="flex: 1;">
+          <label>Jenis Waste:</label>
+          <select id="inputJenisWaste">
+            <option value="Defect">Defect</option>
+            <option value="Motion">Motion</option>
+            <option value="Waiting">Waiting</option>
+            <option value="Overproduction">Overproduction</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Inventory">Inventory</option>
+            <option value="Extra-Processing">Extra-Processing</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Lokasi Temuan:</label>
+        <input type="text" id="inputLokasiTemuan" placeholder="Lokasi spesifik area...">
+      </div>
+      <div class="form-group">
+        <label>Deskripsi Temuan / Waste:</label>
+        <textarea id="inputDescTemuan" placeholder="Jelaskan kendala atau inefisiensi yang ditemukan..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Solusi / Perbaikan / Inovasi:</label>
+        <textarea id="inputSolusi" placeholder="Usulan solusi perbaikan..."></textarea>
+      </div>
 
-      <label>
-        Deskripsi Temuan / Waste:
-        <textarea id="inputDesc" rows="2" placeholder="Jelaskan temuan masalah atau pemborosan..."></textarea>
-      </label>
+      <!-- Kotak Informasi & Tombol Approval SectionHead -->
+      <div class="form-group" id="sectionHeadApprovalSection" style="display: none;">
+        <label>Status Persetujuan SectionHead (7 Orang):</label>
+        <div class="approval-box-list" id="approvalListContainerModal">
+          <!-- Render daftar approval SectionHead secara dinamis -->
+        </div>
+        <div id="btnApprovalActionWrapper" style="margin-top: 6px;">
+          <!-- Tombol Approve khusus SectionHead -->
+        </div>
+      </div>
 
-      <label>
-        Solusi Perbaikan / Inovasi / Improvement:
-        <textarea id="inputSolusi" rows="2" placeholder="Usulan solusi atau perbaikan..."></textarea>
-      </label>
+      <!-- Panel Khusus Superuser untuk Pilih PIC -->
+      <div class="form-group" id="adminPicPanel" style="display: none; border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 4px;">
+        <label style="color: var(--accent-cyan); font-weight: 700;">⚙️ Panel Admin / Superuser (Penugasan PIC):</label>
+        <div style="display: flex; gap: 8px; margin-top: 4px;">
+          <select id="adminStatusPengajuan" style="flex: 1;">
+            <option value="Menunggu Approval SectionHead">Menunggu Approval SectionHead</option>
+            <option value="Disetujui SectionHead - Menunggu Penugasan PIC">Disetujui SectionHead - Menunggu Penugasan PIC</option>
+            <option value="Sedang Diproses PIC">Sedang Diproses PIC</option>
+            <option value="Selesai">Selesai</option>
+            <option value="Ditolak">Ditolak</option>
+          </select>
+          <select id="adminTujukanPic" style="flex: 1;">
+            <option value="">-- Pilih PIC Penugasan --</option>
+          </select>
+        </div>
+      </div>
+
     </div>
     <div class="modal-footer">
-      <button class="btn-delete" id="modalDeleteBtn" onclick="requestDelete()" style="display:none;">Hapus</button>
-      <div style="display: flex; gap: 6px; width: 100%; justify-content: flex-end;" id="modalActionWrapper">
-        <button onclick="closeModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Batal</button>
-        <button class="btn-save" style="width: auto;" onclick="saveKotakSaran()" id="modalSaveBtn">Simpan</button>
+      <button class="btn-delete" id="btnDeleteSaran" onclick="requestDeleteSaran()" style="display: none;">Hapus Saran</button>
+      <div style="display: flex; gap: 8px; margin-left: auto;">
+        <button onclick="closeSaranModal()" style="font-size: 12px; padding: 9px 14px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer;">Batal</button>
+        <button class="btn-add-saran" id="btnSaveSaran" onclick="submitSaveSaran()">Simpan Saran</button>
       </div>
     </div>
   </div>
 </div>
 
 <script src="config.js"></script>
+
 <script>
   const API_URL = CONFIG.API_URL;
-
   let allKotakData = [];
-  let currentUserNama = "";
-  let currentUserNip = "";
-  let currentUserRole = "Member";
+  let allUsersMaster = [];
+  let activeUserNip = localStorage.getItem("pbas_nip") || "";
+  let activeUserNama = localStorage.getItem("pbas_nama") || "";
+  let activeUserRole = localStorage.getItem("pbas_role") || "Member";
+  let activeUserJabatan = localStorage.getItem("pbas_jabatan") || "";
 
   window.addEventListener('DOMContentLoaded', () => {
-    currentUserNama = localStorage.getItem("pbas_nama") || "";
-    currentUserNip = localStorage.getItem("pbas_nip") || "";
-    currentUserRole = localStorage.getItem("pbas_role") || "Member";
-
-    if (!currentUserNama) {
-      showCustomAlert("Belum Login", "Silakan login terlebih dahulu untuk mengakses Kotak Saran & Inovasi.", "warning", () => {
+    if (!activeUserNip) {
+      showCustomAlert("Akses Terkunci", "Silakan login terlebih dahulu untuk mengakses Kotak Saran.", "warning", () => {
         window.location.href = "login.html";
       });
       return;
     }
 
-    const subTitle = document.getElementById("subTitleRole");
-    if (currentUserRole.toLowerCase() === "superuser") {
-      subTitle.textContent = `Mode Superuser: Menampilkan seluruh data saran & inovasi`;
-    } else {
-      subTitle.textContent = `Mode Member: Menampilkan saran & inovasi milik Anda sendiri`;
-    }
+    let roleText = `Login sebagai: ${activeUserNama} (${activeUserRole}`;
+    if (activeUserJabatan) roleText += ` - ${activeUserJabatan}`;
+    roleText += `)`;
+    document.getElementById("userRoleBadge").textContent = roleText;
 
-    loadKotakSaranData();
+    loadKotakData();
+    loadActiveUsersMaster();
   });
 
   function showLoading(text = "Memproses data...") {
     document.getElementById("loadingText").textContent = text;
     document.getElementById("loadingOverlay").style.display = "flex";
   }
-  function hideLoading() { document.getElementById("loadingOverlay").style.display = "none"; }
+  function hideLoading() {
+    document.getElementById("loadingOverlay").style.display = "none";
+  }
 
   function showCustomAlert(title, message, type = "warning", callback = null) {
     document.getElementById("alertTitle").textContent = title;
@@ -589,16 +565,23 @@
     const iconEl = document.getElementById("alertIcon");
     iconEl.className = "alert-icon-wrapper";
     if (type === "warning") {
-      iconEl.textContent = "⚠️"; iconEl.classList.add("alert-icon-warning");
+      iconEl.textContent = "⚠️";
+      iconEl.classList.add("alert-icon-warning");
     } else if (type === "success") {
-      iconEl.textContent = "✅"; iconEl.classList.add("alert-icon-success");
+      iconEl.textContent = "✅";
+      iconEl.classList.add("alert-icon-success");
     } else if (type === "danger") {
-      iconEl.textContent = "🗑️"; iconEl.classList.add("alert-icon-danger");
+      iconEl.textContent = "🗑️";
+      iconEl.classList.add("alert-icon-danger");
     } else {
-      iconEl.textContent = "ℹ️"; iconEl.classList.add("alert-icon-info");
+      iconEl.textContent = "ℹ️";
+      iconEl.classList.add("alert-icon-info");
     }
 
     window._alertCallback = callback;
+    document.getElementById("alertActions").innerHTML = `
+      <button class="btn-alert-ok" id="btnAlertOk" onclick="closeCustomAlert()">Mengerti</button>
+    `;
     document.getElementById("customAlertOverlay").style.display = "flex";
   }
 
@@ -610,15 +593,18 @@
     iconEl.className = "alert-icon-wrapper alert-icon-danger";
     iconEl.textContent = "⚠️";
 
-    document.getElementById("customAlertOverlay").style.display = "flex";
-    document.getElementById("alertActions").innerHTML = `
+    const actionsContainer = document.getElementById("alertActions");
+    actionsContainer.innerHTML = `
       <button class="btn-alert-cancel" onclick="closeCustomAlert()">Batal</button>
       <button class="btn-alert-danger-confirm" id="btnConfirmDanger">Hapus</button>
     `;
+
     document.getElementById("btnConfirmDanger").onclick = () => {
       closeCustomAlert();
       onConfirmCallback();
     };
+
+    document.getElementById("customAlertOverlay").style.display = "flex";
   }
 
   function closeCustomAlert() {
@@ -629,289 +615,371 @@
     }
   }
 
-  function formatDateCustom(dateString) {
-    if (!dateString || dateString === "-") return "-";
-    const d = new Date(dateString);
-    if (isNaN(d.getTime())) return dateString;
-
-    const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = months[d.getMonth()];
-    const year = d.getFullYear();
-
-    return `${day} ${month} ${year}`;
-  }
-
-  function parseToYYYYMMDD(dateString) {
-    if (!dateString) return "";
-    const d = new Date(dateString);
-    if (isNaN(d.getTime())) {
-      if (typeof dateString === "string" && dateString.length >= 10) {
-        return dateString.substring(0, 10);
-      }
-      return "";
+  async function loadActiveUsersMaster() {
+    try {
+      const response = await fetch(`${API_URL}?action=getUsers`);
+      const result = await response.json();
+      allUsersMaster = Array.isArray(result) ? result : [];
+      
+      const picSelect = document.getElementById("adminTujukanPic");
+      picSelect.innerHTML = '<option value="">-- Pilih PIC Penugasan --</option>';
+      allUsersMaster.forEach(u => {
+        let opt = document.createElement("option");
+        opt.value = `${u.nama} [${u.nip}]`;
+        opt.textContent = `${u.nama} (${u.nip})`;
+        picSelect.appendChild(opt);
+      });
+    } catch (err) {
+      console.error("Gagal memuat master user", err);
     }
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
   }
 
-  async function loadKotakSaranData(forceRefresh = false) {
-    if (!forceRefresh) showLoading("Memuat data kotak saran...");
+  async function loadKotakData() {
+    showLoading("Memuat data kotak saran...");
     try {
       const response = await fetch(`${API_URL}?action=getKotakSaran`);
       const result = await response.json();
       allKotakData = Array.isArray(result) ? result : [];
-      populateBagianDatalist();
-      renderKotakSaran();
+      renderKotakList();
     } catch (err) {
       console.error(err);
-      document.getElementById("kotakList").innerHTML = `<li style="text-align:center; color:#f87171; padding:20px;">Gagal memuat data dari server.</li>`;
+      document.getElementById("listContainer").innerHTML = "<div style='text-align:center; color:#f87171; padding:20px;'>Gagal memuat data dari server.</div>";
     } finally {
       hideLoading();
     }
   }
 
-  function populateBagianDatalist() {
-    const datalist = document.getElementById("bagianListOptions");
-    datalist.innerHTML = "";
-    const uniqueBagian = [...new Set(allKotakData.map(item => item.bagian).filter(b => b && b !== "-"))];
-    uniqueBagian.forEach(b => {
-      const opt = document.createElement("option");
-      opt.value = b;
-      datalist.appendChild(opt);
-    });
-  }
-
-  function renderKotakSaran() {
-    const listEl = document.getElementById("kotakList");
-    const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
-    listEl.innerHTML = "";
-
-    const isSuperUser = currentUserRole.toLowerCase() === "superuser";
+  function renderKotakList() {
+    const container = document.getElementById("listContainer");
+    const keyword = document.getElementById("searchInput").value.toLowerCase();
 
     const filtered = allKotakData.filter(item => {
-      const isOwner = (item.namaPelapor && currentUserNama && item.namaPelapor.toLowerCase().trim() === currentUserNama.toLowerCase().trim());
-      if (!isSuperUser && !isOwner) return false;
-
-      const matchSearch = !keyword ||
-        (item.id && item.id.toLowerCase().includes(keyword)) ||
-        (item.namaPelapor && item.namaPelapor.toLowerCase().includes(keyword)) ||
-        (item.bagian && item.bagian.toLowerCase().includes(keyword)) ||
-        (item.lokasiTemuan && item.lokasiTemuan.toLowerCase().includes(keyword)) ||
-        (item.jenisWaste && item.jenisWaste.toLowerCase().includes(keyword)) ||
-        (item.descTemuanWaste && item.descTemuanWaste.toLowerCase().includes(keyword)) ||
-        (item.solusi && item.solusi.toLowerCase().includes(keyword));
-
-      return matchSearch;
+      return (item.id || "").toLowerCase().includes(keyword) ||
+             (item.namaPelapor || "").toLowerCase().includes(keyword) ||
+             (item.bagian || "").toLowerCase().includes(keyword) ||
+             (item.jenisWaste || "").toLowerCase().includes(keyword) ||
+             (item.descTemuanWaste || "").toLowerCase().includes(keyword) ||
+             (item.solusi || "").toLowerCase().includes(keyword);
     });
 
-    document.getElementById("countTotal").textContent = filtered.length;
+    document.getElementById("totalCount").textContent = `Total Saran Terekam: ${filtered.length} Data`;
 
     if (filtered.length === 0) {
-      listEl.innerHTML = `<div style="text-align:center; color:#9099a2; padding:30px;">Belum ada data kotak saran atau inovasi yang terekam.</div>`;
+      container.innerHTML = "<div style='text-align:center; color:var(--text-secondary); padding:40px;'>Belum ada data saran atau inovasi yang sesuai.</div>";
       return;
     }
 
-    const reversed = filtered.slice().reverse();
+    container.innerHTML = "";
+    filtered.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "card-item";
+      card.onclick = () => openDetailModal(item);
 
-    reversed.forEach(item => {
-      const li = document.createElement("li");
-      li.className = "kotak-item";
-      li.onclick = () => openDetailModal(item);
+      const topDiv = document.createElement("div");
+      topDiv.className = "card-top";
 
-      const itemLeft = document.createElement("div");
-      itemLeft.className = "item-left";
+      const titleSpan = document.createElement("div");
+      titleSpan.className = "card-title";
+      titleSpan.textContent = item.solusi || item.descTemuanWaste || "-";
 
-      const titleSpan = document.createElement("span");
-      titleSpan.className = "item-title";
-      titleSpan.textContent = item.solusi || item.descTemuanWaste || "(Tanpa Deskripsi)";
+      const idSpan = document.createElement("span");
+      idSpan.className = "card-id";
+      idSpan.textContent = item.id;
 
-      // Render Waste Badges
-      const badgeContainer = document.createElement("div");
-      badgeContainer.className = "waste-badge-container";
-      if (item.jenisWaste && item.jenisWaste !== "-") {
-        const wasteArr = item.jenisWaste.split(",");
-        wasteArr.forEach(w => {
-          const wBadge = document.createElement("span");
-          wBadge.className = "badge-waste-tag";
-          wBadge.textContent = `⚠️ ${w.trim()}`;
-          badgeContainer.appendChild(wBadge);
-        });
+      topDiv.appendChild(titleSpan);
+      topDiv.appendChild(idSpan);
+
+      const badgesDiv = document.createElement("div");
+      badgesDiv.className = "card-badges";
+
+      const badgeWaste = document.createElement("span");
+      badgeWaste.className = "badge badge-waste";
+      badgeWaste.textContent = `⚠️ ${item.jenisWaste}`;
+      badgesDiv.appendChild(badgeWaste);
+
+      const badgeSec = document.createElement("span");
+      badgeSec.className = "badge badge-section";
+      badgeSec.textContent = item.bagian;
+      badgesDiv.appendChild(badgeSec);
+
+      if (item.tujukanPic) {
+        const badgePic = document.createElement("span");
+        badgePic.className = "badge badge-pic";
+        badgePic.textContent = `PIC: ${item.tujukanPic.split('[')[0].trim()}`;
+        badgesDiv.appendChild(badgePic);
       }
+
+      const badgeStatus = document.createElement("span");
+      badgeStatus.className = "badge badge-status";
+      badgeStatus.textContent = item.statusPengajuan;
+      badgesDiv.appendChild(badgeStatus);
 
       const metaDiv = document.createElement("div");
-      metaDiv.className = "item-meta";
+      metaDiv.className = "card-meta";
+      metaDiv.innerHTML = `<span>Pelapor: <b>${item.namaPelapor}</b></span><span>Ditemukan: ${item.tglDiTemukan || '-'}</span>`;
 
-      const bagianBadge = document.createElement("span");
-      bagianBadge.className = "badge-bagian";
-      bagianBadge.textContent = item.bagian || "-";
-
-      const pelaporBadge = document.createElement("span");
-      pelaporBadge.className = "badge-pelapor";
-      pelaporBadge.textContent = item.namaPelapor || "-";
-
-      const dateSpan = document.createElement("span");
-      dateSpan.style.color = "#94a3b8";
-      dateSpan.textContent = `• Ditemukan: ${formatDateCustom(item.tglDiTemukan)}`;
-
-      metaDiv.appendChild(bagianBadge);
-      metaDiv.appendChild(pelaporBadge);
-      metaDiv.appendChild(dateSpan);
-
-      itemLeft.appendChild(titleSpan);
-      if (badgeContainer.children.length > 0) {
-        itemLeft.appendChild(badgeContainer);
-      }
-      itemLeft.appendChild(metaDiv);
-
-      const rightDiv = document.createElement("div");
-      const idSpan = document.createElement("span");
-      idSpan.style.cssText = "font-size:11px; color:#cbd5e1; font-weight:600;";
-      idSpan.textContent = item.id;
-      rightDiv.appendChild(idSpan);
-
-      li.appendChild(itemLeft);
-      li.appendChild(rightDiv);
-      listEl.appendChild(li);
+      card.appendChild(topDiv);
+      card.appendChild(badgesDiv);
+      card.appendChild(metaDiv);
+      container.appendChild(card);
     });
   }
 
   function openAddModal() {
-    document.getElementById("modalId").value = "";
-    document.getElementById("modalTitleID").textContent = "Buat Kotak Saran & Inovasi Baru";
-    document.getElementById("inputNamaPelapor").value = currentUserNama;
+    document.getElementById("modalTitle").textContent = "Buat Saran & Inovasi Baru";
+    document.getElementById("modalSaranId").value = "";
+    document.getElementById("inputNamaPelapor").value = activeUserNama;
     document.getElementById("inputBagian").value = "";
-    document.getElementById("inputTglDitemukan").value = new Date().toISOString().split('T')[0];
-    document.getElementById("inputLokasi").value = "";
-    document.getElementById("inputDesc").value = "";
+    document.getElementById("inputTglDitemukan").value = new Date().toISOString().substring(0, 10);
+    document.getElementById("inputLokasiTemuan").value = "";
+    document.getElementById("inputDescTemuan").value = "";
     document.getElementById("inputSolusi").value = "";
 
-    // Reset Checkboxes
-    const checkboxes = document.querySelectorAll("#wasteCheckboxGroup input[type='checkbox']");
-    checkboxes.forEach(cb => cb.checked = false);
+    document.getElementById("inputNamaPelapor").disabled = false;
+    document.getElementById("inputBagian").disabled = false;
+    document.getElementById("inputTglDitemukan").disabled = false;
+    document.getElementById("inputLokasiTemuan").disabled = false;
+    document.getElementById("inputJenisWaste").disabled = false;
+    document.getElementById("inputDescTemuan").disabled = false;
+    document.getElementById("inputSolusi").disabled = false;
 
-    document.getElementById("modalDeleteBtn").style.display = "none";
-    document.getElementById("modalSaveBtn").style.display = "inline-block";
-    setModalFieldsDisabled(false);
+    document.getElementById("sectionHeadApprovalSection").style.display = "none";
+    document.getElementById("adminPicPanel").style.display = "none";
+    document.getElementById("btnDeleteSaran").style.display = "none";
+    document.getElementById("btnSaveSaran").style.display = "inline-flex";
 
-    document.getElementById("kotakModal").style.display = "flex";
+    document.getElementById("saranModal").style.display = "flex";
   }
 
   function openDetailModal(item) {
-    document.getElementById("modalId").value = item.id;
-    document.getElementById("modalTitleID").textContent = `Detail Saran (${item.id})`;
-    document.getElementById("inputNamaPelapor").value = item.namaPelapor || "";
-    document.getElementById("inputBagian").value = item.bagian || "";
-    document.getElementById("inputTglDitemukan").value = parseToYYYYMMDD(item.tglDiTemukan);
-    document.getElementById("inputLokasi").value = item.lokasiTemuan || "";
-    document.getElementById("inputDesc").value = item.descTemuanWaste || "";
-    document.getElementById("inputSolusi").value = item.solusi || "";
+    document.getElementById("modalTitle").textContent = `Detail Saran (${item.id})`;
+    document.getElementById("modalSaranId").value = item.id;
+    document.getElementById("inputNamaPelapor").value = item.namaPelapor;
+    document.getElementById("inputBagian").value = item.bagian;
+    document.getElementById("inputTglDitemukan").value = item.tglDiTemukan;
+    document.getElementById("inputLokasiTemuan").value = item.lokasiTemuan;
+    document.getElementById("inputJenisWaste").value = item.jenisWaste;
+    document.getElementById("inputDescTemuan").value = item.descTemuanWaste;
+    document.getElementById("inputSolusi").value = item.solusi;
 
-    // Set Checkboxes based on item.jenisWaste
-    const checkboxes = document.querySelectorAll("#wasteCheckboxGroup input[type='checkbox']");
-    const selectedWastes = item.jenisWaste ? item.jenisWaste.split(",").map(s => s.trim()) : [];
-    checkboxes.forEach(cb => {
-      cb.checked = selectedWastes.includes(cb.value);
-    });
-
-    const isSuperUser = currentUserRole.toLowerCase() === "superuser";
-    const isOwner = (item.namaPelapor && currentUserNama && item.namaPelapor.toLowerCase().trim() === currentUserNama.toLowerCase().trim());
+    const isSuperUser = (activeUserRole.toLowerCase() === "superuser");
+    const isOwner = (activeUserNama.toLowerCase().trim() === item.namaPelapor.toLowerCase().trim());
     const canEdit = isSuperUser || isOwner;
 
-    if (canEdit) {
-      setModalFieldsDisabled(false);
-      document.getElementById("modalSaveBtn").style.display = "inline-block";
-      document.getElementById("modalDeleteBtn").style.display = "inline-block";
+    document.getElementById("inputNamaPelapor").disabled = true;
+    document.getElementById("inputBagian").disabled = !canEdit;
+    document.getElementById("inputTglDitemukan").disabled = !canEdit;
+    document.getElementById("inputLokasiTemuan").disabled = !canEdit;
+    document.getElementById("inputJenisWaste").disabled = !canEdit;
+    document.getElementById("inputDescTemuan").disabled = !canEdit;
+    document.getElementById("inputSolusi").disabled = !canEdit;
+
+    // Render daftar approval SectionHead
+    const approvalContainer = document.getElementById("approvalListContainerModal");
+    approvalContainer.innerHTML = "";
+    let hasPending = false;
+
+    if (item.approvalDetails && item.approvalDetails.length > 0) {
+      item.approvalDetails.forEach(sh => {
+        let row = document.createElement("div");
+        row.className = "approval-row";
+        let isAppr = (sh.status === "Approve");
+        if (!isAppr) hasPending = true;
+
+        row.innerHTML = `
+          <span><b>${sh.nip}</b> - ${sh.nama}</span>
+          <span style="color: ${isAppr ? 'var(--accent-green)' : 'var(--accent-warn)'}; font-weight: 600;">
+            ${isAppr ? '✅ Approve' : '⏳ Pending'}
+          </span>
+        `;
+        approvalContainer.appendChild(row);
+      });
     } else {
-      setModalFieldsDisabled(true);
-      document.getElementById("modalSaveBtn").style.display = "none";
-      document.getElementById("modalDeleteBtn").style.display = "none";
+      approvalContainer.innerHTML = "<div style='font-size:11px; color:var(--text-secondary); text-align:center;'>Belum ada SectionHead terdaftar di sistem.</div>";
     }
 
-    document.getElementById("kotakModal").style.display = "flex";
+    document.getElementById("sectionHeadApprovalSection").style.display = "block";
+
+    // Tombol Approve khusus jika login sebagai SectionHead
+    const actionWrapper = document.getElementById("btnApprovalActionWrapper");
+    actionWrapper.innerHTML = "";
+    const isSectionHeadUser = (activeUserJabatan.toLowerCase() === "sectionhead" || isSuperUser);
+
+    if (isSectionHeadUser) {
+      let myApprovalStatus = item.statusApprovalMap ? item.statusApprovalMap[activeUserNip] : "Pending";
+      if (myApprovalStatus !== "Approve") {
+        let btnAppr = document.createElement("button");
+        btnAppr.className = "btn-add-saran";
+        btnAppr.style.width = "100%";
+        btnAppr.style.justifyContent = "center";
+        btnAppr.innerHTML = "✅ Klik untuk Approve Saran Ini";
+        btnAppr.onclick = () => executeApproveKotakSaran(item.id);
+        actionWrapper.appendChild(btnAppr);
+      } else {
+        let infoAppr = document.createElement("div");
+        infoAppr.style.cssText = "text-align:center; font-size:11.5px; color:var(--accent-green); font-weight:600; padding:4px;";
+        infoAppr.textContent = "Anda telah menyetujui saran ini.";
+        actionWrapper.appendChild(infoAppr);
+      }
+    }
+
+    // Panel Admin / Superuser
+    if (isSuperUser) {
+      document.getElementById("adminPicPanel").style.display = "block";
+      document.getElementById("adminStatusPengajuan").value = item.statusPengajuan;
+      document.getElementById("adminTujukanPic").value = item.tujukanPic || "";
+    } else {
+      document.getElementById("adminPicPanel").style.display = "none";
+    }
+
+    document.getElementById("btnDeleteSaran").style.display = canEdit ? "inline-block" : "none";
+    document.getElementById("btnSaveSaran").style.display = canEdit ? "inline-flex" : "none";
+
+    document.getElementById("saranModal").style.display = "flex";
   }
 
-  function setModalFieldsDisabled(status) {
-    document.getElementById("inputBagian").disabled = status;
-    document.getElementById("inputTglDitemukan").disabled = status;
-    document.getElementById("inputLokasi").disabled = status;
-    document.getElementById("inputDesc").disabled = status;
-    document.getElementById("inputSolusi").disabled = status;
-    const checkboxes = document.querySelectorAll("#wasteCheckboxGroup input[type='checkbox']");
-    checkboxes.forEach(cb => cb.disabled = status);
+  function closeSaranModal() {
+    document.getElementById("saranModal").style.display = "none";
   }
 
-  function closeModal() {
-    document.getElementById("kotakModal").style.display = "none";
-  }
-
-  async function saveKotakSaran() {
-    const id = document.getElementById("modalId").value;
+  async function submitSaveSaran() {
+    const id = document.getElementById("modalSaranId").value;
+    const namaPelapor = document.getElementById("inputNamaPelapor").value.trim();
     const bagian = document.getElementById("inputBagian").value.trim();
     const tglDiTemukan = document.getElementById("inputTglDitemukan").value;
-    const lokasiTemuan = document.getElementById("inputLokasi").value.trim();
-    const descTemuanWaste = document.getElementById("inputDesc").value.trim();
+    const lokasiTemuan = document.getElementById("inputLokasiTemuan").value.trim();
+    const jenisWaste = document.getElementById("inputJenisWaste").value;
+    const descTemuanWaste = document.getElementById("inputDescTemuan").value.trim();
     const solusi = document.getElementById("inputSolusi").value.trim();
 
-    // Collect checked wastes
-    const selectedWastes = [];
-    const checkboxes = document.querySelectorAll("#wasteCheckboxGroup input[type='checkbox']:checked");
-    checkboxes.forEach(cb => selectedWastes.push(cb.value));
-    const jenisWasteStr = selectedWastes.length > 0 ? selectedWastes.join(", ") : "-";
-
-    if (!bagian || !lokasiTemuan || !descTemuanWaste || !solusi) {
-      showCustomAlert("Peringatan", "Mohon lengkapi seluruh kolom formulir!", "warning");
+    if (!bagian || !tglDiTemukan || !lokasiTemuan || !descTemuanWaste || !solusi) {
+      showCustomAlert("Peringatan", "Semua kolom wajib diisi!", "warning");
       return;
     }
 
-    showLoading(id ? "Menyimpan perubahan..." : "Mengirim saran & inovasi...");
+    showLoading("Menyimpan data saran...");
+
     try {
-      const actionType = id ? "updateKotakSaran" : "addKotakSaran";
-      const payload = {
-        action: actionType,
-        id: id,
-        nip: currentUserNip,
-        userNama: currentUserNama,
-        namaPelapor: currentUserNama,
-        bagian: bagian,
-        tglDiTemukan: tglDiTemukan,
-        lokasiTemuan: lokasiTemuan,
-        jenisWaste: jenisWasteStr,
-        descTemuanWaste: descTemuanWaste,
-        solusi: solusi
-      };
-
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(payload)
-      });
-      const res = await response.json();
-      closeModal();
-
-      if (res.status === "success") {
-        showCustomAlert("Berhasil", id ? "Saran berhasil diperbarui." : "Saran & Inovasi berhasil dikirim dan dicatat.", "success");
-        loadKotakSaranData(true);
+      if (!id) {
+        // Tambah Baru
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({
+            action: "addKotakSaran",
+            namaPelapor: namaPelapor,
+            bagian: bagian,
+            tglDiTemukan: tglDiTemukan,
+            lokasiTemuan: lokasiTemuan,
+            jenisWaste: jenisWaste,
+            descTemuanWaste: descTemuanWaste,
+            solusi: solusi
+          })
+        });
+        const res = await response.json();
+        if (res.status === "success") {
+          closeSaranModal();
+          showCustomAlert("Berhasil", "Saran & Inovasi berhasil direkam dan menunggu approval SectionHead.", "success", () => {
+            loadKotakData();
+          });
+        } else {
+          showCustomAlert("Gagal", res.message || "Gagal menyimpan saran.", "warning");
+        }
       } else {
-        showCustomAlert("Gagal", res.message || "Gagal menyimpan data.", "warning");
+        // Update Edit Biasa & Update Admin PIC jika Superuser
+        const isSuperUser = (activeUserRole.toLowerCase() === "superuser");
+        
+        let bodyParams = {
+          action: "updateKotakSaran",
+          id: id,
+          nip: activeUserNip,
+          userNama: activeUserNama,
+          bagian: bagian,
+          tglDiTemukan: tglDiTemukan,
+          lokasiTemuan: lokasiTemuan,
+          jenisWaste: jenisWaste,
+          descTemuanWaste: descTemuanWaste,
+          solusi: solusi
+        };
+
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(bodyParams)
+        });
+        const res = await response.json();
+
+        if (res.status === "success") {
+          if (isSuperUser) {
+            const statusPengajuan = document.getElementById("adminStatusPengajuan").value;
+            const tujukanPic = document.getElementById("adminTujukanPic").value;
+
+            await fetch(API_URL, {
+              method: "POST",
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              body: new URLSearchParams({
+                action: "updateKotakSaranAdmin",
+                id: id,
+                statusPengajuan: statusPengajuan,
+                tujukanPic: tujukanPic
+              })
+            });
+          }
+
+          closeSaranModal();
+          showCustomAlert("Berhasil", "Perubahan data berhasil disimpan.", "success", () => {
+            loadKotakData();
+          });
+        } else {
+          showCustomAlert("Gagal", res.message || "Gagal memperbarui saran.", "warning");
+        }
       }
     } catch (err) {
       console.error(err);
-      showCustomAlert("Kesalahan", "Terjadi kesalahan jaringan.", "danger");
+      showCustomAlert("Kesalahan", "Gagal menghubungi server.", "danger");
     } finally {
       hideLoading();
     }
   }
 
-  function requestDelete() {
-    showCustomConfirm("Konfirmasi Hapus", "Apakah Anda yakin ingin menghapus data saran ini?", deleteExecute);
+  async function executeApproveKotakSaran(id) {
+    showLoading("Mengirim persetujuan SectionHead...");
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          action: "approveKotakSaran",
+          id: id,
+          nip: activeUserNip
+        })
+      });
+      const res = await response.json();
+
+      if (res.status === "success") {
+        closeSaranModal();
+        showCustomAlert("Berhasil", "Persetujuan (Approve) Anda telah dicatat.", "success", () => {
+          loadKotakData();
+        });
+      } else {
+        showCustomAlert("Gagal", res.message || "Gagal melakukan approval.", "warning");
+      }
+    } catch (err) {
+      console.error(err);
+      showCustomAlert("Kesalahan", "Gagal menghubungi server.", "danger");
+    } finally {
+      hideLoading();
+    }
   }
 
-  async function deleteExecute() {
-    const id = document.getElementById("modalId").value;
+  function requestDeleteSaran() {
+    showCustomConfirm("Konfirmasi Hapus Saran", "Apakah Anda yakin ingin menghapus saran ini secara permanen?", deleteSaranExecute);
+  }
+
+  async function deleteSaranExecute() {
+    const id = document.getElementById("modalSaranId").value;
     showLoading("Menghapus data...");
+
     try {
       const response = await fetch(API_URL, {
         method: "POST",
@@ -919,16 +987,17 @@
         body: new URLSearchParams({
           action: "deleteKotakSaran",
           id: id,
-          nip: currentUserNip,
-          userNama: currentUserNama
+          nip: activeUserNip,
+          userNama: activeUserNama
         })
       });
       const res = await response.json();
-      closeModal();
+      closeSaranModal();
 
       if (res.status === "success") {
-        showCustomAlert("Berhasil", "Data berhasil dihapus.", "success");
-        loadKotakSaranData(true);
+        showCustomAlert("Berhasil", "Saran berhasil dihapus.", "success", () => {
+          loadKotakData();
+        });
       } else {
         showCustomAlert("Gagal", res.message || "Gagal menghapus data.", "warning");
       }
