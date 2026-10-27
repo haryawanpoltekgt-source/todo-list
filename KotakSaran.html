@@ -828,6 +828,7 @@
       return;
     }
 
+    // Pembalikan urutan (Descending) agar data terbaru selalu berada di paling atas
     const sortedFiltered = filtered.slice().reverse();
 
     sortedFiltered.forEach(item => {
@@ -957,14 +958,12 @@
 
     const approvalContainer = document.getElementById("approvalListContainerModal");
     approvalContainer.innerHTML = "";
-    let hasPending = false;
 
     if (item.approvalDetails && item.approvalDetails.length > 0) {
       item.approvalDetails.forEach(sh => {
         let row = document.createElement("div");
         row.className = "approval-row";
         let isAppr = (sh.status === "Approve");
-        if (!isAppr) hasPending = true;
 
         row.innerHTML = `
           <span><b>${sh.nip}</b> - ${sh.nama}</span>
@@ -990,11 +989,23 @@
         let rowBtns = document.createElement("div");
         rowBtns.className = "approval-btn-row";
 
+        // Tombol Ditolak yang mengubah tampilan status lokal secara instan
         let btnReject = document.createElement("button");
         btnReject.className = "btn-reject-dummy";
         btnReject.innerHTML = "❌ Ditolak";
         btnReject.onclick = () => {
-          showCustomAlert("Informasi", "Status penolakan dicatat secara lokal (tidak mengubah database).", "info");
+          const approvalRows = approvalContainer.querySelectorAll(".approval-row");
+          approvalRows.forEach(row => {
+            if (row.textContent.includes(activeUserNip) || (activeUserNama && row.textContent.toLowerCase().includes(activeUserNama.toLowerCase()))) {
+              const statusSpan = row.querySelector("span:last-child");
+              if (statusSpan) {
+                statusSpan.style.color = "#f87171";
+                statusSpan.innerHTML = "❌ Ditolak";
+              }
+            }
+          });
+          rowBtns.style.display = "none";
+          showCustomAlert("Informasi", "Status Anda diubah menjadi Ditolak secara visual (tidak berdampak ke fungsi/database utama).", "info");
         };
 
         let btnAppr = document.createElement("button");
