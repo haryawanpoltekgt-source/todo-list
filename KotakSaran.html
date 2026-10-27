@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Kotak Saran & Inovasi - Portal Asset & System</title>
+  <title>Kotak Saran & Inovasi</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#12161f">
+  
   <style>
     :root {
       --bg-app: #12161f;
@@ -20,36 +24,22 @@
       --accent-warn: #f59e0b;
     }
 
-    * { 
-      box-sizing: border-box; 
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      -webkit-touch-callout: none;
-    }
-
-    input, select, textarea {
-      -webkit-user-select: text;
-      -moz-user-select: text;
-      -ms-user-select: text;
-      user-select: text;
-    }
+    * { box-sizing: border-box; -webkit-user-select: none; user-select: none; }
+    input, textarea, select { -webkit-user-select: text; user-select: text; }
 
     html, body {
       height: 100%;
       margin: 0;
       padding: 0;
+      overflow: hidden;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-app);
       color: var(--text-main);
-      overflow-x: hidden;
-    }
-    body {
       display: flex;
       justify-content: center;
       align-items: center;
     }
+
     .container {
       width: 100%;
       max-width: 700px;
@@ -76,17 +66,13 @@
       gap: 12px;
     }
     .spinner {
-      width: 45px;
-      height: 45px;
+      width: 45px; height: 45px;
       border: 4px solid var(--border-color);
-      border-top: 4px solid var(--accent-blue);
+      border-top: 4px solid var(--accent-cyan);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .loading-text { font-size: 13px; font-weight: 600; color: var(--text-main); }
 
     .custom-alert-overlay {
@@ -103,317 +89,179 @@
     .custom-alert-box {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      width: 100%;
-      max-width: 360px;
-      border-radius: 14px;
-      padding: 20px;
+      width: 100%; max-width: 360px;
+      border-radius: 14px; padding: 20px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      animation: alertPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    }
-    @keyframes alertPop {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+      display: flex; flex-direction: column; gap: 14px;
     }
     .alert-icon-wrapper {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      margin: 0 auto;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 22px;
+      width: 48px; height: 48px; border-radius: 50%; margin: 0 auto;
+      display: flex; justify-content: center; align-items: center; font-size: 22px;
     }
     .alert-icon-warning { background: rgba(245, 158, 11, 0.15); color: var(--accent-warn); border: 1px solid rgba(245, 158, 11, 0.3); }
     .alert-icon-success { background: rgba(34, 197, 94, 0.15); color: var(--accent-green); border: 1px solid rgba(34, 197, 94, 0.3); }
     .alert-icon-danger { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); }
-    .alert-icon-info { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); border: 1px solid rgba(59, 130, 246, 0.3); }
-    
+    .alert-icon-info { background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); border: 1px solid rgba(6, 182, 212, 0.3); }
+
     .custom-alert-box h4 { margin: 0; font-size: 16px; color: #ffffff; font-weight: 700; }
-    .custom-alert-box p { margin: 0; font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
-    
-    .alert-actions {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-    }
+    .custom-alert-box p { margin: 0; font-size: 13px; color: var(--text-secondary); line-height: 1.5; text-align: left; }
+    .alert-actions { display: flex; gap: 8px; justify-content: center; }
     .btn-alert-ok {
-      flex: 1;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      flex: 1; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer;
     }
     .btn-alert-cancel {
-      flex: 1;
-      background: #2a3447;
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
+      flex: 1; background: #2a3447; color: var(--text-main); border: 1px solid var(--border-color);
+      padding: 10px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer;
     }
     .btn-alert-danger-confirm {
-      flex: 1;
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+      flex: 1; background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer;
     }
 
-    .header-area {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      flex-shrink: 0;
+    .back-nav {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--accent-cyan); font-size: 12px; font-weight: 600; cursor: pointer;
+      margin-bottom: 6px; background: none; border: none; padding: 0; flex-shrink: 0;
     }
-    .back-home {
-      color: var(--accent-blue);
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 5px;
+    .back-nav:hover { text-decoration: underline; }
+
+    .header-action-area {
+      display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; flex-shrink: 0;
     }
-    .back-home:hover { text-decoration: underline; }
-
-    .page-title h2 { margin: 0 0 2px 0; font-size: 18px; color: #ffffff; }
-    .page-title p { margin: 0; font-size: 11px; color: var(--text-secondary); }
-
-    .btn-add-saran {
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 12px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      white-space: nowrap;
+    .header-top-row {
+      display: flex; justify-content: space-between; align-items: center; gap: 6px;
     }
-    .btn-add-saran:hover { opacity: 0.9; }
-
-    .search-box {
-      width: 100%;
-      padding: 10px 14px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      color: var(--text-main);
-      font-size: 12.5px;
-      outline: none;
-      margin-bottom: 10px;
-      flex-shrink: 0;
-    }
-    .search-box:focus { border-color: var(--accent-blue); }
-
-    .info-bar {
-      font-size: 11px;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      flex-shrink: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .header-bottom-row {
+      display: flex; gap: 6px; width: 100%;
     }
 
-    .list-container {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding-bottom: 10px;
+    .brand-wrapper h2 { color: #ffffff; margin: 0 0 2px 0; font-size: 18px; font-weight: 700; }
+    .brand-wrapper p { color: var(--text-secondary); font-size: 11.5px; margin: 0; }
+
+    .search-input {
+      width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px;
+      font-size: 12.5px; outline: none; background: var(--card-bg); color: var(--text-main);
+    }
+    .search-input:focus { border-color: var(--accent-cyan); }
+
+    .btn-create {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: white; border: none; padding: 7px 12px; border-radius: 8px;
+      font-weight: 600; font-size: 12px; cursor: pointer; white-space: nowrap;
+      box-shadow: 0 3px 10px rgba(6, 182, 212, 0.25);
     }
 
-    .card-item {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    /* Filter Status Bar */
+    .filter-bar {
+      display: flex; gap: 6px; margin-bottom: 10px; flex-shrink: 0; align-items: center;
     }
-    .card-item:hover {
-      background: var(--card-hover);
-      border-color: var(--accent-blue);
-      transform: translateY(-1px);
+    .filter-select {
+      flex: 1; padding: 7px 10px; border: 1px solid var(--border-color); border-radius: 8px;
+      font-size: 11.5px; outline: none; background: var(--card-bg); color: var(--text-main); font-weight: 500;
+    }
+    .btn-refresh {
+      background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); border: 1px solid rgba(6, 182, 212, 0.3);
+      padding: 7px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 600; cursor: pointer; white-space: nowrap;
+    }
+    .btn-refresh:hover { background: rgba(6, 182, 212, 0.25); }
+
+    .sub-meta-info {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; flex-shrink: 0; padding: 0 2px;
     }
 
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
+    .kotak-scroll-area {
+      flex: 1; overflow-y: auto; padding-right: 2px; -webkit-overflow-scrolling: touch;
     }
-    .card-title {
-      font-size: 13.5px;
-      font-weight: 700;
-      color: #ffffff;
-      line-height: 1.4;
+    ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+
+    li.kotak-item {
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 10px; padding: 12px 14px; cursor: pointer;
+      display: flex; flex-direction: column; gap: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: all 0.2s ease;
     }
-    .card-id {
-      font-size: 11px;
-      color: var(--accent-cyan);
-      font-family: monospace;
-      font-weight: 700;
-      white-space: nowrap;
+    li.kotak-item:hover { transform: translateY(-2px); border-color: var(--accent-cyan); background: var(--card-hover); }
+
+    .kotak-item-top {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;
+    }
+    .kotak-title {
+      font-weight: 600; color: #ffffff; font-size: 13px; line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .kotak-id {
+      font-size: 11px; font-weight: 700; color: var(--accent-cyan); white-space: nowrap;
     }
 
-    .card-badges {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      align-items: center;
+    .kotak-badges-row {
+      display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
     }
-    .badge {
-      font-size: 10px;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-weight: 650;
+    .badge-tag {
+      font-size: 10.5px; font-weight: 600; padding: 2px 7px; border-radius: 5px;
+      display: inline-flex; align-items: center; gap: 3px;
     }
-    .badge-waste { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
-    .badge-section { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
-    .badge-pic { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
-    .badge-status { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+    .badge-waste { background: rgba(245, 158, 11, 0.15); color: #f6ad55; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-bagian { background: rgba(139, 92, 246, 0.15); color: #b794f4; border: 1px solid rgba(139, 92, 246, 0.3); }
+    .badge-pic { background: rgba(59, 130, 246, 0.15); color: #63b3ed; border: 1px solid rgba(59, 130, 246, 0.3); }
 
-    .card-meta {
-      font-size: 11px;
-      color: var(--text-secondary);
-      border-top: 1px solid var(--border-color);
-      padding-top: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* Desain Status Approval Lebih Modern & Kontras */
+    .badge-status {
+      font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 6px;
+      display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    }
+    .status-menunggu { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .status-proses { background: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4); }
+    .status-selesai { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
+    .status-ditolak { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+
+    .kotak-item-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; color: var(--text-secondary); border-top: 1px solid rgba(255,255,255,0.05); paddingTop: 6px;
     }
 
-    /* PERBAIKAN LAYAR MODAL AGAR FIT SEMPURNA DI SEMUA PERANGKAT */
+    /* Modal Detail & Tambah */
     .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(5px);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      padding: 10px;
-      box-sizing: border-box;
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px);
+      justify-content: center; align-items: center; z-index: 1000; padding: 12px; box-sizing: border-box;
     }
     .modal-content {
-      background: var(--card-bg);
-      color: var(--text-main);
-      width: 100%;
-      max-width: 450px;
-      max-height: 92vh;
-      padding: 16px;
-      border-radius: 14px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      overflow-y: auto;
-      box-sizing: border-box;
+      background: var(--card-bg); color: var(--text-main); width: 100%; max-width: 480px;
+      padding: 18px; border-radius: 12px; border: 1px solid var(--border-color);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 10px;
+      max-height: 90vh; overflow-y: auto;
     }
     .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 8px;
-      flex-shrink: 0;
+      display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;
     }
     .modal-header h3 { margin: 0; color: #ffffff; font-size: 15px; }
-    .btn-close { background: transparent; border: none; font-size: 20px; cursor: pointer; color: var(--text-secondary); line-height: 1; }
-    
-    .form-row {
-      display: flex;
-      gap: 8px;
-      width: 100%;
+    .btn-close-modal { background: transparent; border: none; font-size: 20px; cursor: pointer; color: var(--text-secondary); line-height: 1; }
+    .modal-body { display: flex; flex-direction: column; gap: 8px; }
+    .modal-body label { display: flex; flex-direction: column; gap: 3px; font-size: 11.5px; font-weight: 600; color: var(--text-secondary); }
+    .modal-body input, .modal-body select, .modal-body textarea {
+      padding: 8px 10px; font-size: 12px; font-family: inherit; border: 1px solid var(--border-color);
+      border-radius: 6px; outline: none; width: 100%; background: #161b26; color: var(--text-main);
     }
-    .form-group { 
-      display: flex; 
-      flex-direction: column; 
-      gap: 4px; 
-      width: 100%;
+    .modal-body input:focus, .modal-body select:focus, .modal-body textarea:focus { border-color: var(--accent-cyan); }
+    .modal-footer {
+      display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px;
     }
-    .form-group label { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%;
-      padding: 8px 10px;
-      font-size: 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      outline: none;
-      background: #161b26;
-      color: var(--text-main);
-      font-family: inherit;
-      box-sizing: border-box;
+    .btn-delete { background: transparent; color: #f87171; border: none; cursor: pointer; font-size: 12px; font-weight: 600; }
+    .btn-delete:hover { text-decoration: underline; }
+    .btn-save {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); color: white; border: none;
+      padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12.5px; width: 100%;
     }
-    .form-group textarea { resize: vertical; min-height: 60px; }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-blue); }
-    .form-group input:disabled, .form-group select:disabled, .form-group textarea:disabled {
-      background-color: #1a202c;
-      color: #9099a2;
-      cursor: not-allowed;
-    }
+    .btn-save:hover { opacity: 0.9; }
 
-    .approval-box-list {
-      background: #161b26;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 140px;
-      overflow-y: auto;
+    .approval-list {
+      background: #161b26; border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; display: flex; flex-direction: column; gap: 6px; max-height: 140px; overflow-y: auto;
     }
     .approval-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      padding: 3px 0;
-      border-bottom: 1px dashed rgba(255,255,255,0.05);
-    }
-    .approval-row:last-child { border-bottom: none; }
-
-    .modal-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-top: 1px solid var(--border-color);
-      padding-top: 10px;
-      gap: 8px;
-      flex-shrink: 0;
+      display: flex; justify-content: space-between; align-items: center; font-size: 11px; padding: 4px 6px; background: rgba(255,255,255,0.02); border-radius: 4px;
     }
   </style>
 </head>
@@ -430,122 +278,192 @@
     <div class="custom-alert-box">
       <div class="alert-icon-wrapper" id="alertIcon">⚠️</div>
       <h4 id="alertTitle">Informasi Sistem</h4>
-      <p id="alertMessage">Pesan pemberitahuan...</p>
+      <p id="alertMessage">Pesan...</p>
       <div class="alert-actions" id="alertActions">
-        <button class="btn-alert-ok" id="btnAlertOk" onclick="closeCustomAlert()">Mengerti</button>
+        <button class="btn-alert-ok" onclick="closeCustomAlert()">Mengerti</button>
       </div>
     </div>
   </div>
 
-  <div class="header-area">
-    <div>
-      <a href="index.html" class="back-home">← Kembali ke Menu Utama</a>
-      <div class="page-title" style="margin-top: 4px;">
+  <button class="back-nav" onclick="window.location.href='index.html'">← Kembali ke Menu Utama</button>
+
+  <div class="header-action-area">
+    <div class="header-top-row">
+      <div class="brand-wrapper">
         <h2>Kotak Saran & Inovasi</h2>
-        <p id="modeSubtitle">Sistem Pengelolaan Improvement Terpadu</p>
+        <p>Sistem Pengelolaan Improvement Terpadu</p>
       </div>
+      <button class="btn-create" onclick="openAddModal()">+ Buat Saran</button>
     </div>
-    <button class="btn-add-saran" onclick="openAddModal()">+ Buat Saran</button>
+    <div class="header-bottom-row">
+      <input type="text" id="searchInput" class="search-input" placeholder="Cari temuan, solusi, atau jenis waste..." oninput="renderKotakList()">
+    </div>
   </div>
 
-  <input type="text" class="search-box" id="searchInput" placeholder="Cari temuan, solusi, atau jenis waste..." oninput="renderKotakList()">
-
-  <div class="info-bar">
-    <span id="totalCount">Total Saran Terekam: 0 Data</span>
-    <span id="userRoleBadge" style="color: var(--accent-cyan); font-weight: 600;">-</span>
+  <!-- Filter Status Approval -->
+  <div class="filter-bar">
+    <select id="filterStatus" class="filter-select" onchange="renderKotakList()">
+      <option value="ALL">Semua Status Pengajuan</option>
+      <option value="Menunggu">Menunggu Approval</option>
+      <option value="Disetujui">Disetujui / Diproses</option>
+      <option value="Selesai">Selesai (Closed)</option>
+      <option value="Ditolak">Ditolak</option>
+    </select>
+    <button class="btn-refresh" onclick="loadKotakSaranData(true)">🔄 Refresh</button>
   </div>
 
-  <div class="list-container" id="listContainer">
-    <div style="text-align: center; color: var(--text-secondary); padding: 30px;">Memuat data saran...</div>
+  <div class="sub-meta-info">
+    <span id="totalDataLabel">Total Saran Terekam: 0 Data</span>
+    <span id="userLoginLabel" style="color: var(--accent-cyan); font-weight: 600;"></span>
+  </div>
+
+  <div class="kotak-scroll-area">
+    <ul id="kotakListContainer">
+      <li style="text-align:center; color:#9099a2; padding:20px;">Memuat data...</li>
+    </ul>
   </div>
 
 </div>
 
-<!-- Modal Tambah / Detail Saran -->
-<div class="modal-overlay" id="saranModal">
+<!-- Modal Tambah Saran -->
+<div class="modal-overlay" id="addModal">
   <div class="modal-content">
     <div class="modal-header">
-      <h3 id="modalTitle">Buat Saran & Inovasi Baru</h3>
-      <button class="btn-close" onclick="closeSaranModal()">&times;</button>
+      <h3>Buat Saran & Inovasi Baru</h3>
+      <button class="btn-close-modal" onclick="closeAddModal()">&times;</button>
     </div>
-    <div class="modal-body" style="display: flex; flex-direction: column; gap: 8px;">
-      <input type="hidden" id="modalSaranId">
-      <div class="form-group">
-        <label>Nama Pelapor:</label>
-        <input type="text" id="inputNamaPelapor" placeholder="Nama lengkap...">
-      </div>
-      <div class="form-group">
-        <label>Bagian / Section:</label>
-        <input type="text" id="inputBagian" placeholder="Contoh: Asset & System Control">
-      </div>
-      <div class="form-row">
-        <div class="form-group" style="flex: 1;">
-          <label>Tanggal Ditemukan:</label>
-          <input type="date" id="inputTglDitemukan">
-        </div>
-        <div class="form-group" style="flex: 1;">
-          <label>Jenis Waste:</label>
-          <select id="inputJenisWaste">
+    <div class="modal-body">
+      <label>
+        Nama Pelapor:
+        <input type="text" id="addNamaPelapor" readonly style="background-color: #1a202c; color: var(--accent-cyan); font-weight: bold;">
+      </label>
+      <label>
+        Bagian / Section:
+        <input type="text" id="addBagian" placeholder="Contoh: Produksi, Maintenance, dll...">
+      </label>
+      <div style="display: flex; gap: 8px;">
+        <label style="flex: 1;">
+          Tanggal Ditemukan:
+          <input type="date" id="addTglDiTemukan">
+        </label>
+        <label style="flex: 1;">
+          Jenis Waste:
+          <select id="addJenisWaste">
             <option value="Defect">Defect</option>
-            <option value="Motion">Motion</option>
-            <option value="Waiting">Waiting</option>
             <option value="Overproduction">Overproduction</option>
+            <option value="Waiting">Waiting</option>
+            <option value="Non-Utilized Talent">Non-Utilized Talent</option>
             <option value="Transportation">Transportation</option>
             <option value="Inventory">Inventory</option>
+            <option value="Motion">Motion</option>
             <option value="Extra-Processing">Extra-Processing</option>
           </select>
-        </div>
+        </label>
       </div>
-      <div class="form-group">
-        <label>Lokasi Temuan:</label>
-        <input type="text" id="inputLokasiTemuan" placeholder="Lokasi spesifik area...">
-      </div>
-      <div class="form-group">
-        <label>Deskripsi Temuan / Waste:</label>
-        <textarea id="inputDescTemuan" placeholder="Jelaskan kendala atau inefisiensi yang ditemukan..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>Solusi / Perbaikan / Inovasi:</label>
-        <textarea id="inputSolusi" placeholder="Usulan solusi perbaikan..."></textarea>
-      </div>
+      <label>
+        Lokasi Temuan:
+        <input type="text" id="addLokasiTemuan" placeholder="Lokasi spesifik temuan...">
+      </label>
+      <label>
+        Deskripsi Temuan / Waste:
+        <textarea id="addDescTemuanWaste" rows="3" placeholder="Jelaskan masalah atau pemborosan yang ditemukan..."></textarea>
+      </label>
+      <label>
+        Solusi / Perbaikan / Inovasi:
+        <textarea id="addSolusi" rows="3" placeholder="Tuliskan gagasan solusi atau perbaikan..."></textarea>
+      </label>
+    </div>
+    <div class="modal-footer">
+      <button onclick="closeAddModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Batal</button>
+      <button class="btn-save" onclick="submitAddKotak()">Kirim Pengajuan</button>
+    </div>
+  </div>
+</div>
 
-      <!-- Kotak Informasi & Tombol Approval SectionHead -->
-      <div class="form-group" id="sectionHeadApprovalSection" style="display: none;">
-        <label>Status Persetujuan SectionHead (7 Orang):</label>
-        <div class="approval-box-list" id="approvalListContainerModal">
-          <!-- Render daftar approval SectionHead secara dinamis -->
-        </div>
-        <div id="btnApprovalActionWrapper" style="margin-top: 4px;">
-          <!-- Tombol Approve khusus SectionHead -->
-        </div>
-      </div>
-
-      <!-- Panel Khusus Superuser untuk Pilih PIC -->
-      <div class="form-group" id="adminPicPanel" style="display: none; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 2px;">
-        <label style="color: var(--accent-cyan); font-weight: 700;" id="adminPanelLabel">⚙️ Panel Admin / Superuser (Penugasan PIC):</label>
-        <div class="form-row" style="margin-top: 4px;">
-          <select id="adminStatusPengajuan" style="flex: 1;" disabled>
+<!-- Modal Detail Saran -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="detailModalTitleID">Detail Saran</h3>
+      <button class="btn-close-modal" onclick="closeDetailModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="detailIdKotak">
+      <div id="adminApprovalSection" style="display: none; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); padding: 10px; border-radius: 8px; margin-bottom: 4px;">
+        <h4 style="margin: 0 0 6px 0; font-size: 12.5px; color: #60a5fa;">Panel Admin / PIC</h4>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label style="font-size: 11px;">Status Pengajuan:</label>
+          <select id="adminStatusPengajuan">
             <option value="Menunggu Approval SectionHead">Menunggu Approval SectionHead</option>
             <option value="Disetujui SectionHead - Menunggu Penugasan PIC">Disetujui SectionHead - Menunggu Penugasan PIC</option>
             <option value="Sedang Diproses PIC">Sedang Diproses PIC</option>
-            <option value="Selesai">Selesai</option>
+            <option value="Selesai">Selesai (Closed)</option>
             <option value="Ditolak">Ditolak</option>
           </select>
-          <select id="adminTujukanPic" style="flex: 1;" disabled>
-            <option value="">-- Menunggu Semua Approve --</option>
+          <label style="font-size: 11px;">Tujukan ke PIC:</label>
+          <select id="adminTujukanPic">
+            <option value="">-- Pilih PIC --</option>
           </select>
-        </div>
-        <div id="adminNoticeText" style="font-size: 11px; color: var(--accent-warn); margin-top: 4px; display: none;">
-          ⚠️ Kolom penugasan PIC terkunci sampai ke-7 SectionHead memberikan Approve.
+          <button class="btn-save" style="margin-top: 4px; padding: 6px;" onclick="saveAdminKotakUpdate()">Simpan Status & PIC</button>
         </div>
       </div>
 
+      <div style="display: flex; gap: 8px;">
+        <label style="flex: 1;">
+          Nama Pelapor:
+          <input type="text" id="detailNamaPelapor" readonly>
+        </label>
+        <label style="flex: 1;">
+          Bagian / Section:
+          <input type="text" id="detailBagian">
+        </label>
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <label style="flex: 1;">
+          Tanggal Ditemukan:
+          <input type="date" id="detailTglDiTemukan">
+        </label>
+        <label style="flex: 1;">
+          Jenis Waste:
+          <select id="detailJenisWaste">
+            <option value="Defect">Defect</option>
+            <option value="Overproduction">Overproduction</option>
+            <option value="Waiting">Waiting</option>
+            <option value="Non-Utilized Talent">Non-Utilized Talent</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Inventory">Inventory</option>
+            <option value="Motion">Motion</option>
+            <option value="Extra-Processing">Extra-Processing</option>
+          </select>
+        </label>
+      </div>
+
+      <label>
+        Lokasi Temuan:
+        <input type="text" id="detailLokasiTemuan">
+      </label>
+      <label>
+        Deskripsi Temuan / Waste:
+        <textarea id="detailDescTemuanWaste" rows="3"></textarea>
+      </label>
+      <label>
+        Solusi / Perbaikan / Inovasi (Termasuk Progress PIC):
+        <textarea id="detailSolusi" rows="4"></textarea>
+      </label>
+
+      <label style="margin-top: 4px;">
+        Status Persetujuan SectionHead (<span id="shCountLabel">0 Orang</span>):
+        <div class="approval-list" id="detailApprovalListContainer">
+          <!-- List Approval -->
+        </div>
+      </label>
     </div>
     <div class="modal-footer">
-      <button class="btn-delete" id="btnDeleteSaran" onclick="requestDeleteSaran()" style="display: none;">Hapus Saran</button>
-      <div style="display: flex; gap: 8px; margin-left: auto;">
-        <button onclick="closeSaranModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer;">Batal</button>
-        <button class="btn-add-saran" id="btnSaveSaran" onclick="submitSaveSaran()">Simpan Saran</button>
+      <button class="btn-delete" id="detailDeleteBtn" onclick="requestDeleteKotak()">Hapus Saran</button>
+      <div style="display: flex; gap: 6px;">
+        <button onclick="closeDetailModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">Tutup</button>
+        <button class="btn-save" id="detailSaveBtn" onclick="saveKotakEdit()">Simpan Perubahan</button>
       </div>
     </div>
   </div>
@@ -556,61 +474,47 @@
 <script>
   const API_URL = CONFIG.API_URL;
   let allKotakData = [];
-  let allUsersMaster = [];
-  let activeUserNip = localStorage.getItem("pbas_nip") || "";
-  let activeUserNama = localStorage.getItem("pbas_nama") || "";
-  let activeUserRole = localStorage.getItem("pbas_role") || "Member";
-  let activeUserJabatan = localStorage.getItem("pbas_jabatan") || "";
+  let currentUserNama = "";
+  let currentUserNip = "";
+  let currentUserRole = "Member";
+  let activeUsersList = [];
 
   window.addEventListener('DOMContentLoaded', () => {
-    if (!activeUserNip) {
-      showCustomAlert("Akses Terkunci", "Silakan login terlebih dahulu untuk mengakses Kotak Saran.", "warning", () => {
-        window.location.href = "login.html";
-      });
-      return;
+    currentUserNama = localStorage.getItem("pbas_nama") || "";
+    currentUserNip = localStorage.getItem("pbas_nip") || "";
+    currentUserRole = localStorage.getItem("pbas_role") || "Member";
+
+    if (currentUserNama) {
+      document.getElementById("userLoginLabel").textContent = `👤 ${currentUserNama} (${currentUserRole})`;
+    } else {
+      document.getElementById("userLoginLabel").textContent = `⚠️ Belum Login`;
     }
 
-    let roleText = `Login sebagai: ${activeUserNama} (${activeUserRole}`;
-    if (activeUserJabatan) roleText += ` - ${activeUserJabatan}`;
-    roleText += `)`;
-    document.getElementById("userRoleBadge").textContent = roleText;
-
-    loadKotakData();
-    loadActiveUsersMaster();
+    document.getElementById("addTglDiTemukan").value = new Date().toISOString().split('T')[0];
+    
+    loadKotakSaranData();
+    loadActiveUsersForPic();
   });
 
   function showLoading(text = "Memproses data...") {
     document.getElementById("loadingText").textContent = text;
     document.getElementById("loadingOverlay").style.display = "flex";
   }
-  function hideLoading() {
-    document.getElementById("loadingOverlay").style.display = "none";
-  }
+  function hideLoading() { document.getElementById("loadingOverlay").style.display = "none"; }
 
   function showCustomAlert(title, message, type = "warning", callback = null) {
     document.getElementById("alertTitle").textContent = title;
-    document.getElementById("alertMessage").textContent = message;
+    document.getElementById("alertMessage").innerHTML = message;
     
     const iconEl = document.getElementById("alertIcon");
     iconEl.className = "alert-icon-wrapper";
-    if (type === "warning") {
-      iconEl.textContent = "⚠️";
-      iconEl.classList.add("alert-icon-warning");
-    } else if (type === "success") {
-      iconEl.textContent = "✅";
-      iconEl.classList.add("alert-icon-success");
-    } else if (type === "danger") {
-      iconEl.textContent = "🗑️";
-      iconEl.classList.add("alert-icon-danger");
-    } else {
-      iconEl.textContent = "ℹ️";
-      iconEl.classList.add("alert-icon-info");
-    }
+    if (type === "success") { iconEl.textContent = "✅"; iconEl.classList.add("alert-icon-success"); }
+    else if (type === "danger") { iconEl.textContent = "🗑️"; iconEl.classList.add("alert-icon-danger"); }
+    else if (type === "info") { iconEl.textContent = "ℹ️"; iconEl.classList.add("alert-icon-info"); }
+    else { iconEl.textContent = "⚠️"; iconEl.classList.add("alert-icon-warning"); }
 
     window._alertCallback = callback;
-    document.getElementById("alertActions").innerHTML = `
-      <button class="btn-alert-ok" id="btnAlertOk" onclick="closeCustomAlert()">Mengerti</button>
-    `;
+    document.getElementById("alertActions").innerHTML = `<button class="btn-alert-ok" onclick="closeCustomAlert()">Mengerti</button>`;
     document.getElementById("customAlertOverlay").style.display = "flex";
   }
 
@@ -622,438 +526,392 @@
     iconEl.className = "alert-icon-wrapper alert-icon-danger";
     iconEl.textContent = "⚠️";
 
-    const actionsContainer = document.getElementById("alertActions");
-    actionsContainer.innerHTML = `
+    document.getElementById("alertActions").innerHTML = `
       <button class="btn-alert-cancel" onclick="closeCustomAlert()">Batal</button>
       <button class="btn-alert-danger-confirm" id="btnConfirmDanger">Hapus</button>
     `;
-
     document.getElementById("btnConfirmDanger").onclick = () => {
       closeCustomAlert();
       onConfirmCallback();
     };
-
     document.getElementById("customAlertOverlay").style.display = "flex";
   }
 
   function closeCustomAlert() {
     document.getElementById("customAlertOverlay").style.display = "none";
-    if (window._alertCallback && typeof window._alertCallback === "function") {
-      window._alertCallback();
-      window._alertCallback = null;
-    }
+    if (window._alertCallback) { window._alertCallback(); window._alertCallback = null; }
   }
 
-  async function loadActiveUsersMaster() {
-    try {
-      const response = await fetch(`${API_URL}?action=getUsers`);
-      const result = await response.json();
-      allUsersMaster = Array.isArray(result) ? result : [];
-      
-      const picSelect = document.getElementById("adminTujukanPic");
-      picSelect.innerHTML = '<option value="">-- Pilih PIC Penugasan --</option>';
-      allUsersMaster.forEach(u => {
-        let opt = document.createElement("option");
-        opt.value = `${u.nama} [${u.nip}]`;
-        opt.textContent = `${u.nama} (${u.nip})`;
-        picSelect.appendChild(opt);
-      });
-    } catch (err) {
-      console.error("Gagal memuat master user", err);
+  async function loadKotakSaranData(force = false) {
+    const cached = localStorage.getItem("local_kotak_cache");
+    if (cached && !force) {
+      try {
+        allKotakData = JSON.parse(cached);
+        renderKotakList();
+      } catch(e) {}
+    } else {
+      showLoading("Memuat data kotak saran...");
     }
-  }
 
-  async function loadKotakData() {
-    showLoading("Memuat data kotak saran...");
     try {
-      const response = await fetch(`${API_URL}?action=getKotakSaran`);
-      const result = await response.json();
+      const res = await fetch(`${API_URL}?action=getKotakSaran`);
+      const result = await res.json();
       allKotakData = Array.isArray(result) ? result : [];
+      localStorage.setItem("local_kotak_cache", JSON.stringify(allKotakData));
       renderKotakList();
     } catch (err) {
       console.error(err);
-      document.getElementById("listContainer").innerHTML = "<div style='text-align:center; color:#f87171; padding:20px;'>Gagal memuat data dari server.</div>";
+      if (!allKotakData.length) {
+        document.getElementById("kotakListContainer").innerHTML = `<li style="text-align:center; color:#f87171; padding:20px;">Gagal memuat data dari server.</li>`;
+      }
     } finally {
       hideLoading();
     }
   }
 
+  async function loadActiveUsersForPic() {
+    try {
+      const res = await fetch(`${API_URL}?action=getUsers`);
+      const data = await res.json();
+      activeUsersList = Array.isArray(data) ? data : [];
+      
+      const selectPic = document.getElementById("adminTujukanPic");
+      selectPic.innerHTML = `<option value="">-- Pilih PIC --</option>`;
+      activeUsersList.forEach(u => {
+        let opt = document.createElement("option");
+        opt.value = `${u.nama} [${u.nip}]`;
+        opt.textContent = `${u.nama} (${u.nip})`;
+        selectPic.appendChild(opt);
+      });
+    } catch(e) { console.error(e); }
+  }
+
   function renderKotakList() {
-    const container = document.getElementById("listContainer");
-    const keyword = document.getElementById("searchInput").value.toLowerCase();
+    const container = document.getElementById("kotakListContainer");
+    const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
+    const filterStatus = document.getElementById("filterStatus").value;
+
+    container.innerHTML = "";
 
     const filtered = allKotakData.filter(item => {
-      return (item.id || "").toLowerCase().includes(keyword) ||
-             (item.namaPelapor || "").toLowerCase().includes(keyword) ||
-             (item.bagian || "").toLowerCase().includes(keyword) ||
-             (item.jenisWaste || "").toLowerCase().includes(keyword) ||
-             (item.descTemuanWaste || "").toLowerCase().includes(keyword) ||
-             (item.solusi || "").toLowerCase().includes(keyword);
+      const matchKeyword = !keyword || 
+        (item.id && item.id.toLowerCase().includes(keyword)) ||
+        (item.namaPelapor && item.namaPelapor.toLowerCase().includes(keyword)) ||
+        (item.bagian && item.bagian.toLowerCase().includes(keyword)) ||
+        (item.lokasiTemuan && item.lokasiTemuan.toLowerCase().includes(keyword)) ||
+        (item.jenisWaste && item.jenisWaste.toLowerCase().includes(keyword)) ||
+        (item.descTemuanWaste && item.descTemuanWaste.toLowerCase().includes(keyword)) ||
+        (item.solusi && item.solusi.toLowerCase().includes(keyword));
+
+      let matchStatus = true;
+      const st = (item.statusPengajuan || "").toLowerCase();
+      if (filterStatus === "Menunggu") {
+        matchStatus = st.includes("menunggu");
+      } else if (filterStatus === "Disetujui") {
+        matchStatus = st.includes("disetujui") || st.includes("diproses");
+      } else if (filterStatus === "Selesai") {
+        matchStatus = st.includes("selesai");
+      } else if (filterStatus === "Ditolak") {
+        matchStatus = st.includes("ditolak");
+      }
+
+      return matchKeyword && matchStatus;
     });
 
-    document.getElementById("totalCount").textContent = `Total Saran Terekam: ${filtered.length} Data`;
+    document.getElementById("totalDataLabel").textContent = `Total Saran Terekam: ${filtered.length} Data`;
 
     if (filtered.length === 0) {
-      container.innerHTML = "<div style='text-align:center; color:var(--text-secondary); padding:40px;'>Belum ada data saran atau inovasi yang sesuai.</div>";
+      container.innerHTML = `<li style="text-align:center; color:#9099a2; padding:30px;">Tidak ada data saran yang ditemukan.</li>`;
       return;
     }
 
-    container.innerHTML = "";
-    filtered.forEach(item => {
-      const card = document.createElement("div");
-      card.className = "card-item";
-      card.onclick = () => openDetailModal(item);
+    // Urutkan data terbaru di atas (Descending berdasarkan ID/Waktu)
+    const sortedFiltered = filtered.slice().reverse();
 
-      const topDiv = document.createElement("div");
-      topDiv.className = "card-top";
+    sortedFiltered.forEach(item => {
+      const li = document.createElement("li");
+      li.className = "kotak-item";
+      li.onclick = () => openDetailModal(item);
 
-      const titleSpan = document.createElement("div");
-      titleSpan.className = "card-title";
-      titleSpan.textContent = item.solusi || item.descTemuanWaste || "-";
+      const topRow = document.createElement("div");
+      topRow.className = "kotak-item-top";
 
-      const idSpan = document.createElement("span");
-      idSpan.className = "card-id";
-      idSpan.textContent = item.id;
+      const titleEl = document.createElement("div");
+      titleEl.className = "kotak-title";
+      titleEl.textContent = item.solusi || item.descTemuanWaste || "(Tanpa Keterangan)";
 
-      topDiv.appendChild(titleSpan);
-      topDiv.appendChild(idSpan);
+      const idEl = document.createElement("div");
+      idEl.className = "kotak-id";
+      idEl.textContent = item.id;
 
-      const badgesDiv = document.createElement("div");
-      badgesDiv.className = "card-badges";
+      topRow.appendChild(titleEl);
+      topRow.appendChild(idEl);
 
-      const badgeWaste = document.createElement("span");
-      badgeWaste.className = "badge badge-waste";
-      badgeWaste.textContent = `⚠️ ${item.jenisWaste}`;
-      badgesDiv.appendChild(badgeWaste);
+      const badgesRow = document.createElement("div");
+      badgesRow.className = "kotak-badges-row";
 
-      const badgeSec = document.createElement("span");
-      badgeSec.className = "badge badge-section";
-      badgeSec.textContent = item.bagian;
-      badgesDiv.appendChild(badgeSec);
-
-      if (item.tujukanPic) {
-        const badgePic = document.createElement("span");
-        badgePic.className = "badge badge-pic";
-        badgePic.textContent = `PIC: ${item.tujukanPic.split('[')[0].trim()}`;
-        badgesDiv.appendChild(badgePic);
+      // Badge Waste
+      if (item.jenisWaste && item.jenisWaste !== "-") {
+        const bWaste = document.createElement("span");
+        bWaste.className = "badge-tag badge-waste";
+        bWaste.textContent = `⚠️ ${item.jenisWaste}`;
+        badgesRow.appendChild(bWaste);
       }
 
-      const badgeStatus = document.createElement("span");
-      badgeStatus.className = "badge badge-status";
-      badgeStatus.textContent = item.statusPengajuan;
-      badgesDiv.appendChild(badgeStatus);
+      // Badge Bagian
+      if (item.bagian && item.bagian !== "-") {
+        const bBagian = document.createElement("span");
+        bBagian.className = "badge-tag badge-bagian";
+        bBagian.textContent = item.bagian;
+        badgesRow.appendChild(bBagian);
+      }
 
-      const metaDiv = document.createElement("div");
-      metaDiv.className = "card-meta";
-      metaDiv.innerHTML = `<span>Pelapor: <b>${item.namaPelapor}</b></span><span>Ditemukan: ${item.tglDiTemukan ? item.tglDiTemukan.substring(0, 10) : '-'}</span>`;
+      // Badge PIC (jika ada)
+      if (item.tujukanPic) {
+        const bPic = document.createElement("span");
+        bPic.className = "badge-tag badge-pic";
+        let cleanPic = item.tujukanPic.includes("[") ? item.tujukanPic.split("[")[0].trim() : item.tujukanPic;
+        bPic.textContent = `PIC: ${cleanPic}`;
+        badgesRow.appendChild(bPic);
+      }
 
-      card.appendChild(topDiv);
-      card.appendChild(badgesDiv);
-      card.appendChild(metaDiv);
-      container.appendChild(card);
+      // Badge Status Pengajuan dengan warna modern kontras
+      const bStatus = document.createElement("span");
+      bStatus.className = "badge-status";
+      let statusText = item.statusPengajuan || "Menunggu Approval SectionHead";
+      
+      const stLower = statusText.toLowerCase();
+      if (stLower.includes("selesai")) {
+        bStatus.classList.add("status-selesai");
+        bStatus.textContent = `✅ ${statusText}`;
+      } else if (stLower.includes("disetujui") || stLower.includes("proses")) {
+        bStatus.classList.add("status-proses");
+        bStatus.textContent = `🚀 ${statusText}`;
+      } else if (stLower.includes("ditolak")) {
+        bStatus.classList.add("status-ditolak");
+        bStatus.textContent = `❌ ${statusText}`;
+      } else {
+        bStatus.classList.add("status-menunggu");
+        bStatus.textContent = `⏳ ${statusText}`;
+      }
+      badgesRow.appendChild(bStatus);
+
+      const footerRow = document.createElement("div");
+      footerRow.className = "kotak-item-footer";
+      footerRow.innerHTML = `<span>Pelapor: <b>${item.namaPelapor || '-'}</b></span><span>Ditemukan: ${item.tglDiTemukan || '-'}</span>`;
+
+      li.appendChild(topRow);
+      li.appendChild(badgesRow);
+      li.appendChild(footerRow);
+      container.appendChild(li);
     });
   }
 
   function openAddModal() {
-    document.getElementById("modalTitle").textContent = "Buat Saran & Inovasi Baru";
-    document.getElementById("modalSaranId").value = "";
-    document.getElementById("inputNamaPelapor").value = activeUserNama;
-    document.getElementById("inputBagian").value = "";
-    document.getElementById("inputTglDitemukan").value = new Date().toISOString().substring(0, 10);
-    document.getElementById("inputLokasiTemuan").value = "";
-    document.getElementById("inputDescTemuan").value = "";
-    document.getElementById("inputSolusi").value = "";
-
-    document.getElementById("inputNamaPelapor").disabled = false;
-    document.getElementById("inputBagian").disabled = false;
-    document.getElementById("inputTglDitemukan").disabled = false;
-    document.getElementById("inputLokasiTemuan").disabled = false;
-    document.getElementById("inputJenisWaste").disabled = false;
-    document.getElementById("inputDescTemuan").disabled = false;
-    document.getElementById("inputSolusi").disabled = false;
-
-    document.getElementById("sectionHeadApprovalSection").style.display = "none";
-    document.getElementById("adminPicPanel").style.display = "none";
-    document.getElementById("btnDeleteSaran").style.display = "none";
-    document.getElementById("btnSaveSaran").style.display = "inline-flex";
-
-    document.getElementById("saranModal").style.display = "flex";
-  }
-
-  function openDetailModal(item) {
-    document.getElementById("modalTitle").textContent = `Detail Saran (${item.id})`;
-    document.getElementById("modalSaranId").value = item.id;
-    document.getElementById("inputNamaPelapor").value = item.namaPelapor;
-    document.getElementById("inputBagian").value = item.bagian;
-    
-    let formattedDate = "";
-    if (item.tglDiTemukan) {
-      formattedDate = item.tglDiTemukan.toString().substring(0, 10);
-    }
-    document.getElementById("inputTglDitemukan").value = formattedDate;
-
-    document.getElementById("inputLokasiTemuan").value = item.lokasiTemuan;
-    document.getElementById("inputJenisWaste").value = item.jenisWaste;
-    document.getElementById("inputDescTemuan").value = item.descTemuanWaste;
-    document.getElementById("inputSolusi").value = item.solusi;
-
-    const isSuperUser = (activeUserRole.toLowerCase() === "superuser");
-    const isOwner = (activeUserNama.toLowerCase().trim() === item.namaPelapor.toLowerCase().trim());
-    const canEdit = isSuperUser || isOwner;
-
-    document.getElementById("inputNamaPelapor").disabled = true;
-    document.getElementById("inputBagian").disabled = !canEdit;
-    document.getElementById("inputTglDitemukan").disabled = !canEdit;
-    document.getElementById("inputLokasiTemuan").disabled = !canEdit;
-    document.getElementById("inputJenisWaste").disabled = !canEdit;
-    document.getElementById("inputDescTemuan").disabled = !canEdit;
-    document.getElementById("inputSolusi").disabled = !canEdit;
-
-    // Render daftar approval SectionHead
-    const approvalContainer = document.getElementById("approvalListContainerModal");
-    approvalContainer.innerHTML = "";
-    let hasPending = false;
-
-    if (item.approvalDetails && item.approvalDetails.length > 0) {
-      item.approvalDetails.forEach(sh => {
-        let row = document.createElement("div");
-        row.className = "approval-row";
-        let isAppr = (sh.status === "Approve");
-        if (!isAppr) hasPending = true;
-
-        row.innerHTML = `
-          <span><b>${sh.nip}</b> - ${sh.nama}</span>
-          <span style="color: ${isAppr ? 'var(--accent-green)' : 'var(--accent-warn)'}; font-weight: 600;">
-            ${isAppr ? '✅ Approve' : '⏳ Pending'}
-          </span>
-        `;
-        approvalContainer.appendChild(row);
+    if (!currentUserNama) {
+      showCustomAlert("Belum Login", "Silakan login terlebih dahulu untuk membuat saran dan inovasi.", "warning", () => {
+        window.location.href = "login.html";
       });
-    } else {
-      approvalContainer.innerHTML = "<div style='font-size:11px; color:var(--text-secondary); text-align:center;'>Belum ada SectionHead terdaftar di sistem.</div>";
+      return;
     }
-
-    document.getElementById("sectionHeadApprovalSection").style.display = "block";
-
-    // Tombol Approve khusus jika login sebagai SectionHead
-    const actionWrapper = document.getElementById("btnApprovalActionWrapper");
-    actionWrapper.innerHTML = "";
-    const isSectionHeadUser = (activeUserJabatan.toLowerCase() === "sectionhead" || isSuperUser);
-
-    if (isSectionHeadUser) {
-      let myApprovalStatus = item.statusApprovalMap ? item.statusApprovalMap[activeUserNip] : "Pending";
-      if (myApprovalStatus !== "Approve") {
-        let btnAppr = document.createElement("button");
-        btnAppr.className = "btn-add-saran";
-        btnAppr.style.width = "100%";
-        btnAppr.style.justifyContent = "center";
-        btnAppr.innerHTML = "✅ Klik untuk Approve Saran Ini";
-        btnAppr.onclick = () => executeApproveKotakSaran(item.id);
-        actionWrapper.appendChild(btnAppr);
-      } else {
-        let infoAppr = document.createElement("div");
-        infoAppr.style.cssText = "text-align:center; font-size:11px; color:var(--accent-green); font-weight:600; padding:2px;";
-        infoAppr.textContent = "Anda telah menyetujui saran ini.";
-        actionWrapper.appendChild(infoAppr);
-      }
-    }
-
-    // Panel Admin / Superuser dengan Penguncian Otomatis Berdasarkan Status Approval
-    if (isSuperUser) {
-      document.getElementById("adminPicPanel").style.display = "block";
-      const picSelectEl = document.getElementById("adminTujukanPic");
-      const statusSelectEl = document.getElementById("adminStatusPengajuan");
-      const noticeEl = document.getElementById("adminNoticeText");
-
-      if (item.isAllApproved) {
-        picSelectEl.disabled = false;
-        statusSelectEl.disabled = false;
-        noticeEl.style.display = "none";
-        statusSelectEl.value = item.statusPengajuan || "Disetujui SectionHead - Menunggu Penugasan PIC";
-        picSelectEl.value = item.tujukanPic || "";
-      } else {
-        picSelectEl.disabled = true;
-        statusSelectEl.disabled = true;
-        noticeEl.style.display = "block";
-        statusSelectEl.value = "Menunggu Approval SectionHead";
-        picSelectEl.value = "";
-      }
-    } else {
-      document.getElementById("adminPicPanel").style.display = "none";
-    }
-
-    document.getElementById("btnDeleteSaran").style.display = canEdit ? "inline-block" : "none";
-    document.getElementById("btnSaveSaran").style.display = canEdit ? "inline-flex" : "none";
-
-    document.getElementById("saranModal").style.display = "flex";
+    document.getElementById("addNamaPelapor").value = currentUserNama;
+    document.getElementById("addBagian").value = "";
+    document.getElementById("addLokasiTemuan").value = "";
+    document.getElementById("addDescTemuanWaste").value = "";
+    document.getElementById("addSolusi").value = "";
+    document.getElementById("addModal").style.display = "flex";
   }
 
-  function closeSaranModal() {
-    document.getElementById("saranModal").style.display = "none";
-  }
+  function closeAddModal() { document.getElementById("addModal").style.display = "none"; }
 
-  async function submitSaveSaran() {
-    const id = document.getElementById("modalSaranId").value;
-    const namaPelapor = document.getElementById("inputNamaPelapor").value.trim();
-    const bagian = document.getElementById("inputBagian").value.trim();
-    const tglDiTemukan = document.getElementById("inputTglDitemukan").value;
-    const lokasiTemuan = document.getElementById("inputLokasiTemuan").value.trim();
-    const jenisWaste = document.getElementById("inputJenisWaste").value;
-    const descTemuanWaste = document.getElementById("inputDescTemuan").value.trim();
-    const solusi = document.getElementById("inputSolusi").value.trim();
+  async function submitAddKotak() {
+    const bagian = document.getElementById("addBagian").value.trim();
+    const tglDiTemukan = document.getElementById("addTglDiTemukan").value;
+    const jenisWaste = document.getElementById("addJenisWaste").value;
+    const lokasiTemuan = document.getElementById("addLokasiTemuan").value.trim();
+    const descTemuanWaste = document.getElementById("addDescTemuanWaste").value.trim();
+    const solusi = document.getElementById("addSolusi").value.trim();
 
-    if (!bagian || !tglDiTemukan || !lokasiTemuan || !descTemuanWaste || !solusi) {
-      showCustomAlert("Peringatan", "Semua kolom wajib diisi!", "warning");
+    if (!bagian || !lokasiTemuan || !descTemuanWaste || !solusi) {
+      showCustomAlert("Peringatan", "Mohon lengkapi semua kolom form pengajuan saran!", "warning");
       return;
     }
 
-    showLoading("Menyimpan data saran...");
-
+    showLoading("Mengirim saran baru...");
     try {
-      if (!id) {
-        // Tambah Baru
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams({
-            action: "addKotakSaran",
-            namaPelapor: namaPelapor,
-            bagian: bagian,
-            tglDiTemukan: tglDiTemukan,
-            lokasiTemuan: lokasiTemuan,
-            jenisWaste: jenisWaste,
-            descTemuanWaste: descTemuanWaste,
-            solusi: solusi
-          })
-        });
-        const res = await response.json();
-        if (res.status === "success") {
-          closeSaranModal();
-          showCustomAlert("Berhasil", "Saran & Inovasi berhasil direkam dan menunggu approval SectionHead.", "success", () => {
-            loadKotakData();
-          });
-        } else {
-          showCustomAlert("Gagal", res.message || "Gagal menyimpan saran.", "warning");
-        }
-      } else {
-        // Update Edit Biasa & Update Admin PIC jika Superuser
-        const isSuperUser = (activeUserRole.toLowerCase() === "superuser");
-        
-        let bodyParams = {
-          action: "updateKotakSaran",
-          id: id,
-          nip: activeUserNip,
-          userNama: activeUserNama,
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          action: "addKotakSaran",
+          namaPelapor: currentUserNama,
           bagian: bagian,
           tglDiTemukan: tglDiTemukan,
           lokasiTemuan: lokasiTemuan,
           jenisWaste: jenisWaste,
           descTemuanWaste: descTemuanWaste,
           solusi: solusi
-        };
-
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams(bodyParams)
-        });
-        const res = await response.json();
-
-        if (res.status === "success") {
-          if (isSuperUser) {
-            const statusPengajuan = document.getElementById("adminStatusPengajuan").value;
-            const tujukanPic = document.getElementById("adminTujukanPic").value;
-
-            await fetch(API_URL, {
-              method: "POST",
-              headers: { "Content-Type": "application/x-www-form-urlencoded" },
-              body: new URLSearchParams({
-                action: "updateKotakSaranAdmin",
-                id: id,
-                statusPengajuan: statusPengajuan,
-                tujukanPic: tujukanPic
-              })
-            });
-          }
-
-          closeSaranModal();
-          showCustomAlert("Berhasil", "Perubahan data berhasil disimpan.", "success", () => {
-            loadKotakData();
-          });
-        } else {
-          showCustomAlert("Gagal", res.message || "Gagal memperbarui saran.", "warning");
-        }
-      }
-    } catch (err) {
+        })
+      });
+      closeAddModal();
+      showCustomAlert("Berhasil", "Saran & Inovasi berhasil dikirim dan menunggu persetujuan SectionHead.", "success");
+      loadKotakSaranData(true);
+    } catch(err) {
       console.error(err);
-      showCustomAlert("Kesalahan", "Gagal menghubungi server.", "danger");
+      showCustomAlert("Kesalahan", "Gagal mengirim pengajuan. Silakan coba lagi.", "warning");
     } finally {
       hideLoading();
     }
   }
 
-  async function executeApproveKotakSaran(id) {
-    showLoading("Mengirim persetujuan SectionHead...");
+  function openDetailModal(item) {
+    document.getElementById("detailIdKotak").value = item.id;
+    document.getElementById("detailModalTitleID").textContent = `Detail Saran (${item.id})`;
+    document.getElementById("detailNamaPelapor").value = item.namaPelapor || "";
+    document.getElementById("detailBagian").value = item.bagian || "";
+    document.getElementById("detailTglDiTemukan").value = item.tglDiTemukan || "";
+    document.getElementById("detailJenisWaste").value = item.jenisWaste || "Defect";
+    document.getElementById("detailLokasiTemuan").value = item.lokasiTemuan || "";
+    document.getElementById("detailDescTemuanWaste").value = item.descTemuanWaste || "";
+    document.getElementById("detailSolusi").value = item.solusi || "";
+
+    // List Approval SectionHead
+    const approvalContainer = document.getElementById("detailApprovalListContainer");
+    approvalContainer.innerHTML = "";
+    const details = item.approvalDetails || [];
+    document.getElementById("shCountLabel").textContent = `${details.length} Orang`;
+
+    if (details.length === 0) {
+      approvalContainer.innerHTML = `<div style="text-align:center; color:#9099a2; font-size:11px; padding:6px;">Belum ada data SectionHead terdaftar.</div>`;
+    } else {
+      details.forEach(sh => {
+        const row = document.createElement("div");
+        row.className = "approval-row";
+        let statusBadgeSH = sh.status === "Approve" ? `<span style="color:#4ade80; font-weight:700;">✅ Approve</span>` : `<span style="color:#fbbf24; font-weight:700;">⏳ Pending</span>`;
+        row.innerHTML = `<span><b>${sh.nip}</b> - ${sh.nama}</span> ${statusBadgeSH}`;
+        approvalContainer.appendChild(row);
+      });
+    }
+
+    const isSuperUser = (currentUserRole.toLowerCase() === "superuser");
+    const adminPanel = document.getElementById("adminApprovalSection");
+
+    if (isSuperUser) {
+      adminPanel.style.display = "block";
+      document.getElementById("adminStatusPengajuan").value = item.statusPengajuan || "Menunggu Approval SectionHead";
+      document.getElementById("adminTujukanPic").value = item.tujukanPic || "";
+    } else {
+      adminPanel.style.display = "none";
+    }
+
+    const isOwner = (currentUserNama && item.namaPelapor && currentUserNama.toLowerCase().trim() === item.namaPelapor.toLowerCase().trim());
+    const canEdit = isSuperUser || isOwner;
+
+    document.getElementById("detailBagian").disabled = !canEdit;
+    document.getElementById("detailTglDiTemukan").disabled = !canEdit;
+    document.getElementById("detailJenisWaste").disabled = !canEdit;
+    document.getElementById("detailLokasiTemuan").disabled = !canEdit;
+    document.getElementById("detailDescTemuanWaste").disabled = !canEdit;
+    document.getElementById("detailSolusi").disabled = !canEdit;
+    
+    document.getElementById("detailSaveBtn").style.display = canEdit ? "inline-block" : "none";
+    document.getElementById("detailDeleteBtn").style.display = canEdit ? "inline-block" : "none";
+
+    document.getElementById("detailModal").style.display = "flex";
+  }
+
+  function closeDetailModal() { document.getElementById("detailModal").style.display = "none"; }
+
+  async function saveKotakEdit() {
+    const id = document.getElementById("detailIdKotak").value;
+    const bagian = document.getElementById("detailBagian").value.trim();
+    const tglDiTemukan = document.getElementById("detailTglDiTemukan").value;
+    const jenisWaste = document.getElementById("detailJenisWaste").value;
+    const lokasiTemuan = document.getElementById("detailLokasiTemuan").value.trim();
+    const descTemuanWaste = document.getElementById("detailDescTemuanWaste").value.trim();
+    const solusi = document.getElementById("detailSolusi").value.trim();
+
+    showLoading("Menyimpan perubahan...");
     try {
-      const response = await fetch(API_URL, {
+      await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
-          action: "approveKotakSaran",
+          action: "updateKotakSaran",
+          nip: currentUserNip,
+          userNama: currentUserNama,
           id: id,
-          nip: activeUserNip
+          bagian: bagian,
+          tglDiTemukan: tglDiTemukan,
+          lokasiTemuan: lokasiTemuan,
+          jenisWaste: jenisWaste,
+          descTemuanWaste: descTemuanWaste,
+          solusi: solusi
         })
       });
-      const res = await response.json();
-
-      if (res.status === "success") {
-        closeSaranModal();
-        showCustomAlert("Berhasil", "Persetujuan (Approve) Anda telah dicatat.", "success", () => {
-          loadKotakData();
-        });
-      } else {
-        showCustomAlert("Gagal", res.message || "Gagal melakukan approval.", "warning");
-      }
-    } catch (err) {
+      closeDetailModal();
+      showCustomAlert("Berhasil", "Perubahan saran berhasil disimpan.", "success");
+      loadKotakSaranData(true);
+    } catch(err) {
       console.error(err);
-      showCustomAlert("Kesalahan", "Gagal menghubungi server.", "danger");
+      showCustomAlert("Kesalahan", "Gagal menyimpan perubahan.", "warning");
     } finally {
       hideLoading();
     }
   }
 
-  function requestDeleteSaran() {
-    showCustomConfirm("Konfirmasi Hapus Saran", "Apakah Anda yakin ingin menghapus saran ini secara permanen?", deleteSaranExecute);
+  async function saveAdminKotakUpdate() {
+    const id = document.getElementById("detailIdKotak").value;
+    const statusPengajuan = document.getElementById("adminStatusPengajuan").value;
+    const tujukanPic = document.getElementById("adminTujukanPic").value;
+
+    showLoading("Memperbarui status admin...");
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          action: "updateKotakSaranAdmin",
+          id: id,
+          statusPengajuan: statusPengajuan,
+          tujukanPic: tujukanPic
+        })
+      });
+      closeDetailModal();
+      showCustomAlert("Berhasil", "Status dan penugasan PIC berhasil diperbarui.", "success");
+      loadKotakSaranData(true);
+    } catch(err) {
+      console.error(err);
+      showCustomAlert("Kesalahan", "Gagal memperbarui status admin.", "warning");
+    } finally {
+      hideLoading();
+    }
   }
 
-  async function deleteSaranExecute() {
-    const id = document.getElementById("modalSaranId").value;
-    showLoading("Menghapus data...");
+  function requestDeleteKotak() {
+    showCustomConfirm("Konfirmasi Hapus", "Apakah Anda yakin ingin menghapus data saran ini?", deleteKotakExecute);
+  }
 
+  async function deleteKotakExecute() {
+    const id = document.getElementById("detailIdKotak").value;
+    showLoading("Menghapus data...");
     try {
-      const response = await fetch(API_URL, {
+      await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
           action: "deleteKotakSaran",
-          id: id,
-          nip: activeUserNip,
-          userNama: activeUserNama
+          nip: currentUserNip,
+          userNama: currentUserNama,
+          id: id
         })
       });
-      const res = await response.json();
-      closeSaranModal();
-
-      if (res.status === "success") {
-        showCustomAlert("Berhasil", "Saran berhasil dihapus.", "success", () => {
-          loadKotakData();
-        });
-      } else {
-        showCustomAlert("Gagal", res.message || "Gagal menghapus data.", "warning");
-      }
-    } catch (err) {
+      closeDetailModal();
+      showCustomAlert("Berhasil", "Saran berhasil dihapus.", "success");
+      loadKotakSaranData(true);
+    } catch(err) {
       console.error(err);
-      showCustomAlert("Kesalahan", "Gagal menghubungi server.", "danger");
+      showCustomAlert("Kesalahan", "Gagal menghapus data.", "warning");
     } finally {
       hideLoading();
     }
