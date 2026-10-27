@@ -1069,8 +1069,14 @@
 
       if (savedRole.toLowerCase() === "superuser") {
         htmlContent += `
-          <button onclick="window.location.href='login.html#approval'" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); padding: 6px 10px; border-radius: 8px; font-weight: 600; font-size: 11px; cursor: pointer; white-space: nowrap;">
+          <button onclick="window.location.href='login.html#approval'" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); padding: 6px 10px; border-radius: 8px; font-weight: 600; font-size: 11px; cursor: pointer; white-space: nowrap; margin-top: 2px;">
             👥 Approval Member
+          </button>
+        `;
+      } else {
+        htmlContent += `
+          <button onclick="window.location.href='login.html#ubah-password'" style="background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); padding: 6px 10px; border-radius: 8px; font-weight: 600; font-size: 11px; cursor: pointer; white-space: nowrap; margin-top: 2px;">
+            🔑 Ubah Password
           </button>
         `;
       }
@@ -1227,11 +1233,9 @@
     switchView('workView');
     loadTasks();
     
-    // Cek dan tampilkan pop-up jadwal rutinitas hari ini
     checkAndShowTodayRutinitasPopup();
   }
 
-  // FUNGSI POP-UP JADWAL RUTINITAS HARI INI (Termasuk notifikasi jika belum ada jadwal)
   async function checkAndShowTodayRutinitasPopup() {
     try {
       const response = await fetch(`${API_URL}?action=getRutinitas`);
@@ -1274,11 +1278,11 @@
               let cleanVal = kolEVal.replace("T", " ");
               let parts = cleanVal.split(" ");
               if (parts.length >= 2) {
-                let dateParts = parts[0].split("-"); // [YYYY, MM, DD]
-                let timePart = parts[1].substring(0, 5); // HH:MM
+                let dateParts = parts[0].split("-");
+                let timePart = parts[1].substring(0, 5);
                 
                 if (dateParts.length === 3) {
-                  let yy = dateParts[0].substring(2); // 2026 -> 26
+                  let yy = dateParts[0].substring(2);
                   let mm = dateParts[1];
                   let dd = dateParts[2];
                   timeInfo = ` <small style="color:var(--accent-cyan);">(${dd}/${mm}/${yy} ${timePart})</small>`;
@@ -1293,7 +1297,6 @@
           msgHtml += `</ul>`;
           showCustomAlert(`⚡ Jadwal Hari Ini (${todayName})`, msgHtml, "info");
         } else {
-          // Jika belum ada jadwal rutinitas sama sekali untuk user ini hari ini
           let msgHtml = `Hai <b>${currentUserNama}</b>, kamu belum membuat pengingat apapun di rutinitas.<br><br><b>Buatlah pengingat!</b>`;
           showCustomAlert(`⚡ Jadwal Hari Ini (${todayName})`, msgHtml, "warning");
         }
