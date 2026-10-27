@@ -451,6 +451,35 @@
     </div>
   </div>
 
+  <!-- UBAH PASSWORD VIEW (MEMBER) -->
+  <div id="ubahPasswordView" class="auth-view">
+    <div style="width: 100%; max-width: 400px;">
+      <a href="index.html" class="back-home-link">← Kembali ke Menu Utama</a>
+    </div>
+    <div class="auth-card">
+      <div class="auth-header">
+        <h2>Ubah Password Member</h2>
+        <p>Perbarui kata sandi akun Anda secara mandiri</p>
+      </div>
+      <div class="form-group">
+        <label>Nomor Induk Pegawai (NIP):</label>
+        <input type="text" id="upNip" placeholder="Contoh: 20-0145">
+      </div>
+      <div class="form-group">
+        <label>Password Lama:</label>
+        <input type="password" id="upOldPassword" placeholder="••••••••">
+      </div>
+      <div class="form-group">
+        <label>Password Baru:</label>
+        <input type="password" id="upNewPassword" placeholder="••••••••" onkeypress="handleUbahPasswordKeyPress(event)">
+      </div>
+      <button class="btn-auth-submit" onclick="submitUbahPassword()">Simpan Password Baru</button>
+      <div class="auth-switch">
+        Ingat password? <a onclick="window.location.hash=''">Masuk di sini</a>
+      </div>
+    </div>
+  </div>
+
   <!-- APPROVAL VIEW (ADMIN) -->
   <div id="approvalView">
     <div class="approval-header-area">
@@ -553,6 +582,8 @@
       }
       switchView('approvalView');
       loadApprovalUsers();
+    } else if (hash === "#ubah-password") {
+      switchView('ubahPasswordView');
     } else {
       switchView('loginView');
     }
@@ -561,6 +592,7 @@
   function switchView(viewId) {
     document.getElementById('loginView').style.display = 'none';
     document.getElementById('registerView').style.display = 'none';
+    document.getElementById('ubahPasswordView').style.display = 'none';
     document.getElementById('approvalView').style.display = 'none';
     document.getElementById(viewId).style.display = 'flex';
   }
@@ -603,7 +635,7 @@
 
     window._alertCallback = callback;
     document.getElementById("alertActions").innerHTML = `
-      <button class="btn-alert-ok" onclick="closeCustomAlert()">Mengerti</button>
+      <button class="btn-alert-ok" id="btnAlertOk" onclick="closeCustomAlert()">Mengerti</button>
     `;
     document.getElementById("customAlertOverlay").style.display = "flex";
   }
@@ -716,8 +748,48 @@
     }
   }
 
+  async function submitUbahPassword() {
+    const nip = document.getElementById("upNip").value.trim();
+    const oldPassword = document.getElementById("upOldPassword").value.trim();
+    const newPassword = document.getElementById("upNewPassword").value.trim();
+
+    if (!nip || !oldPassword || !newPassword) {
+      showCustomAlert("Peringatan", "Semua kolom ubah password harus diisi!", "warning");
+      return;
+    }
+
+    showLoading("Memperbarui password...");
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ action: "ubahPassword", nip: nip, oldPassword: oldPassword, newPassword: newPassword })
+      });
+      const res = await response.json();
+
+      if (res.status === "success") {
+        showCustomAlert("Berhasil", "Password Anda berhasil diperbarui. Silakan login kembali.", "success", () => {
+          window.location.hash = "";
+          switchView('loginView');
+        });
+      } else if (res.status === "wrong_password") {
+        showCustomAlert("Gagal", "Password lama yang Anda masukkan salah.", "warning");
+      } else if (res.status === "not_found") {
+        showCustomAlert("Gagal", "NIP tidak ditemukan dalam sistem.", "warning");
+      } else {
+        showCustomAlert("Gagal", res.message || "Gagal mengubah password.", "warning");
+      }
+    } catch (err) {
+      console.error(err);
+      showCustomAlert("Kesalahan Jaringan", "Gagal menghubungi server.", "danger");
+    } finally {
+      hideLoading();
+    }
+  }
+
   function handleLoginKeyPress(e) { if (e.key === "Enter") submitLogin(); }
   function handleRegisterKeyPress(e) { if (e.key === "Enter") submitRegister(); }
+  function handleUbahPasswordKeyPress(e) { if (e.key === "Enter") submitUbahPassword(); }
 
   async function loadApprovalUsers(forceRefresh = false) {
     const container = document.getElementById("approvalListContainer");
@@ -828,7 +900,7 @@
     document.getElementById("modalUserStatus").value = user.status || "Pending";
     document.getElementById("modalUserRole").value = user.role || "Member";
     document.getElementById("modalUserTim").value = user.tim || "";
-    document.getElementById("modalUserNewPassword").value = ""; // Kosongkan field password baru
+    document.getElementById("modalUserNewPassword").value = "";
 
     document.getElementById("userModal").style.display = "flex";
   }
