@@ -43,6 +43,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-app);
       color: var(--text-main);
+      overflow-x: hidden;
     }
     body {
       display: flex;
@@ -210,6 +211,7 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
+      white-space: nowrap;
     }
     .btn-add-saran:hover { opacity: 0.9; }
 
@@ -311,6 +313,7 @@
       align-items: center;
     }
 
+    /* PERBAIKAN LAYAR MODAL AGAR FIT SEMPURNA DI SEMUA PERANGKAT */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -320,46 +323,61 @@
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      padding: 12px;
+      padding: 10px;
+      box-sizing: border-box;
     }
     .modal-content {
       background: var(--card-bg);
       color: var(--text-main);
       width: 100%;
       max-width: 450px;
-      padding: 20px;
+      max-height: 92vh;
+      padding: 16px;
       border-radius: 14px;
       border: 1px solid var(--border-color);
       box-shadow: 0 20px 40px rgba(0,0,0,0.6);
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      max-height: 90vh;
+      gap: 10px;
       overflow-y: auto;
+      box-sizing: border-box;
     }
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 10px;
+      padding-bottom: 8px;
+      flex-shrink: 0;
     }
-    .modal-header h3 { margin: 0; color: #ffffff; font-size: 16px; }
-    .btn-close { background: transparent; border: none; font-size: 22px; cursor: pointer; color: var(--text-secondary); line-height: 1; }
+    .modal-header h3 { margin: 0; color: #ffffff; font-size: 15px; }
+    .btn-close { background: transparent; border: none; font-size: 20px; cursor: pointer; color: var(--text-secondary); line-height: 1; }
     
-    .form-group { display: flex; flex-direction: column; gap: 5px; }
-    .form-group label { font-size: 11.5px; font-weight: 600; color: var(--text-secondary); }
+    .form-row {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+    .form-group { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 4px; 
+      width: 100%;
+    }
+    .form-group label { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
     .form-group input, .form-group select, .form-group textarea {
-      padding: 9px 12px;
-      font-size: 12.5px;
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 12px;
       border: 1px solid var(--border-color);
       border-radius: 8px;
       outline: none;
       background: #161b26;
       color: var(--text-main);
       font-family: inherit;
+      box-sizing: border-box;
     }
-    .form-group textarea { resize: vertical; min-height: 70px; }
+    .form-group textarea { resize: vertical; min-height: 60px; }
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-blue); }
     .form-group input:disabled, .form-group select:disabled, .form-group textarea:disabled {
       background-color: #1a202c;
@@ -371,17 +389,19 @@
       background: #161b26;
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      padding: 10px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
       gap: 6px;
+      max-height: 140px;
+      overflow-y: auto;
     }
     .approval-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 11.5px;
-      padding: 4px 0;
+      font-size: 11px;
+      padding: 3px 0;
       border-bottom: 1px dashed rgba(255,255,255,0.05);
     }
     .approval-row:last-child { border-bottom: none; }
@@ -391,8 +411,9 @@
       justify-content: space-between;
       align-items: center;
       border-top: 1px solid var(--border-color);
-      padding-top: 12px;
+      padding-top: 10px;
       gap: 8px;
+      flex-shrink: 0;
     }
   </style>
 </head>
@@ -447,7 +468,7 @@
       <h3 id="modalTitle">Buat Saran & Inovasi Baru</h3>
       <button class="btn-close" onclick="closeSaranModal()">&times;</button>
     </div>
-    <div class="modal-body" style="display: flex; flex-direction: column; gap: 10px;">
+    <div class="modal-body" style="display: flex; flex-direction: column; gap: 8px;">
       <input type="hidden" id="modalSaranId">
       <div class="form-group">
         <label>Nama Pelapor:</label>
@@ -457,7 +478,7 @@
         <label>Bagian / Section:</label>
         <input type="text" id="inputBagian" placeholder="Contoh: Asset & System Control">
       </div>
-      <div style="display: flex; gap: 10px;">
+      <div class="form-row">
         <div class="form-group" style="flex: 1;">
           <label>Tanggal Ditemukan:</label>
           <input type="date" id="inputTglDitemukan">
@@ -494,15 +515,15 @@
         <div class="approval-box-list" id="approvalListContainerModal">
           <!-- Render daftar approval SectionHead secara dinamis -->
         </div>
-        <div id="btnApprovalActionWrapper" style="margin-top: 6px;">
+        <div id="btnApprovalActionWrapper" style="margin-top: 4px;">
           <!-- Tombol Approve khusus SectionHead -->
         </div>
       </div>
 
       <!-- Panel Khusus Superuser untuk Pilih PIC -->
-      <div class="form-group" id="adminPicPanel" style="display: none; border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 4px;">
+      <div class="form-group" id="adminPicPanel" style="display: none; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 2px;">
         <label style="color: var(--accent-cyan); font-weight: 700;" id="adminPanelLabel">⚙️ Panel Admin / Superuser (Penugasan PIC):</label>
-        <div style="display: flex; gap: 8px; margin-top: 4px;">
+        <div class="form-row" style="margin-top: 4px;">
           <select id="adminStatusPengajuan" style="flex: 1;" disabled>
             <option value="Menunggu Approval SectionHead">Menunggu Approval SectionHead</option>
             <option value="Disetujui SectionHead - Menunggu Penugasan PIC">Disetujui SectionHead - Menunggu Penugasan PIC</option>
@@ -523,7 +544,7 @@
     <div class="modal-footer">
       <button class="btn-delete" id="btnDeleteSaran" onclick="requestDeleteSaran()" style="display: none;">Hapus Saran</button>
       <div style="display: flex; gap: 8px; margin-left: auto;">
-        <button onclick="closeSaranModal()" style="font-size: 12px; padding: 9px 14px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer;">Batal</button>
+        <button onclick="closeSaranModal()" style="font-size: 12px; padding: 8px 12px; background: #2a3447; color: #f1f3f5; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer;">Batal</button>
         <button class="btn-add-saran" id="btnSaveSaran" onclick="submitSaveSaran()">Simpan Saran</button>
       </div>
     </div>
@@ -765,7 +786,6 @@
     document.getElementById("inputNamaPelapor").value = item.namaPelapor;
     document.getElementById("inputBagian").value = item.bagian;
     
-    // Perbaikan format tanggal agar bisa dibaca oleh input type="date"
     let formattedDate = "";
     if (item.tglDiTemukan) {
       formattedDate = item.tglDiTemukan.toString().substring(0, 10);
@@ -832,7 +852,7 @@
         actionWrapper.appendChild(btnAppr);
       } else {
         let infoAppr = document.createElement("div");
-        infoAppr.style.cssText = "text-align:center; font-size:11.5px; color:var(--accent-green); font-weight:600; padding:4px;";
+        infoAppr.style.cssText = "text-align:center; font-size:11px; color:var(--accent-green); font-weight:600; padding:2px;";
         infoAppr.textContent = "Anda telah menyetujui saran ini.";
         actionWrapper.appendChild(infoAppr);
       }
