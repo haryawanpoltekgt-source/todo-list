@@ -471,12 +471,13 @@
       </div>
       <div class="form-group">
         <label>Password Baru:</label>
-        <input type="password" id="upNewPassword" placeholder="••••••••" onkeypress="handleUbahPasswordKeyPress(event)">
+        <input type="password" id="upNewPassword" placeholder="••••••••">
+      </div>
+      <div class="form-group">
+        <label>Konfirmasi Password Baru:</label>
+        <input type="password" id="upConfirmPassword" placeholder="••••••••" onkeypress="handleUbahPasswordKeyPress(event)">
       </div>
       <button class="btn-auth-submit" onclick="submitUbahPassword()">Simpan Password Baru</button>
-      <div class="auth-switch">
-        Ingat password? <a onclick="window.location.hash=''">Masuk di sini</a>
-      </div>
     </div>
   </div>
 
@@ -752,9 +753,15 @@
     const nip = document.getElementById("upNip").value.trim();
     const oldPassword = document.getElementById("upOldPassword").value.trim();
     const newPassword = document.getElementById("upNewPassword").value.trim();
+    const confirmPassword = document.getElementById("upConfirmPassword").value.trim();
 
-    if (!nip || !oldPassword || !newPassword) {
+    if (!nip || !oldPassword || !newPassword || !confirmPassword) {
       showCustomAlert("Peringatan", "Semua kolom ubah password harus diisi!", "warning");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      showCustomAlert("Peringatan", "Password baru dan konfirmasi password tidak cocok!", "warning");
       return;
     }
 
@@ -768,9 +775,10 @@
       const res = await response.json();
 
       if (res.status === "success") {
-        showCustomAlert("Berhasil", "Password Anda berhasil diperbarui. Silakan login kembali.", "success", () => {
+        showCustomAlert("Berhasil", "Password berhasil diubah. Sesi Anda akan diakhiri, silakan login kembali.", "success", () => {
+          localStorage.clear();
           window.location.hash = "";
-          switchView('loginView');
+          window.location.reload();
         });
       } else if (res.status === "wrong_password") {
         showCustomAlert("Gagal", "Password lama yang Anda masukkan salah.", "warning");
