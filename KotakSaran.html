@@ -361,6 +361,11 @@
     }
     .form-group textarea { resize: vertical; min-height: 70px; }
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-blue); }
+    .form-group input:disabled, .form-group select:disabled, .form-group textarea:disabled {
+      background-color: #1a202c;
+      color: #9099a2;
+      cursor: not-allowed;
+    }
 
     .approval-box-list {
       background: #161b26;
@@ -496,18 +501,21 @@
 
       <!-- Panel Khusus Superuser untuk Pilih PIC -->
       <div class="form-group" id="adminPicPanel" style="display: none; border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 4px;">
-        <label style="color: var(--accent-cyan); font-weight: 700;">⚙️ Panel Admin / Superuser (Penugasan PIC):</label>
+        <label style="color: var(--accent-cyan); font-weight: 700;" id="adminPanelLabel">⚙️ Panel Admin / Superuser (Penugasan PIC):</label>
         <div style="display: flex; gap: 8px; margin-top: 4px;">
-          <select id="adminStatusPengajuan" style="flex: 1;">
+          <select id="adminStatusPengajuan" style="flex: 1;" disabled>
             <option value="Menunggu Approval SectionHead">Menunggu Approval SectionHead</option>
             <option value="Disetujui SectionHead - Menunggu Penugasan PIC">Disetujui SectionHead - Menunggu Penugasan PIC</option>
             <option value="Sedang Diproses PIC">Sedang Diproses PIC</option>
             <option value="Selesai">Selesai</option>
             <option value="Ditolak">Ditolak</option>
           </select>
-          <select id="adminTujukanPic" style="flex: 1;">
-            <option value="">-- Pilih PIC Penugasan --</option>
+          <select id="adminTujukanPic" style="flex: 1;" disabled>
+            <option value="">-- Menunggu Semua Approve --</option>
           </select>
+        </div>
+        <div id="adminNoticeText" style="font-size: 11px; color: var(--accent-warn); margin-top: 4px; display: none;">
+          ⚠️ Kolom penugasan PIC terkunci sampai ke-7 SectionHead memberikan Approve.
         </div>
       </div>
 
@@ -823,11 +831,28 @@
       }
     }
 
-    // Panel Admin / Superuser
+    // Panel Admin / Superuser dengan Penguncian Otomatis Berdasarkan Status Approval
     if (isSuperUser) {
       document.getElementById("adminPicPanel").style.display = "block";
-      document.getElementById("adminStatusPengajuan").value = item.statusPengajuan;
-      document.getElementById("adminTujukanPic").value = item.tujukanPic || "";
+      const picSelectEl = document.getElementById("adminTujukanPic");
+      const statusSelectEl = document.getElementById("adminStatusPengajuan");
+      const noticeEl = document.getElementById("adminNoticeText");
+
+      if (item.isAllApproved) {
+        // Jika semua sectionhead sudah approve, buka akses pemilihan PIC
+        picSelectEl.disabled = false;
+        statusSelectEl.disabled = false;
+        noticeEl.style.display = "none";
+        statusSelectEl.value = item.statusPengajuan || "Disetujui SectionHead - Menunggu Penugasan PIC";
+        picSelectEl.value = item.tujukanPic || "";
+      } else {
+        // Jika belum lengkap, kunci pilihan PIC dan status
+        picSelectEl.disabled = true;
+        statusSelectEl.disabled = true;
+        noticeEl.style.display = "block";
+        statusSelectEl.value = "Menunggu Approval SectionHead";
+        picSelectEl.value = "";
+      }
     } else {
       document.getElementById("adminPicPanel").style.display = "none";
     }
