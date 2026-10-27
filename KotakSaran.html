@@ -724,7 +724,7 @@
 
       const metaDiv = document.createElement("div");
       metaDiv.className = "card-meta";
-      metaDiv.innerHTML = `<span>Pelapor: <b>${item.namaPelapor}</b></span><span>Ditemukan: ${item.tglDiTemukan || '-'}</span>`;
+      metaDiv.innerHTML = `<span>Pelapor: <b>${item.namaPelapor}</b></span><span>Ditemukan: ${item.tglDiTemukan ? item.tglDiTemukan.substring(0, 10) : '-'}</span>`;
 
       card.appendChild(topDiv);
       card.appendChild(badgesDiv);
@@ -764,7 +764,14 @@
     document.getElementById("modalSaranId").value = item.id;
     document.getElementById("inputNamaPelapor").value = item.namaPelapor;
     document.getElementById("inputBagian").value = item.bagian;
-    document.getElementById("inputTglDitemukan").value = item.tglDiTemukan;
+    
+    // Perbaikan format tanggal agar bisa dibaca oleh input type="date"
+    let formattedDate = "";
+    if (item.tglDiTemukan) {
+      formattedDate = item.tglDiTemukan.toString().substring(0, 10);
+    }
+    document.getElementById("inputTglDitemukan").value = formattedDate;
+
     document.getElementById("inputLokasiTemuan").value = item.lokasiTemuan;
     document.getElementById("inputJenisWaste").value = item.jenisWaste;
     document.getElementById("inputDescTemuan").value = item.descTemuanWaste;
@@ -839,14 +846,12 @@
       const noticeEl = document.getElementById("adminNoticeText");
 
       if (item.isAllApproved) {
-        // Jika semua sectionhead sudah approve, buka akses pemilihan PIC
         picSelectEl.disabled = false;
         statusSelectEl.disabled = false;
         noticeEl.style.display = "none";
         statusSelectEl.value = item.statusPengajuan || "Disetujui SectionHead - Menunggu Penugasan PIC";
         picSelectEl.value = item.tujukanPic || "";
       } else {
-        // Jika belum lengkap, kunci pilihan PIC dan status
         picSelectEl.disabled = true;
         statusSelectEl.disabled = true;
         noticeEl.style.display = "block";
