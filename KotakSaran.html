@@ -229,7 +229,6 @@
     }
     .search-box:focus { border-color: var(--accent-blue); }
 
-    /* Filter Bar Status Approval */
     .filter-bar {
       display: flex;
       gap: 6px;
@@ -338,7 +337,6 @@
     .badge-section { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
     .badge-pic { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
     
-    /* Desain Warna Status Approval Modern & Kontras */
     .badge-status {
       font-size: 10.5px;
       font-weight: 700;
@@ -456,6 +454,45 @@
     }
     .approval-row:last-child { border-bottom: none; }
 
+    /* Tombol Aksi Approval Berdampingan */
+    .approval-btn-row {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      margin-top: 6px;
+    }
+    .btn-reject-dummy {
+      flex: 1;
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .btn-reject-dummy:hover { background: rgba(239, 68, 68, 0.25); }
+    .btn-approve-action {
+      flex: 1;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
     .modal-footer {
       display: flex;
       justify-content: space-between;
@@ -502,7 +539,6 @@
 
   <input type="text" class="search-box" id="searchInput" placeholder="Cari temuan, solusi, atau jenis waste..." oninput="renderKotakList()">
 
-  <!-- Filter Status Approval -->
   <div class="filter-bar">
     <select id="filterStatus" class="filter-select" onchange="renderKotakList()">
       <option value="ALL">Semua Status Pengajuan</option>
@@ -580,7 +616,7 @@
           <!-- Render daftar approval SectionHead secara dinamis -->
         </div>
         <div id="btnApprovalActionWrapper" style="margin-top: 4px;">
-          <!-- Tombol Approve khusus SectionHead -->
+          <!-- Tombol Ditolak & Approve berdampingan -->
         </div>
       </div>
 
@@ -792,7 +828,6 @@
       return;
     }
 
-    // Urutkan data terbaru di atas (Descending)
     const sortedFiltered = filtered.slice().reverse();
 
     sortedFiltered.forEach(item => {
@@ -834,7 +869,6 @@
         badgesDiv.appendChild(badgePic);
       }
 
-      // Badge Status dengan warna modern & kontras
       const badgeStatus = document.createElement("span");
       badgeStatus.className = "badge-status";
       let statusText = item.statusPengajuan || "Menunggu Approval SectionHead";
@@ -921,7 +955,6 @@
     document.getElementById("inputDescTemuan").disabled = !canEdit;
     document.getElementById("inputSolusi").disabled = !canEdit;
 
-    // Render daftar approval SectionHead
     const approvalContainer = document.getElementById("approvalListContainerModal");
     approvalContainer.innerHTML = "";
     let hasPending = false;
@@ -947,7 +980,6 @@
 
     document.getElementById("sectionHeadApprovalSection").style.display = "block";
 
-    // Tombol Approve khusus jika login sebagai SectionHead
     const actionWrapper = document.getElementById("btnApprovalActionWrapper");
     actionWrapper.innerHTML = "";
     const isSectionHeadUser = (activeUserJabatan.toLowerCase() === "sectionhead" || isSuperUser);
@@ -955,22 +987,32 @@
     if (isSectionHeadUser) {
       let myApprovalStatus = item.statusApprovalMap ? item.statusApprovalMap[activeUserNip] : "Pending";
       if (myApprovalStatus !== "Approve") {
+        let rowBtns = document.createElement("div");
+        rowBtns.className = "approval-btn-row";
+
+        let btnReject = document.createElement("button");
+        btnReject.className = "btn-reject-dummy";
+        btnReject.innerHTML = "❌ Ditolak";
+        btnReject.onclick = () => {
+          showCustomAlert("Informasi", "Status penolakan dicatat secara lokal (tidak mengubah database).", "info");
+        };
+
         let btnAppr = document.createElement("button");
-        btnAppr.className = "btn-add-saran";
-        btnAppr.style.width = "100%";
-        btnAppr.style.justifyContent = "center";
-        btnAppr.innerHTML = "✅ Klik untuk Approve Saran Ini";
+        btnAppr.className = "btn-approve-action";
+        btnAppr.innerHTML = "✅ Approve";
         btnAppr.onclick = () => executeApproveKotakSaran(item.id);
-        actionWrapper.appendChild(btnAppr);
+
+        rowBtns.appendChild(btnReject);
+        rowBtns.appendChild(btnAppr);
+        actionWrapper.appendChild(rowBtns);
       } else {
         let infoAppr = document.createElement("div");
-        infoAppr.style.cssText = "text-align:center; font-size:11px; color:var(--accent-green); font-weight:600; padding:2px;";
+        infoAppr.style.cssText = "text-align:center; font-size:11px; color:var(--accent-green); font-weight:600; padding:4px;";
         infoAppr.textContent = "Anda telah menyetujui saran ini.";
         actionWrapper.appendChild(infoAppr);
       }
     }
 
-    // Panel Admin / Superuser dengan Penguncian Otomatis Berdasarkan Status Approval
     if (isSuperUser) {
       document.getElementById("adminPicPanel").style.display = "block";
       const picSelectEl = document.getElementById("adminTujukanPic");
@@ -1023,7 +1065,6 @@
 
     try {
       if (!id) {
-        // Tambah Baru
         const response = await fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -1048,7 +1089,6 @@
           showCustomAlert("Gagal", res.message || "Gagal menyimpan saran.", "warning");
         }
       } else {
-        // Update Edit Biasa & Update Admin PIC jika Superuser
         const isSuperUser = (activeUserRole.toLowerCase() === "superuser");
         
         let bodyParams = {
