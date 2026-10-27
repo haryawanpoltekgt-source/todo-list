@@ -828,7 +828,6 @@
       return;
     }
 
-    // Pembalikan urutan (Descending) agar data terbaru selalu berada di paling atas
     const sortedFiltered = filtered.slice().reverse();
 
     sortedFiltered.forEach(item => {
@@ -963,12 +962,22 @@
       item.approvalDetails.forEach(sh => {
         let row = document.createElement("div");
         row.className = "approval-row";
-        let isAppr = (sh.status === "Approve");
+        let statusVal = sh.status; // Bisa "Approve", "Reject", atau "Pending"
+        
+        let statusDisplay = "⏳ Pending";
+        let statusColor = "var(--accent-warn)";
+        if (statusVal === "Approve") {
+          statusDisplay = "✅ Approve";
+          statusColor = "var(--accent-green)";
+        } else if (statusVal === "Reject") {
+          statusDisplay = "❌ Ditolak";
+          statusColor = "#f87171";
+        }
 
         row.innerHTML = `
           <span><b>${sh.nip}</b> - ${sh.nama}</span>
-          <span style="color: ${isAppr ? 'var(--accent-green)' : 'var(--accent-warn)'}; font-weight: 600;">
-            ${isAppr ? '✅ Approve' : '⏳ Pending'}
+          <span style="color: ${statusColor}; font-weight: 600;">
+            ${statusDisplay}
           </span>
         `;
         approvalContainer.appendChild(row);
@@ -985,28 +994,15 @@
 
     if (isSectionHeadUser) {
       let myApprovalStatus = item.statusApprovalMap ? item.statusApprovalMap[activeUserNip] : "Pending";
-      if (myApprovalStatus !== "Approve") {
+      if (myApprovalStatus !== "Approve" && myApprovalStatus !== "Reject") {
         let rowBtns = document.createElement("div");
         rowBtns.className = "approval-btn-row";
 
-        // Tombol Ditolak yang mengubah tampilan status lokal secara instan
         let btnReject = document.createElement("button");
         btnReject.className = "btn-reject-dummy";
         btnReject.innerHTML = "❌ Ditolak";
-        btnReject.onclick = () => {
-          const approvalRows = approvalContainer.querySelectorAll(".approval-row");
-          approvalRows.forEach(row => {
-            if (row.textContent.includes(activeUserNip) || (activeUserNama && row.textContent.toLowerCase().includes(activeUserNama.toLowerCase()))) {
-              const statusSpan = row.querySelector("span:last-child");
-              if (statusSpan) {
-                statusSpan.style.color = "#f87171";
-                statusSpan.innerHTML = "❌ Ditolak";
-              }
-            }
-          });
-          rowBtns.style.display = "none";
-          showCustomAlert("Informasi", "Status Anda diubah menjadi Ditolak secara visual (tidak berdampak ke fungsi/database utama).", "info");
-        };
+        // Memanggil fungsi eksekusi penolakan ke database
+        btnReject.onclick = () => executeRejectKotakSaran(item.id);
 
         let btnAppr = document.createElement("button");
         btnAppr.className = "btn-approve-action";
@@ -1018,8 +1014,8 @@
         actionWrapper.appendChild(rowBtns);
       } else {
         let infoAppr = document.createElement("div");
-        infoAppr.style.cssText = "text-align:center; font-size:11px; color:var(--accent-green); font-weight:600; padding:4px;";
-        infoAppr.textContent = "Anda telah menyetujui saran ini.";
+        infoAppr.style.cssText = `text-align:center; font-size:11px; color:${myApprovalStatus === 'Approve' ? 'var(--accent-green)' : '#f87171'}; font-weight:600; padding:4px;`;
+        infoAppr.textContent = myApprovalStatus === 'Approve' ? "Anda telah menyetujui saran ini." : "Anda telah menolak saran ini.";
         actionWrapper.appendChild(infoAppr);
       }
     }
@@ -1040,7 +1036,7 @@
         picSelectEl.disabled = true;
         statusSelectEl.disabled = true;
         noticeEl.style.display = "block";
-        statusSelectEl.value = "Menunggu Approval SectionHead";
+        statusSelectEl.value = item.statusPengajuan || "Menunggu Approval SectionHead";
         picSelectEl.value = "";
       }
     } else {
@@ -1176,6 +1172,36 @@
         });
       } else {
         showCustomAlert("Gagal", res.message || "Gagal melakukan approval.", "warning");
+      }
+    } catch (err) {
+      console.error(err);
+      showCustomAlert("Kesalahan", "Gagal menghubungi server.", "danger");
+    } finally {
+      hideLoading();
+    }
+  }
+
+  async function executeRejectKotakSaran(id) {
+    showLoading("Mengirim status penolakan ke database...");
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          action: "rejectKotakSaran",
+          id: id,
+          nip: activeUserNip
+        })
+      });
+      const res = await response.json();
+
+      if (res.status === "success") {
+        closeSaranModal();
+        showCustomAlert("Berhasil", "Status penolakan telah dicatat ke database dan status pengajuan diubah menjadi Ditolak.", "success", () => {
+          loadKotakData(true);
+        });
+      } else {
+        showCustomAlert("Gagal", res.message || "Gagal melakukan penolakan.", "warning");
       }
     } catch (err) {
       console.error(err);
