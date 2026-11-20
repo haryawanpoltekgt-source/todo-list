@@ -1037,6 +1037,13 @@
   let currentUserRole = "Member";
   let currentUserTim = "";
 
+  function getLocalDateISO(dateObj = new Date()) {
+    const y = dateObj.getFullYear();
+    const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const d = String(dateObj.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
   window.addEventListener('DOMContentLoaded', () => {
     const savedNama = localStorage.getItem("pbas_nama");
     const savedNip = localStorage.getItem("pbas_nip");
@@ -1094,6 +1101,7 @@
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
       if (currentUserNama && document.getElementById("workView").style.display === "flex") {
+        syncDailyAttendanceOnEnter();
         loadTasks(true);
       }
     }
@@ -1208,6 +1216,28 @@
     window.location.href = "piket.html";
   }
 
+  async function syncDailyAttendanceOnEnter() {
+    if (!currentUserNip) return;
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          action: "absenHarianKerja",
+          nip: currentUserNip,
+          nama: currentUserNama,
+          role: currentUserRole
+        })
+      });
+      const res = await response.json();
+      if (res && res.recorded) {
+        localStorage.removeItem("local_absensi_cache");
+      }
+    } catch (err) {
+      console.error("Gagal sinkronisasi absensi harian:", err);
+    }
+  }
+
   async function handleWebKerjaClick() {
     const savedNama = localStorage.getItem("pbas_nama");
     if (!savedNama) {
@@ -1221,6 +1251,7 @@
     currentUserNip = localStorage.getItem("pbas_nip");
     currentUserRole = localStorage.getItem("pbas_role") || "Member";
     currentUserTim = localStorage.getItem("pbas_tim") || "";
+    document.getElementById("loggedInUserLabel").textContent = `👤 ${currentUserNama} (${currentUserRole}) - ${currentUserNip}`;
 
     const isSuperUser = currentUserRole.toLowerCase() === "superuser";
     const isTim = currentUserTim.trim().toLowerCase() === "tim";
@@ -1231,6 +1262,7 @@
     }
 
     switchView('workView');
+    await syncDailyAttendanceOnEnter();
     loadTasks();
     
     checkAndShowTodayRutinitasPopup();
@@ -1243,10 +1275,11 @@
       const rutinitasList = Array.isArray(result) ? result : [];
 
       const daysNameInID = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-      const todayIndex = new Date().getDay();
+      const nowObj = new Date();
+      const todayIndex = nowObj.getDay();
       const todayName = daysNameInID[todayIndex];
       
-      const todayDateStr = new Date().toISOString().split('T')[0];
+      const todayDateStr = getLocalDateISO(nowObj);
       const userClean = currentUserNama.trim().toLowerCase();
 
       const myTodaySchedules = rutinitasList.filter(item => {
@@ -1309,7 +1342,7 @@
 
   function openAbsensiView() {
     switchView('absensiView');
-    const today = new Date().toISOString().split('T')[0];
+    const today = getLocalDateISO();
     document.getElementById("absensiDatePicker").value = today;
     loadAbsensiData();
   }
@@ -1738,7 +1771,6 @@
     
     const canEdit = isSuperUser || isOwner;
 
-    // Deteksi apakah tugas berasal dari PBAS atau KSAR
     const isProtectedTask = task.task && (/\[(PBAS|KSAR)[- ]/i.test(task.task.trim()));
     const isMemberRole = currentUserRole.toLowerCase() === "member";
 
